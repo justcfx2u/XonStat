@@ -1,6 +1,6 @@
 <%def name="scoreboard(game_type_cd, pgstats, show_elo=False, show_latency=False)">
 <table  class="table table-hover table-condensed">
-  ${scoreboard_header(game_type_cd, pgstats[0])}
+  ${scoreboard_header(game_type_cd, pgstats[0], show_elo)}
   <tbody>
   % for pgstat in pgstats:
     <tr class="${pgstat.team_html_color()}">
@@ -43,7 +43,7 @@
 </%def>
 
 ##### SCOREBOARD HEADER #####
-<%def name="scoreboard_header(game_type_cd, pgstat)">
+<%def name="scoreboard_header(game_type_cd, pgstat, show_elo)">
 % if game_type_cd == 'as':
 <thead>
   <tr>
