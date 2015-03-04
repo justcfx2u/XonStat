@@ -9,7 +9,6 @@ ${nav.nav('games')}
 
 <%block name="css">
 ${parent.css()}
-<link href="/static/css/sprites.css" rel="stylesheet">
 </%block>
 
 <%block name="js">

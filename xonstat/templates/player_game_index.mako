@@ -4,7 +4,6 @@
 
 <%block name="css">
 ${parent.css()}
-<link href="/static/css/sprites.css" rel="stylesheet">
 </%block>
 
 <%block name="navigation">
@@ -55,7 +54,7 @@ Recent Games
       % else:
       <a href="${request.route_url("player_game_index", player_id=player.player_id, _query={'type':game.game_type_cd})}" alt="${game.game_type_cd}" title="" data-toggle="none">
       % endif
-        <span class="sprite sprite-${game.game_type_cd}"> </span><br />
+        <img src="/static/images/icons/24x24/${game.game_type_cd}.png" width="24" height="24"><br />
         ${game.game_type_cd} <br />
       </a>
       </li>

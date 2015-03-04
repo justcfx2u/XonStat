@@ -5,3 +5,9 @@
 *.pyc
 /xonstat/batch/badges/output/*.png
 /xonstat/batch/badges/output/*/*.png
+feeder/node_modules/
+feeder/ql-match-jsons/
+Thumbs.db
+xonstat/static/images/icons/75x75/
+XonStat.egg-info/
+nul

@@ -8,7 +8,6 @@ ${nav.nav('games')}
 
 <%block name="css">
     ${parent.css()}
-    <link href="/static/css/sprites.css" rel="stylesheet">
 </%block>
 
 <%block name="title">
@@ -26,7 +25,7 @@ Game Index
         % endif
       >
         <a href="${url}" alt="${gt}" title="Show only ${gt} games" data-toggle="none">
-          <span class="sprite sprite-${gt}"> </span><br />
+          <img src="/static/images/icons/24x24/${gt}.png" width="24" height="24"><br />
           ${gt} <br />
         </a>
       </li>
@@ -55,7 +54,7 @@ Game Index
       % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
-          <td class="tdcenter"><span alt="${rg.game_type_cd}" class="sprite sprite-${rg.game_type_cd}" title="${rg.game_type_descr}"></span></td>
+          <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt = "${rg.game_type_cd}" title="${rg.game_type_descr}"></td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
           <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
           <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>

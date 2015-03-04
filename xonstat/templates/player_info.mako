@@ -11,7 +11,6 @@ ${nav.nav('players', False)}
 
 <%block name="css">
 ${parent.css()}
-<link href="/static/css/sprites.css" rel="stylesheet">
 <style>
 #damageChart, #accuracyChart {
   height: 250px;
@@ -23,7 +22,12 @@ ${parent.css()}
 ${parent.js()}
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/weaponCharts.min.js"></script>
+
+<a id="jsonUrl" href="${request.route_url('player_weaponstats_data_json', id=player.player_id, _query={'limit':20})}" style="display:none"></a>
 <script type="text/javascript">
+// allow IIS URL rewriting by putting the URL inside <a href="...">
+// (URLs in the JavaScript source won't be rewritten by IIS)
+var jsonUrl = $("#jsonUrl").attr("href"); 
 
 // tabs
 $(function () {
@@ -37,22 +41,22 @@ $(function () {
 
 // weapon accuracy and damage charts
 google.load('visualization', '1.1', {packages: ['corechart']});
-$.getJSON("${request.route_url('player_weaponstats_data_json', id=player.player_id, _query={'limit':20})}", function(data) {
+$.getJSON(jsonUrl, function(data) {
   if(data.games.length < 5) {
-    d3.select(".row #damageChart").remove();
-    d3.select(".row #accuracyChart").remove();
+    $(".row #damageChart").empty();
+    $(".row #accuracyChart").empty();
   }
-  drawDamageChart(data);
   drawAccuracyChart(data);
+  drawDamageChart(data);
 });
 
 
 // game type buttons
 % for g in games_played:
 $('.tab-${g.game_type_cd}').click(function() {
-  $.getJSON("${request.route_url('player_weaponstats_data_json', id=player.player_id, _query={'limit':20, 'game_type':g.game_type_cd})}", function(data) {
-    drawDamageChart(data);
+  $.getJSON(jsonUrl + "&amp;game_type=${g.game_type_cd}", function(data) {
     drawAccuracyChart(data);
+    drawDamageChart(data);
   });
 });
 % endfor
@@ -194,7 +198,7 @@ Player Information
       % for g in games_played:
       <li class="tab-${g.game_type_cd}">
       <a href="#tab-${g.game_type_cd}" data-toggle="tab" alt="${g.game_type_cd}" title="${overall_stats[g.game_type_cd].game_type_descr}">
-        <span class="sprite sprite-${g.game_type_cd}"> </span><br />
+        <img src="/static/images/icons/24x24/${g.game_type_cd}.png" width="24" height="24"><br />
         ${g.game_type_cd} <br />
         <small>(${g.games})</small>
       </a>
@@ -220,17 +224,19 @@ Player Information
 
 
 ##### Weapon Damage Chart ####
+
 <div class="row" id="damageChartRow">
   <div class="span12">
-    <h3>Weapon Damage</h3>
+    <h3>Weapon Kills</h3>
     <noscript>
       Sorry, but you've disabled JavaScript! It is required to draw the damage chart.
     </noscript>
     <div id="damageChart">
       <svg id="damageChartSVG"></svg>
     </div>
-  </div> <!-- end span12 -->
-</div> <!-- end row -->
+  </div>
+</div>
+
 
 
 
@@ -255,7 +261,7 @@ Player Information
       % for rg in recent_games:
       <tr>
         <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
-        <td class="tdcenter"><span class="sprite sprite-${rg.game_type_cd}" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"></span></td>
+        <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"></td>
         <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
         <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the detail page for this map">${rg.map_name}</a></td>
         <td>

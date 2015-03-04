@@ -8,7 +8,7 @@ from sqlalchemy import desc, func, over
 from webhelpers.paginate import Page, PageURL
 from xonstat.models import *
 from xonstat.util import page_url
-from xonstat.views.helpers import RecentGame, recent_games_q
+from xonstat.views.helpers import RecentGame, recent_games_q, games_q
 
 
 log = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ def _game_info_data(request):
     if request.params.has_key('show_elo'):
         show_elo = True
     else:
-        show_elo = False
+        show_elo = True #False
 
     show_latency = False
 
@@ -77,7 +77,7 @@ def _game_info_data(request):
                     PlayerGameStat.player_game_stat_id).\
                 order_by(PlayerGameStat.scoreboardpos).\
                 order_by(PlayerGameStat.score).\
-                order_by(Weapon.descr).\
+                order_by(Weapon.weapon_num).\
                 all():
                     if pgstat.player_game_stat_id not in pwstats:
                         pwstats[pgstat.player_game_stat_id] = []
@@ -86,7 +86,7 @@ def _game_info_data(request):
                     # You have to use a slice [0:5] to pass to the accuracy
                     # template
                     pwstats[pgstat.player_game_stat_id].append((weapon.descr,
-                        weapon.weapon_cd, pwstat.actual, pwstat.max,
+                        weapon.weapon_cd, pwstat.frags, pwstat.max,
                         pwstat.hit, pwstat.fired, pgstat))
 
     except Exception as inst:
@@ -230,8 +230,9 @@ def game_finder_data(request):
     if 'end_game_id' in gt_query:
         del gt_query['end_game_id']
 
-    for gt in ('overall','duel','ctf','dm','tdm','ca','kh','ft',
-            'lms','as','dom','nb','cts','rc'):
+    gameList = games_q();
+    gameList.insert(0, 'overall');
+    for gt in gameList:
         gt_query['type'] = gt
         url = request.route_url("game_index", _query=gt_query)
         game_type_links.append((gt, url))

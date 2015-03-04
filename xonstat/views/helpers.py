@@ -75,6 +75,12 @@ class RecentGame(object):
     def __repr__(self):
         return "<RecentGame(id=%s, gametype=%s, server=%s, map=%s)>" % (self.game_id, self.game_type_cd, self.server_name, self.map_name)
 
+def games_q():
+    result = DBSession.query(GameType.game_type_cd).\
+            filter(GameType.active_ind==True).\
+	        order_by(expr.asc(GameType.game_type_cd)).\
+			all();
+    return [row[0] for row in result];
 
 def recent_games_q(server_id=None, map_id=None, player_id=None,
         game_type_cd=None, cutoff=None, force_player_id=False,

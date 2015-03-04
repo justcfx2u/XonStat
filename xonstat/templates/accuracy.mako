@@ -12,15 +12,16 @@
 ## [5] = Fired
 
 <table class="table table-condensed">
+<colgroup>
+  <col width="36px">
+</colgroup>
 <thead>
     <th></th>
     <th>Weapon</th>
     <th>Hit</th>
     <th>Fired</th>
     <th>Hit %</th>
-    <th>Actual Damage</th>
-    <th>Potential Damage</th>
-    <th>Damage %</th>
+    <th>Kills</th>
 </thead>
 % for weapon_stat in weapon_stats:
 <%
@@ -36,14 +37,12 @@ else:
 <tr>
     ## Note: the name of the image must match up with the weapon_cd 
     ## entry of that weapon, else this won't work
-    <td><span class="sprite sprite-${weapon_stat[1]}"></span></td>
+    <td><img src="/static/images/24x24/${weapon_stat[1]}.png" style="width:24px; height:24px;"></td>
     <td>${weapon_stat[0]}</td>
     <td>${weapon_stat[4]}</td>
     <td>${weapon_stat[5]}</td>
     <td>${hit_pct}%</td>
     <td>${weapon_stat[2]}</td>
-    <td>${weapon_stat[3]}</td>
-    <td>${damage_pct}%</td>
 </tr>
 % endfor
 </table>

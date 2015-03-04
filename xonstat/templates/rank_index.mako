@@ -2,8 +2,8 @@
 <%namespace file="navlinks.mako" import="navlinks" />
 
 <%block name="title">
-% if game_type_cd == 'dm':
-Deathmatch Rank Index
+% if game_type_cd == 'ffa':
+Free For All Rank Index
 % elif game_type_cd == 'duel':
 Duel Rank Index
 % elif game_type_cd == 'tdm':

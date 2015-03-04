@@ -104,8 +104,8 @@ def get_ranks(game_type_cd):
     leaderboard_count = 10
 
     # only a few game modes are actually ranked
-    if game_type_cd not in 'duel' 'dm' 'ctf' 'tdm':
-        return None
+    # if game_type_cd not in 'duel' 'ffa' 'ctf' 'tdm' 'ca':
+    #    return None
 
     ranks = DBSession.query(PlayerRank).\
             filter(PlayerRank.game_type_cd==game_type_cd).\
@@ -253,7 +253,7 @@ def _main_index_data(request):
 
     # the three top ranks tables
     ranks = []
-    for gtc in ['duel', 'ctf', 'dm', 'tdm']:
+    for gtc in ['duel', 'ca', 'ctf', 'tdm', 'ffa', 'ft', 'race']:
         rank = get_ranks(gtc)
         if len(rank) != 0:
             ranks.append(rank)

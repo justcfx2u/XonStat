@@ -1096,6 +1096,8 @@ def player_weaponstats_data_json(request):
     weapons_used = {}
     sum_avgs = {}
     for ws in weapon_stats_raw:
+        if ws.fired == 0:
+            continue;
         if ws.game_id not in games_to_weapons:
             games_to_weapons[ws.game_id] = [ws.weapon_cd]
         else:

@@ -25,11 +25,11 @@
 
       ${scoreboard_row(game_type_cd, pgstat)}
 
-      % if game_type_cd != 'cts':
+      % if game_type_cd != 'cts' and game_type_cd != 'race':
         <td class="player-score">${pgstat.score}</td>
       % endif
 
-      % if show_elo:
+      % if show_elo and game_type_cd != 'race':
         % if pgstat.elo_delta is not None:
           <td>${round(pgstat.elo_delta,2)}</td>
         % else:
@@ -63,7 +63,7 @@
 </thead>
 % endif
 
-% if game_type_cd in 'ca' 'dm' 'duel' 'rune' 'tdm':
+% if game_type_cd in 'ca' 'ffa' 'duel' 'tdm':
 <thead>
   <tr>
     % if show_latency:
@@ -72,7 +72,8 @@
     <th class="nick">Nick</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
-    <th class="suicides">Suicides</th>
+    <th class="kills">Damage Dealt</th>
+    <th class="deaths">Damage Taken</th>
     <th class="score">Score</th>
     % if show_elo:
     <th>Elo Change</th>
@@ -122,9 +123,9 @@
     <th class="nick">Nick</th>
     <th class="kills">Kills</th>
     <th class="captures">Captures</th>
-    <th class="pickups">Pickups</th>
-    <th class="fck" title="Flag Carrier Kill">FCK</th>
-    <th class="returns">Returns</th>
+    <th class="returns">Assists</th>
+    <th class="pickups">Damage Dealt</th>
+    <th class="fck">Damage Taken</th>
     <th class="score">Score</th>
     % if show_elo:
     <th>Elo Change</th>
@@ -161,7 +162,7 @@
     <th class="nick">Nick</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
-    <th class="revivals">Revivals</th>
+    <th class="revivals">Thaws</th>
     <th class="score">Score</th>
     % if show_elo:
     <th>Elo Change</th>
@@ -230,15 +231,13 @@
 </thead>
 % endif
 
-% if game_type_cd == 'rc':
+% if game_type_cd == 'race':
 <thead>
   <tr>
     % if show_latency:
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
-    <th class="laps">Laps</th>
-    <th class="fastest">Fastest Lap</th>
     <th class="time">Time</th>
   </tr>
 </thead>
@@ -255,10 +254,11 @@
   <td>${pgstat.collects}</td>
 % endif
 
-% if game_type_cd in 'ca' 'dm' 'duel' 'rune' 'tdm':
+% if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
-  <td>${pgstat.suicides}</td>
+  <td>${pgstat.pushes}</td>
+  <td>${pgstat.destroys}</td>
 % endif
 
 % if game_type_cd == 'cq':
@@ -281,9 +281,9 @@
 % if game_type_cd == 'ctf':
   <td>${pgstat.kills}</td>
   <td>${pgstat.captures}</td>
-  <td>${pgstat.pickups}</td>
-  <td>${pgstat.carrier_frags}</td>
   <td>${pgstat.returns}</td>
+  <td>${pgstat.pushes}</td>
+  <td>${pgstat.destroys}</td>
 % endif
 
 % if game_type_cd == 'dom':
@@ -329,17 +329,9 @@
   <td>${pgstat.drops}</td>
 % endif
 
-% if game_type_cd == 'rc':
-  <td>${pgstat.laps}</td>
-
-  % if pgstat.fastest is not None:
-    <td>${round(float(pgstat.fastest.seconds) + (pgstat.fastest.microseconds/1000000.0), 2)}</td>
-  % else:
-    <td>-</td>
-  % endif
-
-  % if pgstat.time is not None:
-    <td>${round(float(pgstat.time.seconds) + (pgstat.time.microseconds/1000000.0), 2)}</td>
+% if game_type_cd == 'race':
+  % if pgstat.score is not None and pgstat.score > 0:
+    <td class="player-score">${round(float(pgstat.score)/1000,3)}</td>
   % else:
     <td>-</td>
   % endif

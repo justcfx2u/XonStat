@@ -137,21 +137,13 @@ def is_supported_gametype(gametype, version):
     # if the type can be supported, but with version constraints, uncomment
     # here and add the restriction for a specific version below
     supported_game_types = (
-            'as',
-            'ca',
-            # 'cq',
-            'ctf',
-            'cts',
-            'dm',
-            'dom',
-            'ft', 'freezetag',
-            'ka', 'keepaway',
-            'kh',
-            # 'lms',
-            'nb', 'nexball',
-            # 'rc',
-            'rune',
+            'ffa',
+			'duel',
             'tdm',
+            'ctf',
+            'ca',
+            'ft',
+			'race',
         )
 
     if gametype in supported_game_types:
@@ -275,7 +267,7 @@ def should_do_weapon_stats(game_type_cd):
 
 def should_do_elos(game_type_cd):
     """True of the game type should process Elos. False otherwise."""
-    elo_game_types = ('duel', 'dm', 'ca', 'ctf', 'tdm', 'ka', 'ft')
+    elo_game_types = ('duel', 'ffa', 'ctf', 'tdm', 'ca', 'ft')
 
     if game_type_cd in elo_game_types:
         return True
@@ -547,7 +539,7 @@ def create_default_game_stat(session, game_type_cd):
     if game_type_cd == 'as':
         pgstat.kills = pgstat.deaths = pgstat.suicides = pgstat.collects = 0
 
-    if game_type_cd in 'ca' 'dm' 'duel' 'rune' 'tdm':
+    if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
         pgstat.kills = pgstat.deaths = pgstat.suicides = 0
 
     if game_type_cd == 'cq':
@@ -585,7 +577,7 @@ def create_default_game_stat(session, game_type_cd):
         pgstat.kills = pgstat.deaths = pgstat.suicides = pgstat.captures = 0
         pgstat.drops = 0
 
-    if game_type_cd == 'rc':
+    if game_type_cd == 'race':
         pgstat.kills = pgstat.deaths = pgstat.suicides = pgstat.laps = 0
 
     return pgstat
@@ -824,7 +816,6 @@ def submit_stats(request):
         log.debug("\n----- BEGIN REQUEST BODY -----\n" + request.body +
                 "----- END REQUEST BODY -----\n\n")
 
-        (idfp, status) = verify_request(request)
         (game_meta, raw_players, raw_teams) = parse_stats_submission(request.body)
         revision = game_meta.get('R', 'unknown')
         duration = game_meta.get('D', None)
@@ -834,11 +825,8 @@ def submit_stats(request):
 
         do_precondition_checks(request, game_meta, raw_players)
 
-        # the "duel" gametype is fake
-        if len(raw_players) == 2 \
-            and num_real_players(raw_players) == 2 \
-            and game_meta['G'] == 'dm':
-            game_meta['G'] = 'duel'
+        # use a fake server hash (needed for XonStat infrastructure)
+        idfp = game_meta["0"];
 
         #----------------------------------------------------------------------
         # Actual setup (inserts/updates) below here

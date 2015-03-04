@@ -6,16 +6,15 @@ Leaderboard
 
 <%block name="css">
   ${parent.css()}
-  <link href="/static/css/sprites.css" rel="stylesheet">
 </%block>
 
 <%block name="hero_unit">
-  <div class="text-center">
-    <img src="/static/css/img/web_background_l2.png" />
+  <div class="text-center shadowtext">
+    <img src="/static/css/img/web_background_l2.png" style="-webkit-filter: drop-shadow(1px 1px 50px white);"/>
     % if stat_line is None:
-    <p id="statline">Tracking Xonotic statistics since October 2011.</p>
+    <p id="statline">Tracking Quake Live statistics since March 2015.</p>
     % else:
-    <p id="statline">Tracking ${stat_line|n} since October 2011.</p>
+    <p id="statline">Tracking ${stat_line|n} since March 2015.</p>
     % endif
 
     % if day_stat_line is not None:
@@ -34,17 +33,23 @@ Leaderboard
 
 % else:
   <div class="row">
-    % for rs in ranks[:4]:
+    % for rs in ranks[:8]:
     % if len(rs) > 0:
     <div class="span3">
       % if rs[0].game_type_cd == 'duel':
       <h3>Duel Ranks</h3>
+      % elif rs[0].game_type_cd == 'ca':
+      <h3>CA Ranks</h3>
       % elif rs[0].game_type_cd == 'ctf':
       <h3>CTF Ranks</h3>
-      % elif rs[0].game_type_cd == 'dm':
-      <h3>DM Ranks</h3>
+      % elif rs[0].game_type_cd == 'ffa':
+      <h3>FFA Ranks</h3>
       % elif rs[0].game_type_cd == 'tdm':
       <h3>TDM Ranks</h3>
+      % elif rs[0].game_type_cd == 'ft':
+      <h3>Freeze Tag Ranks</h3>
+      % elif rs[0].game_type_cd == 'race':
+      <h3>Race Ranks</h3>
       % endif
 
       <table class="table table-hover table-condensed">
@@ -194,7 +199,7 @@ Leaderboard
       % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
-          <td class="tdcenter"><span class="sprite sprite-${rg.game_type_cd}" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"></span></td>
+          <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24"></td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
           <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
           <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>

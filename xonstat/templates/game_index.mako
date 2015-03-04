@@ -5,7 +5,6 @@
 
 <%block name="css">
 ${parent.css()}
-<link href="/static/css/sprites.css" rel="stylesheet">
 </%block>
 
 <%block name="navigation">
@@ -45,7 +44,7 @@ Game Index
       % else:
       <a href="${request.route_url("game_index", _query={'game_type_cd':gt})}" alt="${gt}" title="" data-toggle="none">
       % endif
-        <span class="sprite sprite-${gt}"> </span><br />
+        <img src="/static/images/icons/24x24/${gt}.png" width="24" height="24"><br />
         ${gt} <br />
       </a>
       </li>
@@ -60,7 +59,7 @@ Game Index
             % for gt in ('ca','kh','ft','lms','as','dom','nb','cts','rc'):
             <li>
             <a href="${request.route_url("game_index", game_type_cd=gt)}" alt="${gt}" title="" data-toggle="none">
-              <span class="sprite sprite-${gt}"> </span><br/>
+              <img src="/static/images/icons/24x24/${gt}.png" width="24" height="24"><br/>
               ${gt}
             </a>
             </li>

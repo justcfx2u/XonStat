@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>XonStat: Player Statistics for Xonotic</title>
+    <title>QLStats: Player Statistics for Quake Live</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -11,7 +11,7 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <link rel="shortcut icon" href="/static/favicon.ico">
+    <link rel="shortcut icon" href="/static/favicon.ico?v=2">
 
     <%block name="css">
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -37,9 +37,15 @@
       </div> <!-- /main row -->
 
       <%block name="footer">
-      <div class="row">
+      <div class="row shadowtext">
         <div class="span10 offset1">
-          <p class="text-center" >XonStat is an open source (GPLv2) project created by Antibody. Fork it <a href="https://github.com/antzucaro/XonStat" title="Go to the project page">on Github!</a> <br />Questions? Check the <a href="https://github.com/antzucaro/XonStat/wiki/FAQ" title="FAQ">FAQ</a> first. <br />Issues? Log them either <a href="http://dev.xonotic.org/projects/xonstat" title="Xonotic Redmin Issue Tracker">here</a> or <a href="https://github.com/antzucaro/XonStat/issues" title="GitHub issue tracker">here</a> - I check both!</p>
+          <p class="text-center" >
+		  QLStats is a <a href="http://www.quakelive.com" target="_blank">Quake Live</a> adaptation of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
+          which was originally created by Antibody for the game <a href="http://www.xonotic.net" target="_blank">Xonotic</a>.
+		  <br /><a href="https://gitlab.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats sources</a> and 
+		    <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat sources</a> are licensed under GPLv2.
+		  <br />Questions about Elo? It's explained at the bottom of the <a href="https://github.com/antzucaro/XonStat/wiki/FAQ" title="XonStat FAQ">XonStat FAQ</a>. 
+		  </p>
         </div>
       </div>
       </%block>

@@ -8,8 +8,8 @@
             <span class="icon-bar"></span>
           </a>
           <a class="navbar-brand" href="${request.route_url('main_index')}">
-           <img src="/static/css/img/Xonotic_icon.png" />
-           XonStat
+           <img src="/static/css/img/menu_icon.png" style="-webkit-filter: drop-shadow(0px 5px 5px grey);"/>
+           QLStats
           </a>
           <nav class="nav-main nav-collapse in collapse" role="navigation" style="height: auto;">
             <ul class="nav">

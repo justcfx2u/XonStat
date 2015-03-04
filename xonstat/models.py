@@ -151,14 +151,15 @@ class PlayerGameStat(object):
             return html_colors(self.nick, limit)
 
     def team_html_color(self):
-        if self.team == 5:
+        if self.team == 1 or self.team == 5:
             return "red"
-        if self.team == 14:
+        if self.team == 2 or self.team == 14:
             return "blue"
         if self.team == 13:
             return "yellow"
         if self.team == 10:
             return "pink"
+        return "grey"
 
 
 class Achievement(object):
@@ -299,14 +300,15 @@ class TeamGameStat(object):
         }
 
     def team_html_color(self):
-        if self.team == 5:
+        if self.team == 1 or self.team == 5:
             return "red"
-        if self.team == 14:
+        if self.team == 2 or self.team == 14:
             return "blue"
         if self.team == 13:
             return "yellow"
         if self.team == 10:
             return "pink"
+        return "grey"
 
 
 class PlayerGameAnticheat(object):
