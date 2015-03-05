@@ -118,7 +118,7 @@ function drawAccuracyChart(weaponData) {
     var selection = chart.getSelection()[0];
     if (selection != null && selection.row != null) {
       var game_id = data.getFormattedValue(selection.row, 0);
-      window.location.href = "http://stats.xonotic.org/game/" + game_id.toString();
+      window.location.href = "/game/" + game_id.toString();
     }
   };
   google.visualization.events.addListener(chart, 'select', accuracySelectHandler);
@@ -256,7 +256,7 @@ function drawDamageChart(weaponData) {
     var selection = chart.getSelection()[0];
     if (selection != null && selection.row != null) {
       var game_id = data.getFormattedValue(selection.row, 0);
-      window.location.href = "http://stats.xonotic.org/game/" + game_id.toString();
+      window.location.href = "/game/" + game_id.toString();
     }
   };
   google.visualization.events.addListener(chart, 'select', damageSelectHandler);
