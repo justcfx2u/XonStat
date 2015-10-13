@@ -7,7 +7,6 @@ from cgi import escape as html_escape
 from datetime import datetime, timedelta
 from decimal import Decimal
 from collections import namedtuple
-from xonstat.d0_blind_id import d0_blind_id_verify
 
 
 log = logging.getLogger(__name__)
@@ -334,6 +333,8 @@ def is_cake_day(create_dt, today_dt=None):
 
 def verify_request(request):
     """Verify requests using the d0_blind_id library"""
+
+    return (1, None)
 
     # first determine if we should be verifying or not
     val_verify_requests = request.registry.settings.get('xonstat.verify_requests', 'true')
