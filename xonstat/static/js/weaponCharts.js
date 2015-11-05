@@ -10,9 +10,9 @@ var weaponColors = {
   "pg": "#c500ff",
   "hmg": "#cea500",
   "bfg": "#015aff",
-  "ng": "#666666",
-  "cg": "#bbbbbb",
-  "pm": "#ffaaee"
+  //"ng": "#666666",
+  //"cg": "#bbbbbb",
+  //"pm": "#ffaaee"
 };
 
 // Flatten the existing weaponstats JSON requests

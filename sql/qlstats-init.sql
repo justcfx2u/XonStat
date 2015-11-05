@@ -8,6 +8,7 @@ insert into cd_weapon(weapon_num, weapon_cd, descr) values (5, 'rl', 'Rocket Lau
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (6, 'lg', 'Lightning Gun');
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (7, 'rg', 'Railgun');
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (8, 'pg', 'Plasma Gun');
+insert into cd_weapon(weapon_num, weapon_cd, descr) values (10, 'gh', 'Grappling Hook');
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (11, 'ng', 'Nail Gun');
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (12, 'pm', 'Prox Mine');
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (13, 'cg', 'Chain Gun');

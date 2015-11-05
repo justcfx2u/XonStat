@@ -1,4 +1,4 @@
-import datetime
+﻿import datetime
 import logging
 import os
 import pyramid.httpexceptions
@@ -123,8 +123,12 @@ def is_blank_game(gametype, players):
 
 
 def get_remote_addr(request):
-    """Get the Xonotic server's IP address"""
-    if 'X-Forwarded-For' in request.headers:
+    """Get the game server's IP address"""
+    idx = request.data.find('0 ')
+    if idx == 0:
+        idx = request.data.find('\n')
+        return request.data[2:idx-2]
+    elif 'X-Forwarded-For' in request.headers:
         return request.headers['X-Forwarded-For']
     else:
         return request.remote_addr
