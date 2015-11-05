@@ -846,7 +846,7 @@ def submit_stats(request):
                 hashkey  = idfp,
                 name     = game_meta['S'],
                 revision = revision,
-                ip_addr  = get_remote_addr(request),
+                ip_addr  = game_meta.get('0', None),
                 port     = game_meta.get('U', None))
 
         gmap = get_or_create_map(
