@@ -830,7 +830,7 @@ def submit_stats(request):
         do_precondition_checks(request, game_meta, raw_players)
 
         # use a fake server hash (needed for XonStat infrastructure)
-        idfp = game_meta["0"];
+        idfp = game_meta["0"] + ":" + game_meta["U"];
 
         #----------------------------------------------------------------------
         # Actual setup (inserts/updates) below here
