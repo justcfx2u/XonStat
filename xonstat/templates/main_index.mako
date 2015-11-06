@@ -12,9 +12,9 @@ Leaderboard
   <div class="text-center shadowtext">
     <img src="/static/css/img/web_background_l2.png" style="-webkit-filter: drop-shadow(1px 1px 50px white);"/>
     % if stat_line is None:
-    <p id="statline">Tracking Quake Live statistics since March 2015.</p>
+    <p id="statline">Tracking Quake Live statistics since November 2015.</p>
     % else:
-    <p id="statline">Tracking ${stat_line|n} since March 2015.</p>
+    <p id="statline">Tracking ${stat_line|n} since November 2015.</p>
     % endif
 
     % if day_stat_line is not None:
