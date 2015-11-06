@@ -1,4 +1,4 @@
-import datetime
+﻿import datetime
 import logging
 import re
 import time
@@ -70,6 +70,7 @@ def _game_info_data(request):
             captimes = sorted(captimes, key=lambda x:x.fastest)
 
         pwstats = {}
+        weapons = OrderedDict() ## ["gt","mg","sg","gl","rl","lg","rg","pg","hmg","bfg"]
         for (pwstat, pgstat, weapon) in DBSession.query(PlayerWeaponStat, PlayerGameStat, Weapon).\
                 filter(PlayerWeaponStat.game_id == game_id).\
                 filter(PlayerWeaponStat.weapon_cd == Weapon.weapon_cd).\
@@ -79,15 +80,16 @@ def _game_info_data(request):
                 order_by(PlayerGameStat.score).\
                 order_by(Weapon.weapon_num).\
                 all():
-                    if pgstat.player_game_stat_id not in pwstats:
-                        pwstats[pgstat.player_game_stat_id] = []
+                    weapons[weapon.weapon_cd] = weapon;
+                    if pgstat.player_id not in pwstats:
+                        pwstats[pgstat.player_id] = { "nick": pgstat.nick_html_colors(), "weapons": {} }
+                    if weapon.weapon_cd not in pwstats[pgstat.player_id]["weapons"]:
+                        pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd] = []
 
                     # NOTE adding pgstat to position 6 in order to display nick.
                     # You have to use a slice [0:5] to pass to the accuracy
                     # template
-                    pwstats[pgstat.player_game_stat_id].append((weapon.descr,
-                        weapon.weapon_cd, pwstat.frags, pwstat.max,
-                        pwstat.hit, pwstat.fired, pgstat))
+                    pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd] = [pwstat.frags, pwstat.max, pwstat.hit, pwstat.fired]
 
     except Exception as inst:
         game = None
@@ -110,6 +112,7 @@ def _game_info_data(request):
             'pgstats':pgstats,
             'tgstats':tgstats,
             'pwstats':pwstats,
+            'weapons':weapons,
             'captimes':captimes,
             'show_elo':show_elo,
             'show_latency':show_latency,

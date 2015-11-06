@@ -130,28 +130,11 @@ Game Information
 % endif
 
 
-% if len(pgstats) > 0 and len(pwstats) > 0:
+% if len(pwstats) > 0:
 <div class="row">
   <div class="span12">
     <h3>Accuracy Information</h3>
-    <div class="accordion" id="acc-accordion" style="display:none;">
-      % for pgstat in pgstats:
-      % if pgstat.player_game_stat_id in pwstats:
-      <div class="accordion-group">
-        <div class="accordion-heading">
-          <a class="accordion-toggle" data-toggle="collapse" data-parent="#acc-accordion" href="#accuracy-${pgstat.player_game_stat_id}">
-            Accuracy for ${pgstat.nick_html_colors()|n}
-          </a>
-        </div>
-        <div id="accuracy-${pgstat.player_game_stat_id}" class="accordion-body collapse in">
-          <div class="accordion-inner">
-            ${accuracy(pwstats[pgstat.player_game_stat_id])}
-          </div>
-        </div>
-      </div>
-      % endif
-      % endfor
-    </div>
+    ${accuracy(pwstats, weapons)}
   </div>
   % endif
 
