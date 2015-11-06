@@ -12,3 +12,4 @@ xonstat/static/images/icons/75x75/
 XonStat.egg-info/
 nul
 build/
+dist/XonStat-0.0-py2.7.egg

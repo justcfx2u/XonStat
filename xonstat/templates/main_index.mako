@@ -10,7 +10,7 @@ Leaderboard
 
 <%block name="hero_unit">
   <div class="text-center shadowtext">
-    <img src="/static/css/img/web_background_l2.png" style="-webkit-filter: drop-shadow(1px 1px 50px white);"/>
+    <img src="/static/css/img/web_background_l2.png" style="-webkit-filter: drop-shadow(1px 1px 10px white); max-height:200px"/>
     % if stat_line is None:
     <p id="statline">Tracking Quake Live statistics since November 2015.</p>
     % else:

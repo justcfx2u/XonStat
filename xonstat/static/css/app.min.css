@@ -1,24 +1,15 @@
 /* Fonts */
 @font-face {
-  font-family: 'Open Sans', sans-serif;
-  /*
-    font-family: 'XoloniumNormal';
-    src: url('fonts/xolonium.eot');
-    src: url('fonts/xolonium.eot?#iefix') format('embedded-opentype'),
-         url('fonts/xolonium.ttf') format('truetype'),
-         url('fonts/xolonium.woff') format('woff'),
-         url('fonts/xolonium.svg#xoloniumregular') format('svg');
-    */
+    font-family: "Open Sans", sans-serif;
     font-weight: normal;
     font-style: normal;
 }
 
 /* Primary elements */
 body {
-    /*background: url("img/web_background_4.jpg") no-repeat fixed center center / cover  black;*/
-    background: black url("img/web_background_4.jpg") no-repeat fixed center top / cover;	
+    background: #202020 ;	
     color: #D0D0D0;
-    font-family: /*"XoloniumNormal",*/ "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Open Sans", sans-serif;
 }
 h1 small,
 h2 small,
@@ -184,8 +175,8 @@ table td {
 
 .teamscore {
   text-align: right;
-  text-shadow: 0px 0px 2px #222, 0px 0px 1px #fff;
-  font-size: 20px;
+  text-shadow:  0px 0px 3px #fff;
+  font-size: 50px;
   font-weight: bold;
   padding: 10px 7px;
   margin-right: 5px;
@@ -193,6 +184,7 @@ table td {
 }
 .teamscore .teamname {
   font-size: 12px;
+  display: none;
 }
 .teamscore .red {
   color: #ad0000;
