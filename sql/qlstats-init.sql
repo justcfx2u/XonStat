@@ -8,12 +8,12 @@ insert into cd_weapon(weapon_num, weapon_cd, descr) values (5, 'rl', 'Rocket Lau
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (6, 'lg', 'Lightning Gun');
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (7, 'rg', 'Railgun');
 insert into cd_weapon(weapon_num, weapon_cd, descr) values (8, 'pg', 'Plasma Gun');
-insert into cd_weapon(weapon_num, weapon_cd, descr) values (10, 'gh', 'Grappling Hook');
-insert into cd_weapon(weapon_num, weapon_cd, descr) values (11, 'ng', 'Nail Gun');
-insert into cd_weapon(weapon_num, weapon_cd, descr) values (12, 'pm', 'Prox Mine');
-insert into cd_weapon(weapon_num, weapon_cd, descr) values (13, 'cg', 'Chain Gun');
-insert into cd_weapon(weapon_num, weapon_cd, descr) values (14, 'hmg', 'Heavy Machinegun');
-insert into cd_weapon(weapon_num, weapon_cd, descr) values (19, 'bfg', 'BFG');
+insert into cd_weapon(weapon_num, weapon_cd, descr) values (9, 'hmg', 'Heavy Machinegun');
+insert into cd_weapon(weapon_num, weapon_cd, descr) values (10, 'bfg', 'BFG');
+insert into cd_weapon(weapon_num, weapon_cd, descr) values (11, 'cg', 'Chain Gun');
+insert into cd_weapon(weapon_num, weapon_cd, descr) values (12, 'ng', 'Nail Gun');
+insert into cd_weapon(weapon_num, weapon_cd, descr) values (13, 'pm', 'Prox Mine');
+insert into cd_weapon(weapon_num, weapon_cd, descr) values (14, 'gh', 'Grappling Hook');
 
 update cd_game_type set game_type_cd='ffa', descr='Free For All' where game_type_cd='dm';
 update cd_game_type set game_type_cd='race', descr='Race' where game_type_cd='rc';
