@@ -1,4 +1,4 @@
-import datetime
+﻿import datetime
 import logging
 import pyramid.httpexceptions
 import sqlalchemy as sa
@@ -1085,7 +1085,7 @@ def player_weaponstats_data_json(request):
     if game_type_cd is not None:
         games_list = games_list.filter(Game.game_type_cd == game_type_cd)
 
-    games_list = games_list.order_by(Game.game_id.desc()).limit(limit)
+    games_list = games_list.order_by(Game.start_dt.desc()).limit(limit)
 
     weapon_stats_raw = DBSession.query(PlayerWeaponStat).\
         filter(PlayerWeaponStat.player_id == player_id).\
@@ -1109,10 +1109,10 @@ def player_weaponstats_data_json(request):
     # Creating zero-valued weapon stat entries for games where a weapon was not
     # used in that game, but was used in another game for the set. This makes 
     # the charts look smoother
-    for game_id in games_to_weapons.keys():
-        for weapon_cd in set(weapons_used.keys()) - set(games_to_weapons[game_id]):
-            weapon_stats_raw.append(PlayerWeaponStat(player_id=player_id,
-                game_id=game_id, weapon_cd=weapon_cd))
+    #for game_id in games_to_weapons.keys():
+    #    for weapon_cd in set(weapons_used.keys()) - set(games_to_weapons[game_id]):
+    #        weapon_stats_raw.append(PlayerWeaponStat(player_id=player_id,
+    #            game_id=game_id, weapon_cd=weapon_cd))
 
     # averages for the weapons used in the range
     avgs = {}

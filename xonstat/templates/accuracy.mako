@@ -1,4 +1,4 @@
-<%def name="accuracy(data, weapons)">
+<%def name="accuracy(data, weapons, weaponsFired)">
 
 ## Parameters: 
 ## data: dict[player_id] => {  nick, weapons: dict[weapon_cd] => { weapon, stats: []}}
@@ -12,18 +12,22 @@
 ## [3] = Fired
 
 <div style="width:100%;overflow-x:auto">
-<table class="table table-condensed" style="min-width:1400px; margin-bottom:5px">
+<table class="table table-condensed" style="margin-bottom:5px">
 <colgroup>
-  <col>
-  <col width="80px">
+  <col style="min-width:150px">
+  <col width="80px" style="min-width:80px">
 % for weapon_cd in weapons:
-  <col width="85px">
+  % if weaponFired.has_key(weapon_cd) or weapon_cd not in ["bfg","cg","ng","pm","gh"]:
+  <col width="85px" style="min-width:85px">
+  %endif
 % endfor
 </colgroup>
 <thead>
     <th colspan="2"></th>    
 % for weapon_cd in weapons:
+    % if weaponFired.has_key(weapon_cd) or weapon_cd not in ["bfg","cg","ng","pm","gh"]:
     <th><img src="/static/images/24x24/${weapon_cd}.png" alt="${weapons[weapon_cd].descr}" style="width:24px; height:24px;"> ${weapons[weapon_cd].weapon_cd.upper()}</th>
+    % endif
 % endfor
 </thead>
 
@@ -35,6 +39,7 @@
   <div style="font-size:x-small; color:#888">Hits / Shots</div>
 </td>
 % for weapon_cd in weapons:
+    % if weaponFired.has_key(weapon_cd) or weapon_cd not in ["bfg","cg","ng","pm","gh"]:
 <%
       weapon_stat = data[player_id]["weapons"][weapon_cd]
       if weapon_stat[1] > 0: 
@@ -50,9 +55,12 @@
       ## entry of that weapon, else this won't work
     
       <td>
+        % if weapon_stat[3] != 0:
         <div>${weapon_stat[0]} / ${hit_pct}%</div>
         <div style="font-size:x-small; color:#888">${weapon_stat[2]} / ${weapon_stat[3]}</div>
+        % endif
       </td>
+    % endif
   % endfor
 </tr>
 % endfor

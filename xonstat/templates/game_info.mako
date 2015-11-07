@@ -73,7 +73,7 @@ Game Information
   <div class="${tgstat.team_html_color()}">
   % if game.game_type_cd == 'ctf':
   ${tgstat.caps}
-  % elif game.game_type_cd == 'ca':
+  % elif game.game_type_cd == 'ca' or game.game_type_cd == 'ft':
   ${tgstat.rounds}
 ## dom -> ticks, rc -> laps, nb -> goals, as -> objectives
   % else:
@@ -134,7 +134,7 @@ Game Information
 <div class="row">
   <div class="span12">
     <h3>Accuracy Information</h3>
-    ${accuracy(pwstats, weapons)}
+    ${accuracy(pwstats, weapons, weaponFired)}
   </div>
   % endif
 

@@ -48,7 +48,7 @@ def _game_info_data(request):
                 filter(TeamGameStat.game_id == game_id)
         if game.game_type_cd == 'ctf':
             q = q.order_by(TeamGameStat.caps.desc())
-        elif game.game_type_cd == 'ca':
+        elif game.game_type_cd == 'ca' or game.game_type_cd == 'ft':
             q = q.order_by(TeamGameStat.rounds.desc())
         # dom -> ticks, rc -> laps, nb -> goals, as -> objectives
 
@@ -69,8 +69,9 @@ def _game_info_data(request):
                     captimes.append(pgstat)
             captimes = sorted(captimes, key=lambda x:x.fastest)
 
-        pwstats = {}
+        pwstats = OrderedDict()
         weapons = OrderedDict() ## ["gt","mg","sg","gl","rl","lg","rg","pg","hmg","bfg"]
+        weaponFired = {}
         for (pwstat, pgstat, weapon) in DBSession.query(PlayerWeaponStat, PlayerGameStat, Weapon).\
                 filter(PlayerWeaponStat.game_id == game_id).\
                 filter(PlayerWeaponStat.weapon_cd == Weapon.weapon_cd).\
@@ -80,15 +81,16 @@ def _game_info_data(request):
                 order_by(PlayerGameStat.score).\
                 order_by(Weapon.weapon_num).\
                 all():
+                    
+                    if pwstat.fired != 0:
+                        weaponFired[weapon.weapon_cd] = True;
                     weapons[weapon.weapon_cd] = weapon;
+
                     if pgstat.player_id not in pwstats:
                         pwstats[pgstat.player_id] = { "nick": pgstat.nick_html_colors(), "weapons": {} }
                     if weapon.weapon_cd not in pwstats[pgstat.player_id]["weapons"]:
                         pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd] = []
 
-                    # NOTE adding pgstat to position 6 in order to display nick.
-                    # You have to use a slice [0:5] to pass to the accuracy
-                    # template
                     pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd] = [pwstat.frags, pwstat.max, pwstat.hit, pwstat.fired]
 
     except Exception as inst:
@@ -113,6 +115,7 @@ def _game_info_data(request):
             'tgstats':tgstats,
             'pwstats':pwstats,
             'weapons':weapons,
+            'weaponFired':weaponFired,
             'captimes':captimes,
             'show_elo':show_elo,
             'show_latency':show_latency,
