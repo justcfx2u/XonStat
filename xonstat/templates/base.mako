@@ -42,7 +42,7 @@
           <p class="text-center" >
 		  QLStats is a <a href="http://www.quakelive.com" target="_blank">Quake Live</a> adaptation of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
           which was originally created by Antibody for the game <a href="http://www.xonotic.net" target="_blank">Xonotic</a>.
-		  <br /><a href="https://gitlab.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats sources</a> and 
+		  <br /><a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats sources</a> and 
 		    <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat sources</a> are licensed under GPLv2.
 		  <br />Questions about Elo? It's explained at the bottom of the <a href="https://github.com/antzucaro/XonStat/wiki/FAQ" title="XonStat FAQ">XonStat FAQ</a>. 
 		  </p>

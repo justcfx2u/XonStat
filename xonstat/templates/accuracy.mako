@@ -55,7 +55,7 @@
       ## entry of that weapon, else this won't work
     
       <td>
-        % if weapon_stat[3] != 0:
+        % if weapon_stat[0] != 0 or weapon_stat[2] != 0 or weapon_stat[3] != 0:
         <div>${weapon_stat[0]} / ${hit_pct}%</div>
         <div style="font-size:x-small; color:#888">${weapon_stat[2]} / ${weapon_stat[3]}</div>
         % endif
