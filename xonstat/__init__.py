@@ -1,4 +1,4 @@
-import sqlahelper
+﻿import sqlahelper
 from pyramid_beaker import set_cache_regions_from_settings
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.config import Configurator
@@ -78,6 +78,9 @@ def main(global_config, **settings):
 
     config.add_route("player_elo_info_text", "/player/{hashkey}/elo.txt")
     config.add_view(player_elo_info_text, route_name="player_elo_info_text", renderer="player_elo_info_text.mako")
+
+    config.add_route("players_elo", "/elo/{hashkeys}");
+    config.add_view(players_elo, route_name="players_elo", renderer="jsonp")
 
     # FIXME - needs an additional method to convert to JSON
     config.add_route("player_elo_info_json", "/player/{hashkey}/elo.json")

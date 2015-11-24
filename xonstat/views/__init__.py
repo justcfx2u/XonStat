@@ -1,10 +1,10 @@
-from xonstat.views.submission import submit_stats
+﻿from xonstat.views.submission import submit_stats
 from xonstat.views.player import player_index, player_info, player_game_index
 from xonstat.views.player import player_accuracy
 from xonstat.views.player import player_index_json, player_info_json
 from xonstat.views.player import player_game_index_json, player_accuracy_json
 from xonstat.views.player import player_damage_json
-from xonstat.views.player import player_elo_info_text, player_elo_info_json
+from xonstat.views.player import player_elo_info_text, player_elo_info_json, players_elo
 from xonstat.views.player import player_hashkey_info_text, player_hashkey_info_json
 from xonstat.views.player import player_captimes, player_captimes_json
 from xonstat.views.player import player_weaponstats_data_json
