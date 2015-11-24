@@ -852,10 +852,10 @@ def submit_stats(request):
         gmap = get_or_create_map(
                 session = session,
                 name    = game_meta['M'])
-
+        
         game = create_game(
                 session      = session,
-                start_dt     = datetime.datetime.utcnow(),
+                start_dt     = datetime.datetime.utcfromtimestamp(int(game_meta['1'])) if '1' in game_meta else datetime.datetime.utcnow(),
                 server_id    = server.server_id,
                 game_type_cd = game_type_cd,
                 map_id       = gmap.map_id,
