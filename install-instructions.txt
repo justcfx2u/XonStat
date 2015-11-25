@@ -1,0 +1,81 @@
+0) preparation
+==============
+# create system user “xonstat” with random password. it will be used to run the website
+sudo adduser xonstat  
+
+1) feeder 
+===========================
+# the feeder is a nodejs application which connects to QL servers, 
+# optionally saves match data as .json.gz files and 
+# optionally reformats and forwards the data to the XonStat python HTTP server
+
+sudo apt-get install git              # eventually already installed
+sudo apt-get install nodejs           # eventually already installed
+sudo apt-get install npm              # eventually already installed 
+sudo ln -s /usr/bin/nodejs /usr/bin/node   # ignore error if there is already a "node" command
+
+# as xonstat user
+cd ~
+git clone https://github.com/PredatH0r/XonStat.git
+cd XonStat/feeder
+npm install zmq
+npm install graceful-fs
+npm install log4js
+npm install q
+npm install request
+mkdir ql-match-jsons
+
+# edit cfg.json for your server list. 
+# server entries have the format "ip:port/password". hostnames are not allowed.
+# the config file can even be edited while the feeder is running. it will automatically re-load the config.
+# you can change the logLevel to DEBUG to see any sort of activity on the QL zmq stats ports
+node feeder.node.js >feeder.log &
+
+
+2) database
+============
+sudo apt-get install postgresql
+git clone https://github.com/antzucaro/xonstatdb.git
+
+the following steps are described on https://github.com/antzucaro/xonstatdb:
+
+# as root user
+su - postgres
+createuser -P xonstat  					# use "xonstat" as password or modify "development.ini" later with the correct password
+psql
+CREATE DATABASE xonstatdb WITH ENCODING='UTF8' OWNER=xonstat CONNECTION LIMIT=-1;
+\q
+exit
+
+# as xonstat user
+cd ~/xonstatdb
+psql -U xonstat xonstatdb
+CREATE SCHEMA xonstat AUTHORIZATION xonstat;
+CREATE LANGUAGE plpgsql;   				# ignore error/warning
+\i build/build_full.sql
+\i ../XonStat/sql/qlstats-init.sql      # this is an extra-step to modify the xonstat database for QL
+\q
+
+3) python based website
+=======================
+sudo apt-get install python-pip
+sudo apt-get install python-dev
+sudo apt-get install postgresql-server-dev-9.4
+sudo pip install pastescript
+# as xonstat user
+cd ~xonstat/XonStat
+export PYTHONHOME=/home/xonstat/XonStat/lib/python
+python setup.py install --home=/home/xonstat/XonStat
+
+# before starting the web server you can edit development.ini e.g. to set the number of required players per team
+paster serve development.ini >xonstat.log
+
+now you can connect to http://<machine-ip>:8080
+
+4) final notes
+==============
+The feeder sends match data to <machine-ip>:8080/submission.py
+There is no built-in security feature that would prevent anyone from the outside calling this script and submit bogus data.
+One was of handling this is use a front-facing tool like nginx which forwards all external requests from port 80 to internal port 8080, but blocks the /submission.py URL from external access.
+The feeder can still connect using the loopback IP http://127.0.0.1/submission.py
+
