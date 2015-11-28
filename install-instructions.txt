@@ -9,6 +9,10 @@ sudo adduser xonstat
 # optionally saves match data as .json.gz files and 
 # optionally reformats and forwards the data to the XonStat python HTTP server
 
+# I am using Ubuntu 15.04 for this, with the wily/universe repository
+# On Ubuntu 14.04 installing npm caused problems with dependencies (node-gyp, ...)
+# but can be installed fine after manually installing node-gyp from wily/universe
+
 sudo apt-get install git              # eventually already installed
 sudo apt-get install nodejs           # eventually already installed
 sudo apt-get install npm              # eventually already installed 
@@ -34,7 +38,9 @@ node feeder.node.js >feeder.log &
 
 2) database
 ============
+# as xonstat user
 sudo apt-get install postgresql
+cd ~
 git clone https://github.com/antzucaro/xonstatdb.git
 
 the following steps are described on https://github.com/antzucaro/xonstatdb:
@@ -58,17 +64,21 @@ CREATE LANGUAGE plpgsql;   				# ignore error/warning
 
 3) python based website
 =======================
+# some of th
 sudo apt-get install python-pip
 sudo apt-get install python-dev
-sudo apt-get install postgresql-server-dev-9.4
-sudo pip install pastescript
+sudo apt-get install postgresql-server-dev-9.4     # 9.4 on wily, 9.3 on trusty, ... use "apt-cache policy postgresql" to find the right version
+sudo python -m pip install pastescript
 # as xonstat user
-cd ~xonstat/XonStat
-export PYTHONHOME=/home/xonstat/XonStat/lib/python
+cd ~/XonStat
+mkdir lib
+mkdir lib/python
+export PYTHONPATH=/home/xonstat/XonStat/lib/python
 python setup.py install --home=/home/xonstat/XonStat
 
 # before starting the web server you can edit development.ini e.g. to set the number of required players per team
-paster serve development.ini >xonstat.log
+export PYTHONPATH=/home/xonstat/XonStat/lib/python
+paster serve development.ini >paster.log
 
 now you can connect to http://<machine-ip>:8080
 
