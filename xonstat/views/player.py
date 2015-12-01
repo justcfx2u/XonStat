@@ -498,26 +498,32 @@ def player_info_data(request):
     player_id = int(request.matchdict['id'])
     if player_id <= 2:
         player_id = -1;
-
+		
     try:
-        player = DBSession.query(Player).filter_by(player_id=player_id).\
+        row = DBSession.query(Player, Hashkey).\
+                join(Hashkey, Hashkey.player_id == Player.player_id).\
+                filter((Player.player_id == player_id) | (Hashkey.hashkey == str(player_id))).\
                 filter(Player.active_ind == True).one()
 
+        if row is not None:
+                player_id = row.Player.player_id
+			
         games_played   = get_games_played(player_id)
         overall_stats  = get_overall_stats(player_id)
         fav_maps       = get_fav_maps(player_id)
         elos           = get_elos(player_id)
         ranks          = get_ranks(player_id)
         recent_games   = get_recent_games(player_id)
-        cake_day       = is_cake_day(player.create_dt)
+        cake_day       = is_cake_day(row.Player.create_dt)
 
     except Exception as e:
-        raise pyramid.httpexceptions.HTTPNotFound
+        #raise pyramid.httpexceptions.HTTPNotFound
 
         ## do not raise application exceptions here (only for debugging)
-        # raise e
+         raise e
 
-    return {'player':player,
+    return {'player':row.Player,
+	        'hashkey':row.Hashkey.hashkey,
             'games_played':games_played,
             'overall_stats':overall_stats,
             'fav_maps':fav_maps,
@@ -1153,3 +1159,40 @@ def players_elo(request):
     return {
       "players": players.values()
     }
+
+
+def players_aliases_json(request):
+    hashkeys = request.matchdict["hashkeys"]
+    p = re.compile("\\d+(?:\\+\\d+)*")
+    if not p.match(hashkeys):
+      return None
+    steamids = hashkeys.split("+");
+
+    q = DBSession.query(Hashkey, Player, PlayerNick) \
+          .join(Player, Player.player_id == Hashkey.player_id) \
+          .outerjoin(PlayerNick, PlayerNick.player_id == Hashkey.player_id) \
+          .filter(Hashkey.hashkey.in_(steamids))\
+          .order_by(expr.desc(PlayerNick.create_dt))\
+          .all()
+
+    players = {}
+    for row in q:
+        if row.Hashkey.hashkey not in players:
+            players[row.Hashkey.hashkey] = { }
+        
+        data = { "nick": row.Player.nick, "created": row.Player.create_dt.strftime("%Y-%m-%d") }
+        snick = row.Player.stripped_nick
+        if snick not in players[row.Hashkey.hashkey]:
+            players[row.Hashkey.hashkey][snick] = data
+
+        if row.PlayerNick is not None and row.PlayerNick.nick is not None:
+            data = { "nick": row.PlayerNick.nick, "created": row.PlayerNick.create_dt.strftime("%Y-%m-%d") }
+            snick = row.PlayerNick.nick
+            if snick not in players[row.Hashkey.hashkey]:
+                players[row.Hashkey.hashkey][snick] = data
+
+    return players
+
+def players_aliases_text(request):
+    data = players_aliases_json(request)
+    return { "data": data }

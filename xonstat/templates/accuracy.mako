@@ -33,7 +33,7 @@
 
 % for player_id in data:
 <tr>
-<td>${data[player_id]["nick"]|n}</td>
+<td><a href="/player/${player_id}">${data[player_id]["nick"]|n}</a></td>
 <td>
   <div>Kills / Acc</div>
   <div style="font-size:x-small; color:#888">Hits / Shots</div>

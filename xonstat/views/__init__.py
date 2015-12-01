@@ -4,10 +4,11 @@ from xonstat.views.player import player_accuracy
 from xonstat.views.player import player_index_json, player_info_json
 from xonstat.views.player import player_game_index_json, player_accuracy_json
 from xonstat.views.player import player_damage_json
-from xonstat.views.player import player_elo_info_text, player_elo_info_json, players_elo
+from xonstat.views.player import player_elo_info_text, player_elo_info_json
 from xonstat.views.player import player_hashkey_info_text, player_hashkey_info_json
 from xonstat.views.player import player_captimes, player_captimes_json
 from xonstat.views.player import player_weaponstats_data_json
+from xonstat.views.player import players_elo, players_aliases_text, players_aliases_json
 
 from xonstat.views.game   import game_info, rank_index
 from xonstat.views.game   import game_info_json, rank_index_json
@@ -32,3 +33,4 @@ from xonstat.views.main   import top_servers_by_players, top_maps_by_times_playe
 from xonstat.views.admin   import forbidden, login, merge
 
 from xonstat.views.static   import robots
+from xonstat.util import html_colors

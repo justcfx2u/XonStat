@@ -9,6 +9,7 @@ from xonstat.models import initialize_db
 from xonstat.views import *
 from xonstat.security import *
 
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -81,6 +82,12 @@ def main(global_config, **settings):
 
     config.add_route("players_elo", "/elo/{hashkeys}");
     config.add_view(players_elo, route_name="players_elo", renderer="jsonp")
+
+    config.add_route("players_aliases_json", "/aliases/{hashkeys}.json");
+    config.add_view(players_aliases_json, route_name="players_aliases_json", renderer="jsonp")
+    config.add_route("players_aliases_text", "/aliases/{hashkeys}");
+    config.add_view(players_aliases_text, route_name="players_aliases_text", renderer="players_aliases_text.mako")
+
 
     # FIXME - needs an additional method to convert to JSON
     config.add_route("player_elo_info_json", "/player/{hashkey}/elo.json")
