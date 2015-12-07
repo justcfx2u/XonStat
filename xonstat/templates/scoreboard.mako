@@ -51,6 +51,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="suicides">Suicides</th>
@@ -70,6 +71,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="kills">Damage Dealt</th>
@@ -89,6 +91,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="captured">Captured</th>
@@ -121,9 +124,11 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="captures">Captures</th>
     <th class="returns">Assists</th>
+    <th class="drops">Defends</th>
     <th class="pickups">Damage Dealt</th>
     <th class="fck">Damage Taken</th>
     <th class="score">Score</th>
@@ -141,6 +146,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="takes">Takes</th>
@@ -160,6 +166,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="revivals">Thaws</th>
@@ -178,6 +185,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="pickups">Pickups</th>
@@ -198,6 +206,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="pickups">Pickups</th>
@@ -221,6 +230,7 @@
     <th class="ping">Ping</th>
     % endif
     <th class="nick">Nick</th>
+    <th class="time">Time</th>
     <th class="goals">Goals</th>
     <th class="faults">Faults</th>
     <th class="score">Score</th>
@@ -248,6 +258,7 @@
 ##### SCOREBOARD ROWS #####
 <%def name="scoreboard_row(game_type_cd, pgstat)">
 % if game_type_cd == 'as':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.suicides}</td>
@@ -255,6 +266,7 @@
 % endif
 
 % if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.pushes}</td>
@@ -262,6 +274,7 @@
 % endif
 
 % if game_type_cd == 'cq':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.captures}</td>
@@ -279,14 +292,17 @@
 % endif
 
 % if game_type_cd == 'ctf':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.captures}</td>
   <td>${pgstat.returns}</td>
+  <td>${pgstat.drops}</td>
   <td>${pgstat.pushes}</td>
   <td>${pgstat.destroys}</td>
 % endif
 
 % if game_type_cd == 'dom':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.pickups}</td>
@@ -294,12 +310,14 @@
 % endif
 
 % if game_type_cd in 'ft' 'freezetag':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.revivals}</td>
 % endif
 
 % if game_type_cd in 'ka' 'keepaway':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.pickups}</td>
@@ -314,6 +332,7 @@
 % endif
 
 % if game_type_cd == 'kh':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.pickups}</td>
@@ -325,6 +344,7 @@
 % endif
 
 % if game_type_cd in 'nb' 'nexball':
+  <td>${pgstat.alivetime}</td>
   <td>${pgstat.captures}</td>
   <td>${pgstat.drops}</td>
 % endif

@@ -344,3 +344,5 @@ table td {
         float: right;
     }
 }
+
+.abstime { white-space: pre; }

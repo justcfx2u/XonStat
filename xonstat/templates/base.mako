@@ -17,6 +17,15 @@
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/app.min.css" rel="stylesheet">
     </%block>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-71098578-1', 'auto');
+      ga('send', 'pageview');
+    </script>
   </head>
 
   <body>
@@ -58,10 +67,14 @@
       <!-- RELATIVE TIME CONVERSION -->
       <script type="text/javascript">
       $('.abstime').each(function(i,e){
-        var epoch = e.getAttribute('data-epoch');
+        var $e = $(e);
+        var epoch = $e.attr('data-epoch');
         var d = new Date(0);
         d.setUTCSeconds(epoch);
-        e.setAttribute('title', d.toDateString() + ' ' + d.toTimeString());  
+        var dt = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).toString().substr(-2) + "-" + ("0" + d.getDate()).substr(-2);
+        var tm = ("0" + d.getHours()).toString().substr(-2) + ":" + ("0" + d.getMinutes()).toString().substr(-2) + ":" + ("0" + d.getSeconds()).toString().substr(-2);
+        $e.attr("title", $e.text());
+        $e.text(dt + "   " + tm);  
       });
       </script>
     </body>
