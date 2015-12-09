@@ -140,7 +140,8 @@ Leaderboard
       % endfor
       </tbody>
     </table>
-    <p class="note"><a href="${request.route_url('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>
+    <p style="float:right"><a href="http://qlstats.net:8081/servers.html">Add servers...</a></p>
+    <p class="note"><a href="${request.route_url('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>    
   </div> <!-- /span4 -->
 
 

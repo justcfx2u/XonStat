@@ -31,7 +31,7 @@ Game Information
 
 % else:
 <div class="row">
-  <h2>Game Detail</h2>
+  <h2>Game Detail<span class="note"> ${game.match_id}</span></h2>
   <div class="span8 game-detail">
     <img width="64" height="64" src="/static/images/icons/48x48/${game.game_type_cd}.png" alt="${game.game_type_cd}"/>
     <p>

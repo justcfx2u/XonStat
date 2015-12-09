@@ -116,7 +116,11 @@ table td {
 .indexbox {
     width: 250px;
 }
-
+.note {
+  font-size: 8pt;
+  color: #444;
+  padding-left: 20px;
+}
 
 /* Navigation bar */
 .navbar-brand {
