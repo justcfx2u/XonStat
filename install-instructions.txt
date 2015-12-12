@@ -16,6 +16,7 @@ sudo adduser xonstat
 sudo apt-get install git              # eventually already installed
 sudo apt-get install nodejs           # eventually already installed
 sudo apt-get install npm              # eventually already installed 
+sudo apt-get install libzmq-dev
 sudo ln -s /usr/bin/nodejs /usr/bin/node   # ignore error if there is already a "node" command
 
 # as xonstat user
@@ -27,13 +28,15 @@ npm install graceful-fs
 npm install log4js
 npm install q
 npm install request
+npm install express
+npm install body-parser
 mkdir ql-match-jsons
 
 # edit cfg.json for your server list. 
 # server entries have the format "ip:port/password". hostnames are not allowed.
 # the config file can even be edited while the feeder is running. it will automatically re-load the config.
 # you can change the logLevel to DEBUG to see any sort of activity on the QL zmq stats ports
-node feeder.node.js >feeder.log &
+nohup node feeder.node.js >>feeder.log 2>&1 &
 
 
 2) database
@@ -78,7 +81,7 @@ python setup.py install --home=/home/xonstat/XonStat
 
 # before starting the web server you can edit development.ini e.g. to set the number of required players per team
 export PYTHONPATH=/home/xonstat/XonStat/lib/python
-paster serve development.ini >paster.log
+nohup paster serve development.ini >>paster.log 2>&1 &
 
 now you can connect to http://<machine-ip>:8080
 
