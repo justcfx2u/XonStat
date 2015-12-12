@@ -16,7 +16,11 @@ sudo adduser xonstat
 sudo apt-get install git              # eventually already installed
 sudo apt-get install nodejs           # eventually already installed
 sudo apt-get install npm              # eventually already installed 
-sudo apt-get install libzmq-dev
+sudo apt-get remove libzmq-dev
+sudo apt-get remove libzmq1
+sudo apt-get install libzmq3
+sudo apt-get install libzmq3-dev
+sudo apt-get install libzmq3-dbg
 sudo ln -s /usr/bin/nodejs /usr/bin/node   # ignore error if there is already a "node" command
 
 # as xonstat user
@@ -30,6 +34,7 @@ npm install q
 npm install request
 npm install express
 npm install body-parser
+npm install pg
 mkdir ql-match-jsons
 
 # edit cfg.json for your server list. 
