@@ -27,14 +27,7 @@ sudo ln -s /usr/bin/nodejs /usr/bin/node   # ignore error if there is already a 
 cd ~
 git clone https://github.com/PredatH0r/XonStat.git
 cd XonStat/feeder
-npm install zmq
-npm install graceful-fs
-npm install log4js
-npm install q
-npm install request
-npm install express
-npm install body-parser
-npm install pg
+npm install
 mkdir ql-match-jsons
 
 # edit cfg.json for your server list. 
