@@ -1,4 +1,4 @@
-import json
+﻿import json
 import logging
 import math
 import sqlalchemy
@@ -136,7 +136,7 @@ class PlayerGameStat(object):
     def to_dict(self):
         return {'player_id':self.player_id, 'game_id':self.game_id,
             'create_dt':self.create_dt.strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'alivetime':self.alivetime, 'rank':self.rank, 'score':self.score, 'team':self.team}
+            'alivetime':self.alivetime, 'rank':self.rank, 'score':self.score, 'team':self.team, 'pushes':self.pushes, 'destroys':self.destroys}
 
     def nick_stripped(self):
         if self.nick is None:
@@ -231,7 +231,9 @@ class PlayerElo(object):
 
         self.player_id = player_id
         self.game_type_cd = game_type_cd
-        self.elo = elo
+        self.elo = 100.0;
+        self.mu = 25.0
+        self.sigma = 25.0/3.0
         self.score = 0
         self.games = 0
 
@@ -239,7 +241,7 @@ class PlayerElo(object):
         return "<PlayerElo(pid=%s, gametype=%s, elo=%s, games=%s)>" % (self.player_id, self.game_type_cd, self.elo, self.games)
 
     def to_dict(self):
-        return {'player_id':self.player_id, 'game_type_cd':self.game_type_cd, 'elo':self.elo, 'games':self.games}
+        return {'player_id':self.player_id, 'game_type_cd':self.game_type_cd, 'elo':self.elo, 'mu':self.mu, 'sigma':self.sigma, 'games':self.games}
 
 
 class PlayerRank(object):
