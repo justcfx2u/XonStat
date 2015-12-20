@@ -10,9 +10,18 @@ import sqlahelper
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
-MinPlayersForGameType = { "duel": 2, "ffa": 4, "tdm": 8, "ctf": 8, "ft": 8 }
+FactoriesForGameType = {
+    "duel": [ "duel", "qcon_duel" ],
+    "ffa": [ "ffa", "mg_ffa_classic" ],
+    "tdm": [ "ctdm", "qcon_tdm" ], 
+    "ctf": [ "ctf", "ctf2", "qcon_ctf" ]
+    }
+MinPlayersForGameType = { "duel": 2, "ffa": 4, "tdm": 8, "ctf": 8 }
+MinGameLengthForGameType = { "duel": 10, "ffa": 6, "tdm": 10, "ctf": 15 }
+BotPlayerId = 0
 
 class PlayerData:
     def __init__(self):
@@ -23,20 +32,31 @@ class PlayerData:
         self.dmgTaken = 0
         self.rank = None
 
-def process_elos(game, session, game_type_cd=None):
+def process_ratings(game, session, game_type_cd=None):
     if game_type_cd is None:
         game_type_cd = game.game_type_cd
 
     # only accept certain factories (e.g. exclude instagib, quadhog, ....)
-    #if game.mod not in ('ffa','ca','duel''tdm','ctf','ft'):
-    #  return
+    if game.game_type_cd not in FactoriesForGameType:
+      log.debug("Unsupported game type '" + game.game_type_cd + "' for match " + str(game.game_id))
+      return;
+
+    if game.mod not in FactoriesForGameType[game.game_type_cd]:
+      log.debug("Unsupported factory '" + game.mod + "' for match " + str(game.game_id))
+      return
+
+    if game.duration.seconds <  MinGameLengthForGameType[game.game_type_cd] * 60:
+      log.debug("Match duration '" + str(game.duration.seconds) + "' too short for match " + str(game.game_id))
+      return;
+
+    if BotPlayerId == 0:
+      BotPlayerId = session.query(Hashkey.player_id).filter(Hashkey.hashkey=="0").one_or_none()
+      if BotPlayerId is None: BotPlayerId = -1
 
     players = {}
     for (p,s,a,dg,dt,team) in session.query(PlayerGameStat.player_id, 
             PlayerGameStat.score, PlayerGameStat.alivetime, PlayerGameStat.pushes, PlayerGameStat.destroys, PlayerGameStat.team).\
             filter(PlayerGameStat.game_id==game.game_id).\
-            filter(PlayerGameStat.alivetime > timedelta(seconds=0)).\
-            filter(PlayerGameStat.player_id > 2).\
             all():
                 if p in players:
                     player = players[p]
@@ -68,7 +88,7 @@ def process_elos(game, session, game_type_cd=None):
 
     # ignore matches with less than the minimum required number of players
     if game.game_type_cd in MinPlayersForGameType and len(player_ids) < MinPlayersForGameType[game.game_type_cd]:    
-      log.debug("Not enough players for ranking match " + str(game.game_id))
+      log.debug("Not enough players to rate match " + str(game.game_id))
       return 
 
     elos = {}
@@ -86,7 +106,7 @@ def process_elos(game, session, game_type_cd=None):
     for pid in player_ids:
         players[pid].rank = -calculate_ranking_score(game, players[pid]);
 
-    elos = update_elos(game, session, elos, players)
+    elos = update_ratings(game, session, elos, players)
 
     # add the elos to the session for committing
     for e in elos:
@@ -102,7 +122,7 @@ def calculate_ranking_score(game, player):
     return player.score
 
 
-def update_elos(game, session, elos, players):
+def update_ratings(game, session, elos, players):
     if len(elos) < 2:
         return []
 
@@ -110,27 +130,32 @@ def update_elos(game, session, elos, players):
     ranks = []
     for pid in players:
       p = elos[pid]
-      oldRatings.append((Rating(mu=p.mu, sigma=p.sigma),))
-      ranks.append(players[pid].rank)
+      #fixme 
+      if len(oldRatings) < 8:
+        oldRatings.append((Rating(mu=p.mu, sigma=p.sigma),))
+        ranks.append(players[pid].rank)
 
     newRatings = rate(oldRatings, ranks);
 
     elo_deltas = {}   
     i=0
     for pid in players:
+      if i>=8: continue
       old = oldRatings[i][0]
       new = newRatings[i][0]
       elo_deltas[pid] = (new.mu - 3*new.sigma) - (old.mu - 3*old.sigma)
       elos[pid].mu = new.mu
       elos[pid].sigma = new.sigma
+      elos[pid].ts_games += 1
       i = i + 1
+      log.debug(str(pid) + ": mu=" + str(new.mu) + ", sigma=" + str(new.sigma));
 
-    save_elo_deltas(game, session, elo_deltas)
+    save_rating_deltas(game, session, elo_deltas)
 
     return elos
 
 
-def save_elo_deltas(game, session, elo_deltas):
+def save_rating_deltas(game, session, elo_deltas):
     """
     Saves the amount by which each player's Elo goes up or down
     in a given game in the PlayerGameStat row, allowing for scoreboard display.
@@ -151,15 +176,17 @@ def save_elo_deltas(game, session, elo_deltas):
         except:
             log.debug("Unable to save Elo delta value for player_id {0}".format(pid))
 
-
+#"""
 # setup the database engine
 engine = create_engine("postgresql+psycopg2://xonstat:xonstat@localhost:5432/xonstatdb")
 sqlahelper.add_engine(engine)
 initialize_db(engine)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-games = session.query(Game).join(Server, Game.server_id == Server.server_id).filter(Game.game_type_cd == 'ctf').filter(Server.name.like("#omega%")).all()
+games = session.query(Game).filter(Game.game_type_cd == 'ctf').order_by(Game.start_dt).all()
+#games = session.query(Game).filter(Game.match_id == '25c731c1-0909-41bc-aea6-ec1882b34ffc').all()
 for game in games:
-  print "processing game " + str(game.game_id)
-  process_elos(game, session)
+  log.debug("processing game " + str(game.game_id))
+  process_ratings(game, session)
 session.commit()
+#"""

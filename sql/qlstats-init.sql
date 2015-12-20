@@ -19,3 +19,9 @@ update cd_game_type set game_type_cd='ffa', descr='Free For All' where game_type
 update cd_game_type set game_type_cd='race', descr='Race' where game_type_cd='rc';
 delete from cd_game_type where game_type_cd not in ('ffa', 'duel','tdm','ctf','ca','ft','dom', 'race');
 
+alter table player_elos add column g2_games int not null default 0;
+alter table player_elos add column g2_r float not null default 1500;
+alter table player_elos add column g2_rd float not null default 300;
+alter table player_elos add column g2_vol float not null default 0.06;
+alter table player_game_stats add column g2_delta float;
+alter table games add column rating_status smallint not null default 0;
