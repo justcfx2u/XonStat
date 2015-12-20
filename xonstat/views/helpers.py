@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 import sqlalchemy.sql.expression as expr
 from datetime import datetime
 from sqlalchemy.orm import aliased
@@ -50,6 +50,12 @@ class RecentGame(object):
             self.elo_delta = row.elo_delta
         except:
             self.elo_delta = None
+        try:
+            self.g2_delta_r = row.g2_delta_r
+            self.g2_delta_rd = row.g2_delta_rd
+        except:
+            self.g2_delta_r = None
+            self.g2_delta_rd = None
 
     def _asdict(self):
         return {
@@ -70,6 +76,8 @@ class RecentGame(object):
             "rank": self.rank,
             "team": self.team,
             "elo_delta": self.elo_delta,
+            "g2_delta_r": self.g2_delta_r,
+            "g2_delta_rd": self.g2_delta_rd
             }
 
     def __repr__(self):
@@ -101,7 +109,7 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
             Server.server_id, Server.name.label('server_name'), Map.map_id,
             Map.name.label('map_name'), PlayerGameStat.player_id,
             PlayerGameStat.nick, PlayerGameStat.rank, PlayerGameStat.team,
-            PlayerGameStat.elo_delta).\
+            PlayerGameStat.elo_delta, PlayerGameStat.g2_delta_r, PlayerGameStat.g2_delta_rd).\
             filter(Game.server_id==Server.server_id).\
             filter(Game.map_id==Map.map_id).\
             filter(Game.game_id==PlayerGameStat.game_id).\

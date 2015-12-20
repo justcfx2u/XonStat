@@ -283,13 +283,17 @@ Player Information
         <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
         <td class="tdcenter">
           <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">
-            % if rg.elo_delta is not None:
-            % if round(rg.elo_delta,2) > 0:
-            <span class="eloup">+${round(rg.elo_delta,2)}</span>
-            % elif round(rg.elo_delta,2) < 0:
-            <span class="elodown">${round(rg.elo_delta,2)}</span>
+            <% 
+            if rg.game_type_cd in ["ctf"]:
+              delta = None if rg.g2_delta_r is None else str(round(rg.g2_delta_r,0)) + " / " + str(round(rg.g2_delta_rd, 0))
+            else:
+              delta = None if rg.elo_delta is None else str(round(rg.elo_delta,2))
+            %>
+            % if delta is not None and delta[0] != "0":
+            % if delta[0] == "-":
+            <span class="elodown">${delta}</span>
             % else:
-            <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
+            <span class="eloup">+${delta}</span>
             % endif
             % else:
             <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>

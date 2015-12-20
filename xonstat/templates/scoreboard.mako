@@ -28,10 +28,19 @@
       % if game_type_cd != 'cts' and game_type_cd != 'race':
         <td class="player-score">${pgstat.score}</td>
       % endif
+      % if game_type_cd == "ctf":
+        <td class="player-score">${pgstat.g2_score}</td>
+      % endif
 
       % if show_elo and game_type_cd != 'race':
-        % if pgstat.elo_delta is not None:
-          <td>${round(pgstat.elo_delta,2)}</td>
+        <% 
+        if game_type_cd in ["ctf"]:
+          delta = None if pgstat.g2_delta_r is None else str(round(pgstat.g2_delta_r,0)) + " / " + str(round(pgstat.g2_delta_rd, 0))
+        else:
+          delta = None if pgstat.elo_delta is None else round(pgstat.elo_delta,2)
+        %>
+        % if delta is not None:
+          <td>${delta}</td>
         % else:
           <td>-</td>
         % endif
@@ -132,6 +141,7 @@
     <th class="pickups">Damage Dealt</th>
     <th class="fck">Damage Taken</th>
     <th class="score">Score</th>
+    <th class="score">Perf</th>
     % if show_elo:
     <th>Elo Change</th>
     % endif
