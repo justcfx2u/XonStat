@@ -12,3 +12,7 @@ xonstat/static/images/icons/75x75/
 nul
 build/
 feeder/cfg?*.json
+feeder/typings/
+feeder/obj/
+feeder/bin/
+feeder/.*

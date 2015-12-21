@@ -23,7 +23,8 @@ alter table player_elos
   add column g2_games int not null default 0, 
   add column g2_r float not null default 1500, 
   add column g2_rd float not null default 300, 
-  add column g2_vol float not null default 0.06;
+  add column g2_vol float not null default 0.06,
+  add column g2_dt date not null default now();
 
 alter table player_game_stats
   add column g2_score int, 
