@@ -145,8 +145,10 @@ def _rank_index_data(request):
 
     game_type_cd = request.matchdict['game_type_cd']
 
-    ranks_q = DBSession.query(PlayerRank).\
+    ranks_q = DBSession.query(PlayerRank, PlayerElo).\
+            join(PlayerElo, PlayerElo.player_id == PlayerRank.player_id).\
             filter(PlayerRank.game_type_cd==game_type_cd).\
+            filter(PlayerElo.game_type_cd==game_type_cd).\
             order_by(PlayerRank.rank)
 
     ranks = Page(ranks_q, current_page, url=page_url)
