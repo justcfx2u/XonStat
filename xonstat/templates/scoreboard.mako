@@ -34,7 +34,7 @@
 
       % if show_elo and game_type_cd != 'race':
         <% 
-        if game_type_cd in ["ctf"]:
+        if game_type_cd in ["ctf", "ffa"]:
           delta = None if pgstat.g2_delta_r is None else str(round(pgstat.g2_delta_r,0)) + " / " + str(round(pgstat.g2_delta_rd, 0))
         else:
           delta = None if pgstat.elo_delta is None else round(pgstat.elo_delta,2)

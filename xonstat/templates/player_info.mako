@@ -284,7 +284,7 @@ Player Information
         <td class="tdcenter">
           <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">
             <% 
-            if rg.game_type_cd in ["ctf"]:
+            if rg.game_type_cd in ["ctf", "ffa" ]:
               delta = None if rg.g2_delta_r is None else str(round(rg.g2_delta_r,0)) + " / " + str(round(rg.g2_delta_rd, 0))
             else:
               delta = None if rg.elo_delta is None else str(round(rg.elo_delta,2))
