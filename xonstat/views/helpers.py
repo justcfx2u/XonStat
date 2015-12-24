@@ -45,6 +45,8 @@ class RecentGame(object):
         self.nick_html_colors = html_colors(row.nick)
         self.rank = row.rank
         self.team = row.team
+        self.score1 = row.score1
+        self.score2 = row.score2
 
         try:
             self.elo_delta = row.elo_delta
@@ -106,9 +108,10 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
 
     recent_games_q = DBSession.query(Game.game_id, GameType.game_type_cd,
             Game.winner, Game.start_dt, GameType.descr.label('game_type_descr'),
+            Game.score1, Game.score2,
             Server.server_id, Server.name.label('server_name'), Map.map_id,
             Map.name.label('map_name'), PlayerGameStat.player_id,
-            PlayerGameStat.nick, PlayerGameStat.rank, PlayerGameStat.team,
+            PlayerGameStat.nick, PlayerGameStat.rank, PlayerGameStat.team,           
             PlayerGameStat.elo_delta, PlayerGameStat.g2_delta_r, PlayerGameStat.g2_delta_rd).\
             filter(Game.server_id==Server.server_id).\
             filter(Game.map_id==Map.map_id).\

@@ -33,3 +33,9 @@ alter table player_game_stats
 
 alter table games 
   add column g2_status smallint not null default 0;
+  
+alter table games
+  add column score1 smallint,
+  add column score2 smallint;
+
+create index games_start_dt on games(start_dt);

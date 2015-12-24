@@ -24,13 +24,14 @@ Leaderboard
 </%block>
 
 ##### RANKS #####
-% if len(ranks) < 4:
+% if True or len(ranks) < 4:
+<!--
   <div class="row">
     <div class="span12">
       <p style="text-align: center;"><i class="icon-white icon-info-sign"> </i> You don't seem to have any ranks yet.</p>
-    </div> <!-- span12 -->
-  </div> <!-- row -->
-
+    </div>
+  </div> 
+-->
 % else:
   <div class="row">
     % for rs in ranks[:8]:
@@ -194,6 +195,7 @@ Leaderboard
           <th>Map</th>
           <th>Time</th>
           <th>Winner</th>
+          <th>Score</th>
         </tr>
       </thead>
       <tbody>
@@ -210,6 +212,11 @@ Leaderboard
             % else:
             ${rg.nick_html_colors|n}</td>
             % endif
+          <td>
+          % if rg.score1 is not None:
+          ${rg.score1}:${rg.score2}
+          % endif
+          </td>
         </tr>
         % endfor
         </tbody>

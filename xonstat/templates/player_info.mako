@@ -255,7 +255,8 @@ Player Information
           <th>Map</th>
           <th>Result</th>
           <th>Played</th>
-          <th>Elo</th>
+          <th title="Rating (Uncertainty)">Glicko Change</th>
+          <th>Elo Change</th>
         </tr>
       </thead>
       <tbody>
@@ -282,21 +283,24 @@ Player Information
         </td>
         <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
         <td class="tdcenter">
-          <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">
-            <% 
-            if rg.game_type_cd in ["ctf", "ffa", "ca", "duel", "ft"]:
-              delta = None if rg.g2_delta_r is None else str(round(rg.g2_delta_r,0)) + " / " + str(round(rg.g2_delta_rd, 0))
-            else:
-              delta = None if rg.elo_delta is None else str(round(rg.elo_delta,2))
-            %>
-            % if delta is not None and delta[0] != "0":
-            % if delta[0] == "-":
-            <span class="elodown">${delta}</span>
-            % else:
-            <span class="eloup">+${delta}</span>
-            % endif
-            % else:
+          <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">           
+            % if rg.g2_delta_r is None or rg.g2_delta_r==0:
             <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
+            % elif rg.g2_delta_r > 0:
+            <span class="eloup">+${round(rg.g2_delta_r,0)} &nbsp; (${round(rg.g2_delta_rd, 0)})</span>
+            %else:
+            <span class="elodown">${round(rg.g2_delta_r,0)} &nbsp; (${round(rg.g2_delta_rd, 0)})</span>
+            % endif
+          </a>
+        </td>
+        <td>
+          <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">                               
+            % if rg.elo_delta is None or rg.elo_delta==0:
+            <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
+            % elif rg.elo_delta > 0:
+            <span class="eloup">+${round(rg.elo_delta,2)}</span>
+            % else:
+            <span class="elodown">${round(rg.elo_delta,2)}</span>
             % endif
           </a>
         </td>

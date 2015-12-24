@@ -103,13 +103,15 @@ class Map(object):
 
 class Game(object):
     def __init__(self, game_id=None, start_dt=None, game_type_cd=None,
-            server_id=None, map_id=None, winner=None):
+            server_id=None, map_id=None, winner=None, score1=None, score2=None):
         self.game_id = game_id
         self.start_dt = start_dt
         self.game_type_cd = game_type_cd
         self.server_id = server_id
         self.map_id = map_id
         self.winner = winner
+        self.score1 = score1
+        self.score2 = score2
 
     def __repr__(self):
         return "<Game(%s, %s, %s, %s)>" % (self.game_id, self.start_dt, self.game_type_cd, self.server_id)

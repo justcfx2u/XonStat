@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 import sqlalchemy as sa
 import sqlalchemy.sql.functions as func
 import sqlalchemy.sql.expression as expr
@@ -107,7 +107,8 @@ def get_ranks(game_type_cd):
     # if game_type_cd not in 'duel' 'ffa' 'ctf' 'tdm' 'ca':
     #    return None
 
-    ranks = DBSession.query(PlayerRank).\
+    ranks = DBSession.query(PlayerRank, Player).\
+            join(Player, Player.player_id == PlayerRank.player_id).\
             filter(PlayerRank.game_type_cd==game_type_cd).\
             order_by(PlayerRank.rank).\
             limit(leaderboard_count).all()

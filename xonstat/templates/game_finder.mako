@@ -48,6 +48,7 @@ Game Index
           <th>Map</th>
           <th>Time</th>
           <th>Winner</th>
+          <th>Score</th>
         </tr>
       </thead>
       <tbody>
@@ -64,6 +65,11 @@ Game Index
             % else:
             ${rg.nick_html_colors|n}</td>
             % endif
+          <td>
+          % if rg.score1 is not None:
+          ${rg.score1}:${rg.score2}
+          % endif
+          </td>
         </tr>
         % endfor
         </tbody>

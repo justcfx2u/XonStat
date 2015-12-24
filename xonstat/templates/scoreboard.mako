@@ -33,17 +33,19 @@
       % endif
 
       % if show_elo and game_type_cd != 'race':
-        <% 
-        if game_type_cd in ["ctf", "ffa", "ca", "duel", "ft"]:
-          delta = None if pgstat.g2_delta_r is None else str(round(pgstat.g2_delta_r,0)) + " / " + str(round(pgstat.g2_delta_rd, 0))
-        else:
-          delta = None if pgstat.elo_delta is None else round(pgstat.elo_delta,2)
-        %>
+        % if pgstat.g2_delta_r is not None:
+          <td>${round(pgstat.g2_delta_r,0)} &nbsp; (${round(pgstat.g2_delta_rd, 0)})</td>
+        % else:
+          <td>-</td>
+        % endif
+
+        <% delta = None if pgstat.elo_delta is None else round(pgstat.elo_delta,2) %>
         % if delta is not None:
           <td>${delta}</td>
         % else:
           <td>-</td>
-        % endif
+        % endif                  
+
       % endif
     </tr>
   % endfor
@@ -53,25 +55,6 @@
 
 ##### SCOREBOARD HEADER #####
 <%def name="scoreboard_header(game_type_cd, pgstat, show_elo)">
-% if game_type_cd == 'as':
-<thead>
-  <tr>
-    % if show_latency:
-    <th class="ping">Ping</th>
-    % endif
-    <th class="nick">Nick</th>
-    <th class="time">Time</th>
-    <th class="kills">Kills</th>
-    <th class="deaths">Deaths</th>
-    <th class="suicides">Suicides</th>
-    <th class="objectives">Objectives</th>
-    <th class="score">Score</th>
-    % if show_elo:
-    <th>Elo Change</th>
-    % endif
-  </tr>
-</thead>
-% endif
 
 % if game_type_cd in 'ca' 'ffa' 'duel' 'tdm':
 <thead>
@@ -87,41 +70,9 @@
     <th class="deaths">Damage Taken</th>
     <th class="score">Score</th>
     % if show_elo:
+    <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
     <th>Elo Change</th>
     % endif
-  </tr>
-</thead>
-% endif
-
-% if game_type_cd == 'cq':
-<thead>
-  <tr>
-    % if show_latency:
-    <th class="ping">Ping</th>
-    % endif
-    <th class="nick">Nick</th>
-    <th class="time">Time</th>
-    <th class="kills">Kills</th>
-    <th class="deaths">Deaths</th>
-    <th class="captured">Captured</th>
-    <th class="released">Released</th>
-    <th class="score">Score</th>
-    % if show_elo:
-    <th>Elo Change</th>
-    % endif
-  </tr>
-</thead>
-% endif
-
-% if game_type_cd == 'cts':
-<thead>
-  <tr>
-    % if show_latency:
-    <th class="ping">Ping</th>
-    % endif
-    <th class="nick">Nick</th>
-    <th class="fastest">Fastest Time</th>
-    <th class="deaths">Deaths</th>
   </tr>
 </thead>
 % endif
@@ -143,26 +94,7 @@
     <th class="score">Score</th>
     <th class="score">Perf</th>
     % if show_elo:
-    <th>Elo Change</th>
-    % endif
-  </tr>
-</thead>
-% endif
-
-% if game_type_cd == 'dom':
-<thead class="dom ${pgstat.team_html_color()}">
-  <tr>
-    % if show_latency:
-    <th class="ping">Ping</th>
-    % endif
-    <th class="nick">Nick</th>
-    <th class="time">Time</th>
-    <th class="kills">Kills</th>
-    <th class="deaths">Deaths</th>
-    <th class="takes">Takes</th>
-    <th class="ticks">Ticks</th>
-    <th class="score">Score</th>
-    % if show_elo:
+    <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
     <th>Elo Change</th>
     % endif
   </tr>
@@ -182,69 +114,7 @@
     <th class="revivals">Thaws</th>
     <th class="score">Score</th>
     % if show_elo:
-    <th>Elo Change</th>
-    % endif
-  </tr>
-</thead>
-% endif
-
-% if game_type_cd in 'ka' 'keepaway':
-<thead>
-  <tr>
-    % if show_latency:
-    <th class="ping">Ping</th>
-    % endif
-    <th class="nick">Nick</th>
-    <th class="time">Time</th>
-    <th class="kills">Kills</th>
-    <th class="deaths">Deaths</th>
-    <th class="pickups">Pickups</th>
-    <th class="bctime">BC Time</th>
-    <th class="bckills">BC Kills</th>
-    <th class="score">Score</th>
-    % if show_elo:
-    <th>Elo Change</th>
-    % endif
-  </tr>
-</thead>
-% endif
-
-% if game_type_cd == 'kh':
-<thead class="kh ${pgstat.team_html_color()}">
-  <tr>
-    % if show_latency:
-    <th class="ping">Ping</th>
-    % endif
-    <th class="nick">Nick</th>
-    <th class="time">Time</th>
-    <th class="kills">Kills</th>
-    <th class="deaths">Deaths</th>
-    <th class="pickups">Pickups</th>
-    <th class="caps">Captures</th>
-    <th class="losses">Losses</th>
-    <th class="pushes">Pushes</th>
-    <th class="destroys">Destroys</th>
-    <th class="kckills">KC Kills</th>
-    <th class="score">Score</th>
-    % if show_elo:
-    <th>Elo Change</th>
-    % endif
-  </tr>
-</thead>
-% endif
-
-% if game_type_cd in 'nb' 'nexball':
-<thead class="nb ${pgstat.team_html_color()}">
-  <tr>
-    % if show_latency:
-    <th class="ping">Ping</th>
-    % endif
-    <th class="nick">Nick</th>
-    <th class="time">Time</th>
-    <th class="goals">Goals</th>
-    <th class="faults">Faults</th>
-    <th class="score">Score</th>
-    % if show_elo:
+    <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
     <th>Elo Change</th>
     % endif
   </tr>

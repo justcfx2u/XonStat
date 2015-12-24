@@ -437,7 +437,7 @@ def get_or_create_map(session=None, name=None):
 
 
 def create_game(session, start_dt, game_type_cd, server_id, map_id,
-        match_id, duration, mod, winner=None):
+        match_id, duration, mod, winner=None, score1=None, score2=None):
     """
     Creates a game. Parameters:
 
@@ -453,7 +453,7 @@ def create_game(session, start_dt, game_type_cd, server_id, map_id,
     seq = Sequence('games_game_id_seq')
     game_id = session.execute(seq)
     game = Game(game_id=game_id, start_dt=start_dt, game_type_cd=game_type_cd,
-                server_id=server_id, map_id=map_id, winner=winner)
+                server_id=server_id, map_id=map_id, winner=winner, score1=score1, score2=score2)
     game.match_id = match_id
     game.mod = mod[:64]
 
@@ -853,6 +853,17 @@ def submit_stats(request):
                 session = session,
                 name    = game_meta['M'])
         
+        score1 = None
+        score2 = None
+        if len(raw_teams) > 0:
+            score1 = max(raw_teams[0].get("scoreboard-score", 0), raw_teams[0].get("scoreboard-rounds", 0), raw_teams[0].get("scoreboard-caps", 0))
+            score2 = max(raw_teams[1].get("scoreboard-score", 0), raw_teams[1].get("scoreboard-rounds", 0), raw_teams[1].get("scoreboard-caps", 0))
+        elif game_type_cd in ['ffa','duel']:
+            for events in raw_players:
+                if events["rank"] == "1": score1 = events["scoreboard-score"]
+                if events["rank"] == "2": score2 = events["scoreboard-score"]
+        log.debug("score1=" + str(score1) + ", score2=" + str(score2))
+
         game = create_game(
                 session      = session,
                 start_dt     = datetime.datetime.utcfromtimestamp(int(game_meta['1'])) if '1' in game_meta else datetime.datetime.utcnow(),
@@ -861,7 +872,9 @@ def submit_stats(request):
                 map_id       = gmap.map_id,
                 match_id     = game_meta['I'],
                 duration     = duration,
-                mod          = game_meta.get('O', None))
+                mod          = game_meta.get('O', None),
+                score1       = score1,
+                score2       = score2)
 
         # keep track of the players we've seen
         player_ids = []
@@ -890,7 +903,7 @@ def submit_stats(request):
             try:
                 teamstat = create_team_stat(session, game, events)
             except Exception as e:
-                raise e
+                raise
 
         if should_do_elos(game_type_cd):
             create_elos(session, game)
@@ -901,4 +914,4 @@ def submit_stats(request):
     except Exception as e:
         if session:
             session.rollback()
-        raise e
+        raise

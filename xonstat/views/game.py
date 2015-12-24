@@ -35,8 +35,10 @@ def _game_info_data(request):
 
         pgstats = DBSession.query(PlayerGameStat).\
                 filter(PlayerGameStat.game_id == game_id).\
-                order_by(PlayerGameStat.scoreboardpos).\
-                order_by(PlayerGameStat.score).\
+                order_by(PlayerGameStat.score.desc()).\
+                order_by(PlayerGameStat.kills.desc()).\
+                order_by(PlayerGameStat.deaths).\
+                order_by(PlayerGameStat.alivetime).\
                 all()
 
         # if at least one player has a valid latency, we'll show the column
@@ -77,8 +79,10 @@ def _game_info_data(request):
                 filter(PlayerWeaponStat.weapon_cd == Weapon.weapon_cd).\
                 filter(PlayerWeaponStat.player_game_stat_id == \
                     PlayerGameStat.player_game_stat_id).\
-                order_by(PlayerGameStat.scoreboardpos).\
-                order_by(PlayerGameStat.score).\
+                order_by(PlayerGameStat.score.desc()).\
+                order_by(PlayerGameStat.kills.desc()).\
+                order_by(PlayerGameStat.deaths).\
+                order_by(PlayerGameStat.alivetime).\
                 order_by(Weapon.weapon_num).\
                 all():
                     
