@@ -8,7 +8,7 @@ from xonstat.views.player import player_elo_info_text, player_elo_info_json
 from xonstat.views.player import player_hashkey_info_text, player_hashkey_info_json
 from xonstat.views.player import player_captimes, player_captimes_json
 from xonstat.views.player import player_weaponstats_data_json
-from xonstat.views.player import players_elo, players_aliases_text, players_aliases_json
+from xonstat.views.player import players_elo, players_glicko, players_aliases_text, players_aliases_json
 
 from xonstat.views.game   import game_info, rank_index
 from xonstat.views.game   import game_info_json, rank_index_json

@@ -44,7 +44,7 @@ Game Information
     % endif
     <br>Glicko:
     <%
-    statusMsg={0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 5: "uneven playtime in teams", 6: "not enough players" }
+    statusMsg={0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 5: "uneven playtime in teams", 6: "not enough players", 7: "missing data" }
     msg= statusMsg[game.g2_status] if game.g2_status<=1 else "Not rated (" + statusMsg[game.g2_status] + ")"
     %>
     ${msg}

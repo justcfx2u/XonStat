@@ -56,7 +56,7 @@ def main(global_config, **settings):
 
     # MAIN SUBMISSION ROUTE
     config.add_route("submit_stats", "stats/submit")
-    config.add_view(submit_stats, route_name="submit_stats")
+    config.add_view(submit_stats, route_name="submit_stats", renderer="jsonp")
 
     # PLAYER ROUTES
     config.add_route("player_game_index",      "/player/{player_id:\d+}/games")
@@ -82,6 +82,9 @@ def main(global_config, **settings):
 
     config.add_route("players_elo", "/elo/{hashkeys}");
     config.add_view(players_elo, route_name="players_elo", renderer="jsonp")
+
+    config.add_route("players_glicko", "/glicko/{hashkeys}");
+    config.add_view(players_glicko, route_name="players_glicko", renderer="jsonp")
 
     config.add_route("players_aliases_json", "/aliases/{hashkeys}.json");
     config.add_view(players_aliases_json, route_name="players_aliases_json", renderer="jsonp")

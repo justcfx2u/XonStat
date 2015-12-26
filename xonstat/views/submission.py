@@ -816,6 +816,7 @@ def submit_stats(request):
     try:
         # placeholder for the actual session
         session = None
+        game = None
 
         log.debug("\n----- BEGIN REQUEST BODY -----\n" + request.body +
                 "----- END REQUEST BODY -----\n\n")
@@ -910,7 +911,11 @@ def submit_stats(request):
 
         session.commit()
         log.debug('Success! Stats recorded.')
-        return Response('200 OK')
+        return { "ok": True, "game_id": game.game_id }
+    except pyramid.httpexceptions.HTTPException as e:
+        if session:
+            session.rollback()
+        return { "ok": False, "http_code": e.code, "http_title": e.title, "msg": e.explanation }
     except Exception as e:
         if session:
             session.rollback()

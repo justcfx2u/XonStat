@@ -234,16 +234,18 @@ class PlayerElo(object):
         self.player_id = player_id
         self.game_type_cd = game_type_cd
         self.elo = 100.0;
-        self.mu = 25.0
-        self.sigma = 25.0/3.0
+        self.g2_r = None
+        self.g2_rd = None
         self.score = 0
         self.games = 0
+        self.r2_games = 0
+        self.r2_dt = None
 
     def __repr__(self):
         return "<PlayerElo(pid=%s, gametype=%s, elo=%s, games=%s)>" % (self.player_id, self.game_type_cd, self.elo, self.games)
 
     def to_dict(self):
-        return {'player_id':self.player_id, 'game_type_cd':self.game_type_cd, 'elo':self.elo, 'mu':self.mu, 'sigma':self.sigma, 'games':self.games}
+        return {'player_id':self.player_id, 'game_type_cd':self.game_type_cd, 'elo':self.elo, 'g2_r':self.g2_r, 'rd':self.g2_r, 'games':self.games, "g2_games":self.g2_games, "g2_dt":self.g2_dt}
 
 
 class PlayerRank(object):
