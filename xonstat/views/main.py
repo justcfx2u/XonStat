@@ -175,7 +175,7 @@ def top_servers_by_players_q(cutoff_days):
     cutoff_dt = right_now - timedelta(days=cutoff_days)
 
     top_servers_q = DBSession.query(Server.server_id, Server.name,
-        func.count()).\
+        func.count(), Server.country, Server.location).\
         filter(Game.server_id==Server.server_id).\
         filter(expr.between(Game.create_dt, cutoff_dt, right_now)).\
         order_by(expr.desc(func.count(Game.game_id))).\

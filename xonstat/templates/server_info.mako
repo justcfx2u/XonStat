@@ -22,7 +22,7 @@ Server Information
 <div class="row">
   <div class="span12">
     <h2>${server.name}</h2>
-    <p>
+    <p style="display:inline-block">
       IP Address: 
       % if server.port is not None:
       ${server.ip_addr}:${server.port}
@@ -33,6 +33,7 @@ Server Information
       Revision: ${server.revision} <br />
       Added <span class="abstime" data-epoch="${server.epoch()}" title="${server.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${server.fuzzy_date()}</span> <br />
     </p>
+    <a class="btn btn-primary btn-small" style="vertical-align:top; margin-left: 30px" href="steam://connect/${server.ip_addr}:${server.port}" title="Connect to game server">Join Server</a>
   </div>
 </div>
 
@@ -144,6 +145,7 @@ Server Information
           <th>Map</th>
           <th>Time</th>
           <th>Winner</th>
+          <th>Score</td>
         </tr>
       </thead>
       <tbody>
@@ -159,6 +161,11 @@ Server Information
             % else:
             ${rg.nick_html_colors|n}
             % endif
+          </td>
+          <td>
+          % if rg.score1 is not None:
+          ${rg.score1}:${rg.score2}
+          % endif
           </td>
         </tr>
         % endfor

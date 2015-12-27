@@ -9,8 +9,7 @@ Leaderboard
 </%block>
 
 <%block name="hero_unit">
-  <div class="text-center shadowtext">
-    <img src="/static/css/img/web_background_l2.png" style="-webkit-filter: drop-shadow(1px 1px 10px white); max-height:200px"/>
+  <div class="text-center shadowtext" style="margin-top: 40px">
     % if stat_line is None:
     <p id="statline">Tracking Quake Live statistics since November 2015.</p>
     % else:
@@ -82,54 +81,29 @@ Leaderboard
 % endif
 
 
-##### ACTIVE PLAYERS #####
-<div class="row">
-  <div class="span4">
-    <h3>Most Active Players</h3>
-    <table class="table table-hover table-condensed">
-      <thead>
-        <tr>
-          <th style="width:40px;">#</th>
-          <th style="width:150px;">Nick</th>
-          <th class="play-time" style="width:90px;">Play Time</th>
-        </tr>
-      </thead>
-      <tbody>
-      <% i = 1 %>
-      % for (player_id, nick, alivetime) in top_players:
-        <tr>
-          <td>${i}</td>
-          % if player_id != '-':
-          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
-          % else:
-          <td class="nostretch" style="max-width:150px;">${nick|n}</td>
-          % endif
-          <td class="play-time">${alivetime}</td>
-        </tr>
-        <% i = i+1 %>
-      % endfor
-      </tbody>
-    </table>
-    <p class="note"><a href="${request.route_url('top_players_by_time', page=1)}" title="See more player activity">More...</a></p>
-  </div> <!-- /span4 -->
-
 
 ##### ACTIVE SERVERS #####
-  <div class="span4">
+  <div class="span8">
     <h3>Most Active Servers</h3>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
           <th style="width:40px;">#</th>
-          <th style="width:180px;">Server</th>
+          <th style="width:40px;">Loc</th>
+          <th style="width:380px;">Server</th>
           <th style="width:60px;">Games</th>
         </tr>
       </thead>
       <tbody>
       <% i = 1 %>
-      % for (server_id, name, count) in top_servers:
+      % for (server_id, name, count, country_code, country_name) in top_servers:
         <tr>
           <td>${i}</td>
+          <td>
+          % if country is not None:
+          <img src="/static/images/flags/${country_code.lower()}.png" alt="${country_name}" class="flag"> ${country_code}
+          % endif
+          </td>
           % if server_id != '-':
           <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('server_info', id=server_id)}" title="Go to the server info page for ${name}">${name}</a></td>
           % else:
@@ -191,6 +165,7 @@ Leaderboard
         <tr>
           <th></th>
           <th>Type</th>
+          <th>Loc</th>
           <th>Server</th>
           <th>Map</th>
           <th>Time</th>
@@ -202,7 +177,12 @@ Leaderboard
       % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
-          <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24"></td>
+          <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24"> ${rg.game_type_cd}</td>
+          <td>
+            % if rg.country is not None:
+            <img src="/static/images/flags/${rg.country}.png" width="24" height="24" class="flag"> ${rg.country}
+            % endif
+          </td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
           <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
           <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>

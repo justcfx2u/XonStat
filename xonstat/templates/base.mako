@@ -49,12 +49,13 @@
       <div class="row shadowtext">
         <div class="span10 offset1">
           <p class="text-center" >
-		  QLStats is a <a href="http://www.quakelive.com" target="_blank">Quake Live</a> adaptation of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
-          which was originally created by Antibody for the game <a href="http://www.xonotic.net" target="_blank">Xonotic</a>.
-		  <br /><a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats sources</a> and 
-		    <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat sources</a> are licensed under GPLv2.
-		  <br />Questions about Elo? It's explained at the bottom of the <a href="https://github.com/antzucaro/XonStat/wiki/FAQ" title="XonStat FAQ">XonStat FAQ</a>. 
-		  </p>
+            QLStats was created by PredatH0r as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>, 
+            the <a href="http://www.xonotic.org" target="_blank">Xonotic</a> stats tracking system created by Antibody.
+		        
+            <br>Both are licensed under GPLv2 and available on Github: <a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats</a>, 
+            <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat</a>
+            <br>Geo-IP information provided by <a href="http://www.freegeoip.net">freegeoip.net</a> | Flag images provided by <a href="http://www.icondrawer.com/flag-icons.php">icondrawer.com</a>
+		      </p>
         </div>
       </div>
       </%block>

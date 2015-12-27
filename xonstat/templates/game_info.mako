@@ -34,7 +34,7 @@ Game Information
   <h2>Game Detail<span class="note"> ${game.match_id}</span></h2>
   <div class="span8 game-detail">
     <img width="64" height="64" src="/static/images/icons/48x48/${game.game_type_cd}.png" alt="${game.game_type_cd}"/>
-    <p>
+    <p style="display:inline-block">
     Played: <span class="abstime" data-epoch="${game.epoch()}" title="${game.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${game.fuzzy_date()}</span><br />
     Game Type: ${gametype.descr} (${game.game_type_cd})<br />
     Server: <a href="${request.route_url("server_info", id=server.server_id)}" name="Server info page for ${server.name}">${server.name}</a><br />
@@ -49,6 +49,7 @@ Game Information
     %>
     ${msg}
     </p>
+    <a class="btn btn-primary btn-small" style="vertical-align:top; margin-top: 40px; margin-left: 30px" href="steam://connect/${server.ip_addr}:${server.port}" title="Connect to game server">Join Server</a>
     <span class="clear"></span>
   </div>
   % if teamscores:
