@@ -39,3 +39,10 @@ alter table games
   add column score2 smallint;
 
 create index games_start_dt on games(start_dt);
+
+alter table servers
+  add column region int,
+  add column country char(2),
+  add column state char(5),
+  add column latitude decimal(7,4),
+  add column longitude decimal(7,4);
