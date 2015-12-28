@@ -28,10 +28,14 @@ Server Information
       ${server.ip_addr}:${server.port}
       % else:
       ${server.ip_addr}
-      % endif
-      <br />
-      Revision: ${server.revision} <br />
-      Added <span class="abstime" data-epoch="${server.epoch()}" title="${server.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${server.fuzzy_date()}</span> <br />
+      % endif      
+      <br />Added <span class="abstime" data-epoch="${server.epoch()}" title="${server.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${server.fuzzy_date()}</span>
+      <br />Location: 
+            % if server.country is not None:
+            <img src="/static/images/flags/${server.country}.png" width="16" height="16" class="flag"> ${server.location}
+            % else:
+              unknown
+            % endif
     </p>
     <a class="btn btn-primary btn-small" style="vertical-align:top; margin-left: 30px" href="steam://connect/${server.ip_addr}:${server.port}" title="Connect to game server">Join Server</a>
   </div>

@@ -17,3 +17,4 @@ feeder/obj/
 feeder/bin/
 feeder/.*
 XonStat.egg-info/
+feeder/temp/
