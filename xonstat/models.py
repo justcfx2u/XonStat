@@ -222,7 +222,7 @@ class PlayerWeaponStat(object):
             'max':self.max,
             'hit':self.hit,
             'actual':self.actual,
-            'frags':self.frags,
+            'frags':self.frags
         }
 
 
@@ -311,6 +311,9 @@ class TeamGameStat(object):
 
     def __repr__(self):
         return "<TeamGameStat(%s, %s, %s)>" % (self.team_game_stat_id, self.game_id, self.team)
+
+    def __json__(self, request):
+        return self.to_dict()
 
     def to_dict(self):
         return {

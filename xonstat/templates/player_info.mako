@@ -39,27 +39,42 @@ $(function () {
   $('#gbtab a:first').tab('show');
 })
 
-// weapon accuracy and damage charts
-google.load('visualization', '1.1', {packages: ['corechart']});
-$.getJSON(jsonUrl, function(data) {
-  if(data.games.length < 5) {
-    $(".row #damageChart").empty();
-    $(".row #accuracyChart").empty();
-  }
-  drawAccuracyChart(data);
-  drawDamageChart(data);
-});
-
-
 // game type buttons
 % for g in games_played:
 $('.tab-${g.game_type_cd}').click(function() {
   $.getJSON(jsonUrl + "&amp;game_type=${g.game_type_cd}", function(data) {
-    drawAccuracyChart(data);
-    drawDamageChart(data);
+    chartData = data;
+    drawChart(chartName);
   });
 });
 % endfor
+
+// weapon accuracy and damage charts
+var chartData, chartName = "accuracyChart";
+google.load('visualization', '1.1', {packages: ['corechart']});
+$.getJSON(jsonUrl, function(data) {
+  chartData=data;
+  drawChart(chartName);
+});
+$("#chartRow h3").click(function() {
+  $("#chartRow h3").removeClass("selected");
+  $(this).addClass("selected");
+  //$("#chartRow>div>div").css("display", "none");
+  //$("#" + $(this).data("chart")).css("display", "block");
+  drawChart($(this).data("chart"))
+})
+function drawChart(chart) {
+  $(".row #chartArea").empty();
+  $(".row #chartArea").append('<svg id="' + chart + 'SVG"></svg>')
+  if (chart == "accuracyChart")
+    drawAccuracyChart(chartData);
+  else if (chart == "damageChart")
+    drawDamageChart(chartData);
+  else if (chart == "fragChart")
+    drawFragChart(chartData);
+  chartName = chart;
+}
+
 </script>
 <script src="https://login.persona.org/include.js" type="text/javascript"></script>
 <script type="text/javascript">${request.persona_js}</script>
@@ -70,7 +85,7 @@ Player Information
 </%block>
 
 <div class="row">
-  <div class="span12">
+  <div class="span4">
     <h2>
       ${player.nick_html_colors()|n}
     </h2>
@@ -82,6 +97,21 @@ Player Information
       % endif
     </h4>
   </div>
+
+  <div class="span8">
+    <ul id="gbtab" class="nav nav-tabs" style="margin-top:20px">
+      % for g in games_played:
+      <li class="tab-${g.game_type_cd}">
+      <a href="#tab-${g.game_type_cd}" data-toggle="tab" alt="${g.game_type_cd}" title="${overall_stats[g.game_type_cd].game_type_descr}">
+        <img src="/static/images/icons/24x24/${g.game_type_cd}.png" width="24" height="24"><br />
+        ${g.game_type_cd} <br />
+        <small>(${g.games})</small>
+      </a>
+      </li>
+      % endfor
+    </ul>
+  </div>
+
 </div>
 
 <div class="row">
@@ -89,48 +119,13 @@ Player Information
     <div class="tab-content">
       % for g in games_played:
       % if not g.game_type_cd in ['cq']:
-      <div class="tab-pane fade in 
+      <div class="tab-pane  
         % if g.game_type_cd == 'overall':
         active
         % endif
         " id="tab-${g.game_type_cd}">
-        <div class="span5">
-          <p>
-          % if g.game_type_cd in overall_stats:
-          Last Played: <small><span class="abstime" data-epoch="${overall_stats[g.game_type_cd].last_played_epoch}" title="${overall_stats[g.game_type_cd].last_played.strftime('%a, %d %b %Y %H:%M:%S UTC')}"> ${overall_stats[g.game_type_cd].last_played_fuzzy} </span> <br /></small>
-          % else:
-          <small><br /></small>
-          % endif
-
-          Games Played: 
-          % if g.game_type_cd == 'overall':
-          <small><a href="${request.route_url("player_game_index", player_id=player.player_id)}" title="View recent games">
-          % else:
-          <small><a href="${request.route_url("player_game_index", player_id=player.player_id, _query={'type':g.game_type_cd})}" title="View recent ${overall_stats[g.game_type_cd].game_type_descr} games">
-          % endif
-          ${g.games}</a> <br /></small>
-
-          Playing Time: <small>${overall_stats[g.game_type_cd].total_playing_time} <br /></small>
-
-          % if g.game_type_cd in fav_maps:
-          Favorite Map: <small><a href="${request.route_url("map_info", id=fav_maps[g.game_type_cd].map_id)}" title="Go to the detail page for this map">${fav_maps[g.game_type_cd].map_name}</a> <br /></small>
-          % else:
-          <small><br /></small>
-          % endif
-
-          % if g.game_type_cd == 'ctf':
-          % if overall_stats[g.game_type_cd].total_captures is not None:
-          <small><a href="${request.route_url("player_captimes", player_id=player.player_id)}">Fastest flag captures...</a> <br /></small>
-          % else:
-          <small><br /></small>
-          % endif
-          % else:
-          <small><br /></small>
-          % endif
-
-          </p>
-        </div>
-        <div class="span5">
+        <div class="span4"></div>
+        <div class="span4">
           <p>
           Win Percentage: <small>${round(g.win_pct,2)}% (${g.wins} wins, ${g.losses} losses) <br /></small>
 
@@ -144,14 +139,15 @@ Player Information
 
           % if g.game_type_cd in elos:
           % if g.game_type_cd == 'overall':
-          Best Elo: <small>${round(elos[g.game_type_cd].elo,2)} (${elos[g.game_type_cd].game_type_cd}, ${elos[g.game_type_cd].games} games) <br /></small>
+          Best Glicko: <small>${int(elos[g.game_type_cd].g2_r - elos[g.game_type_cd].g2_rd)} (${elos[g.game_type_cd].game_type_cd}, ${elos[g.game_type_cd].g2_games} games) <br /></small>
           % else:
-          Elo: <small>${round(elos[g.game_type_cd].elo,2)} (${elos[g.game_type_cd].games} games) <br /></small>
+          Glicko: <small>${int(elos[g.game_type_cd].g2_r - elos[g.game_type_cd].g2_rd)} (${elos[g.game_type_cd].g2_games} games) <br /></small>
           % endif
           % else:
           <small><br /></small>
           % endif
 
+          <!--
           % if g.game_type_cd in ranks:
           % if g.game_type_cd == 'overall':
             Best Rank: 
@@ -175,6 +171,7 @@ Player Information
           % else:
           <small><br /></small>
           % endif
+          -->
 
           % if g.game_type_cd == 'ctf':
           % if overall_stats[g.game_type_cd].cap_ratio is not None:
@@ -187,58 +184,65 @@ Player Information
           % endif
           </p>
         </div>
+        <div class="span4">
+          <p>
+          % if g.game_type_cd in overall_stats:
+          Last Played: <small><span class="abstime" data-epoch="${overall_stats[g.game_type_cd].last_played_epoch}" title="${overall_stats[g.game_type_cd].last_played.strftime('%a, %d %b %Y %H:%M:%S UTC')}"> ${overall_stats[g.game_type_cd].last_played_fuzzy} </span> <br /></small>
+          % else:
+          <small><br /></small>
+          % endif
+
+          Games Played: 
+          % if g.game_type_cd == 'overall':
+          <small><a href="${request.route_url("player_game_index", player_id=player.player_id)}" title="View recent games">
+          % else:
+          <small><a href="${request.route_url("player_game_index", player_id=player.player_id, _query={'type':g.game_type_cd})}" title="View recent ${overall_stats[g.game_type_cd].game_type_descr} games">
+          % endif
+          ${g.games}</a> <br /></small>
+          <!--
+          Playing Time: <small>${overall_stats[g.game_type_cd].total_playing_time} <br /></small>
+          -->
+          % if g.game_type_cd in fav_maps:
+          Favorite Map: <small><a href="${request.route_url("map_info", id=fav_maps[g.game_type_cd].map_id)}" title="Go to the detail page for this map">${fav_maps[g.game_type_cd].map_name}</a> <br /></small>
+          % else:
+          <small><br /></small>
+          % endif
+
+          % if g.game_type_cd == 'ctf':
+          % if overall_stats[g.game_type_cd].total_captures is not None:
+          <small><a href="${request.route_url("player_captimes", player_id=player.player_id)}">Fastest flag captures...</a> <br /></small>
+          % else:
+          <small><br /></small>
+          % endif
+          % else:
+          <small><br /></small>
+          % endif
+
+          </p>
+        </div>
       </div>
       % endif
       % endfor
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="span12">
-    <ul id="gbtab" class="nav nav-tabs">
-      % for g in games_played:
-      <li class="tab-${g.game_type_cd}">
-      <a href="#tab-${g.game_type_cd}" data-toggle="tab" alt="${g.game_type_cd}" title="${overall_stats[g.game_type_cd].game_type_descr}">
-        <img src="/static/images/icons/24x24/${g.game_type_cd}.png" width="24" height="24"><br />
-        ${g.game_type_cd} <br />
-        <small>(${g.games})</small>
-      </a>
-      </li>
-      % endfor
-    </ul>
-  </div>
-</div>
 
 
-##### Weapon Accuracy Chart ####
-<div class="row" id="accuracyChartRow">
+
+##### Charts ####
+<div class="row" id="chartRow">
   <div class="span12">
-    <h3>Weapon Accuracy</h3>
+    <h3 data-chart="accuracyChart" class="selected">Weapon Accuracy</h3>
+    <h3 data-chart="fragChart">Weapon Frags</h3>
+    <h3 data-chart="damageChart">Weapon Damage</h3>
     <noscript>
       Sorry, but you've disabled JavaScript! It is required to draw the accuracy chart.
     </noscript>
-    <div id="accuracyChart">
-      <svg id="accuracyChartSVG"></svg>
+    <div id="chartArea" style="height:250px">
+      <!--<svg id="....ChartSVG"></svg>-->
     </div>
   </div> <!-- end span12 -->
 </div> <!-- end row -->
-
-
-##### Weapon Damage Chart ####
-
-<div class="row" id="damageChartRow">
-  <div class="span12">
-    <h3>Weapon Kills</h3>
-    <noscript>
-      Sorry, but you've disabled JavaScript! It is required to draw the damage chart.
-    </noscript>
-    <div id="damageChart">
-      <svg id="damageChartSVG"></svg>
-    </div>
-  </div>
-</div>
-
-
 
 
 ##### RECENT GAMES (v2) ####
