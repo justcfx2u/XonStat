@@ -51,6 +51,9 @@ class GameType(object):
     def __repr__(self):
         return "<GameType(%s, %s, %s)>" % (self.game_type_cd, self.descr, self.active_ind)
 
+    def __json__(self, request):
+        return self.to_dict()
+
     def to_dict(self):
         return {'game_type_cd':self.game_type_cd, 'name':self.descr, 'active':self.active_ind}
 
@@ -58,6 +61,9 @@ class GameType(object):
 class Weapon(object):
     def __repr__(self):
         return "<Weapon(%s, %s, %s)>" % (self.weapon_cd, self.descr, self.active_ind)
+
+    def __json__(self, request):
+        return self.to_dict()
 
     def to_dict(self):
         return {'weapon_cd':self.weapon_cd, 'name':self.descr, 'active':self.active_ind}
@@ -72,6 +78,9 @@ class Server(object):
 
     def __repr__(self):
         return "<Server(%s, %s)>" % (self.server_id, self.name.encode('utf-8'))
+
+    def __json__(self, request):
+        return self.to_dict()
 
     def to_dict(self):
         return {'server_id':self.server_id, 'name':self.name,
@@ -90,6 +99,9 @@ class Map(object):
 
     def __repr__(self):
         return "<Map(%s, %s, %s)>" % (self.map_id, self.name, self.version)
+
+    def __json__(self, request):
+        return self.to_dict()
 
     def to_dict(self):
         return {'map_id':self.map_id, 'name':self.name, 'version':self.version,}
@@ -116,6 +128,9 @@ class Game(object):
     def __repr__(self):
         return "<Game(%s, %s, %s, %s)>" % (self.game_id, self.start_dt, self.game_type_cd, self.server_id)
 
+    def __json__(self, request):
+        return self.to_dict()
+
     def to_dict(self):
         return {'game_id':self.game_id, 'start':self.start_dt.strftime('%Y-%m-%dT%H:%M:%SZ'),
                 'game_type_cd':self.game_type_cd, 'server_id':self.server_id}
@@ -134,6 +149,9 @@ class PlayerGameStat(object):
 
     def __repr__(self):
         return "<PlayerGameStat(%s, %s, %s)>" % (self.player_id, self.game_id, self.create_dt)
+
+    def __json__(self, request):
+        return self.to_dict()
 
     def to_dict(self):
         return {'player_id':self.player_id, 'game_id':self.game_id,

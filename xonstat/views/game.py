@@ -138,7 +138,7 @@ def game_info_json(request):
     """
     List the game stats (scoreboard) for a particular game. Paginated. JSON.
     """
-    return [{'status':'not implemented'}]
+    return _game_info_data(request)
 
 
 def _rank_index_data(request):

@@ -1153,7 +1153,8 @@ def players_elo(request):
     for row in q:
         if row.Hashkey.hashkey not in players:
             players[row.Hashkey.hashkey] = { "steamid": row.Hashkey.hashkey }
-        players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "elo": int(row.PlayerElo.elo*10), "games": row.PlayerElo.games }
+        #players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "elo": int(row.PlayerElo.elo*10), "games": row.PlayerElo.games }
+        players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "elo": int(row.PlayerElo.g2_r - row.PlayerElo.g2_rd), "games": row.PlayerElo.g2_games }
 
     return {
       "players": players.values()

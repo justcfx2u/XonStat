@@ -8,6 +8,7 @@ from sqlalchemy import engine_from_config
 from xonstat.models import initialize_db
 from xonstat.views import *
 from xonstat.security import *
+from calendar import datetime
 
 
 def main(global_config, **settings):
@@ -38,7 +39,11 @@ def main(global_config, **settings):
     config.set_authentication_policy(authn_policy)
 
     # for json-encoded responses
-    config.add_renderer('jsonp', JSONP(param_name='callback'))
+    def datetime_timedelta_adapter(obj, request):
+        return obj.seconds;
+    jsonp = JSONP(param_name='callback')
+    jsonp.add_adapter(datetime.timedelta, datetime_timedelta_adapter)
+    config.add_renderer('jsonp', jsonp)
 
     # for static assets
     config.add_static_view('static', 'xonstat:static')
