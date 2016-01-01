@@ -100,7 +100,7 @@ Leaderboard
         <tr>
           <td>${i}</td>
           <td>
-          % if country is not None:
+          % if country_code is not None:
           <img src="/static/images/flags/${country_code.lower()}.png" alt="${country_name}" class="flag"> ${country_code}
           % endif
           </td>
@@ -180,7 +180,7 @@ Leaderboard
           <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24"> ${rg.game_type_cd}</td>
           <td>
             % if rg.country is not None:
-            <img src="/static/images/flags/${rg.country}.png" width="24" height="24" class="flag"> ${rg.country}
+            <img src="/static/images/flags/${rg.country.lower()}.png" width="24" height="24" class="flag"> ${rg.country}
             % endif
           </td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
