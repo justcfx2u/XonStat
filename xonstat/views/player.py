@@ -498,7 +498,7 @@ def player_info_data(request):
     player_id = int(request.matchdict['id'])
     if player_id <= 2:
         player_id = -1;
-		
+    
     try:
         row = DBSession.query(Player, Hashkey).\
                 join(Hashkey, Hashkey.player_id == Player.player_id).\
@@ -507,7 +507,7 @@ def player_info_data(request):
 
         if row is not None:
                 player_id = row.Player.player_id
-			
+      
         games_played   = get_games_played(player_id)
         overall_stats  = get_overall_stats(player_id)
         fav_maps       = get_fav_maps(player_id)
@@ -523,7 +523,7 @@ def player_info_data(request):
          raise e
 
     return {'player':row.Player,
-	        'hashkey':row.Hashkey.hashkey,
+          'hashkey':row.Hashkey.hashkey,
             'games_played':games_played,
             'overall_stats':overall_stats,
             'fav_maps':fav_maps,

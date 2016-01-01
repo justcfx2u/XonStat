@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import logging
 import pyramid.httpexceptions
 import re
@@ -135,7 +135,7 @@ _dec_spans = [
  "<span style='color:rgb(255,255,0)'>",
  "<span style='color:rgb(51,102,255)'>",
  "<span style='color:rgb(51,255,255)'>",
- "<span style='color:rgb(255,51,102)'>",
+ "<span style='color:rgb(197,0,255)'>",
  "<span style='color:rgb(255,255,255)'>",
  "<span style='color:rgb(153,153,153)'>",
  "<span style='color:rgb(128,128,128)'>"
@@ -196,6 +196,8 @@ def hex_repl(match):
 
 
 def html_colors(qstr='', limit=None):
+    if len(qstr) > 0 and qstr[0] != '^': 
+      qstr = "^7" + qstr
     qstr = html_escape(qfont_decode(qstr, glyph_translation=True))
     qstr = qstr.replace('^^', '^')
 
@@ -203,7 +205,7 @@ def html_colors(qstr='', limit=None):
         qstr = limit_printable_characters(qstr, limit)
 
     html = _dec_colors.sub(lambda match: _dec_spans[int(match.group(1))], qstr)
-    html = _hex_colors.sub(hex_repl, html)
+    #html = _hex_colors.sub(hex_repl, html)
     return html + "</span>" * len(_all_colors.findall(qstr))
 
 

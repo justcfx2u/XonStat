@@ -85,20 +85,24 @@ Player Information
 </%block>
 
 <div class="row">
-  <div class="span4">
-    <h2>
-      ${player.nick_html_colors()|n}
-    </h2>
-	SteamID ${hashkey}: <a href="/aliases/${hashkey}">Aliases</a>
-    <h4>
-      <i><span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span> (player #${player.player_id})</i>
+  <div class="span3">
+    <h2 style="display:inline-block">${player.nick_html_colors()|n}</h2> <a href="/aliases/${hashkey}">Aliases</a>
+    <p>
+      <% 
+      regions = [ "not set", "Europe", "Africa", "Asia", "Australia", "North America", "South America"]
+      region = "unknown" if player.region is None or player.region > len(regions) else regions[player.region]
+      %>
+      Region: ${region}
+      <br>Player ID: ${player.player_id}
+	    <br>Steam ID: ${hashkey}
+      <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
       % if cake_day:
       <img src="/static/images/icons/24x24/cake.png" title="Happy cake day!" />
       % endif
-    </h4>
+    </p>
   </div>
 
-  <div class="span8">
+  <div class="span">
     <ul id="gbtab" class="nav nav-tabs" style="margin-top:20px">
       % for g in games_played:
       <li class="tab-${g.game_type_cd}">
