@@ -61,17 +61,17 @@ $("#chartRow h3").click(function() {
   $(this).addClass("selected");
   //$("#chartRow>div>div").css("display", "none");
   //$("#" + $(this).data("chart")).css("display", "block");
-  drawChart($(this).data("chart"))
+  drawChart($(this).data("chart"), $(this).data("arg"))
 })
-function drawChart(chart) {
+function drawChart(chart, opt) {
   $(".row #chartArea").empty();
   $(".row #chartArea").append('<svg id="' + chart + 'SVG"></svg>')
   if (chart == "accuracyChart")
     drawAccuracyChart(chartData);
   else if (chart == "damageChart")
-    drawDamageChart(chartData);
+    drawDamageChart(chartData, opt == "1");
   else if (chart == "fragChart")
-    drawFragChart(chartData);
+    drawFragChart(chartData, opt == "1");
   chartName = chart;
 }
 
@@ -232,9 +232,11 @@ Player Information
 ##### Charts ####
 <div class="row" id="chartRow">
   <div class="span12">
-    <h3 data-chart="accuracyChart" class="selected">Weapon Accuracy</h3>
-    <h3 data-chart="fragChart">Weapon Frags</h3>
-    <h3 data-chart="damageChart">Weapon Damage</h3>
+    <h3 data-chart="accuracyChart" class="selected">Accuracy</h3>
+    <h3 data-chart="fragChart" data-arg="0">Frag #</h3>
+    <h3 data-chart="fragChart" data-arg="1">Frag %</h3>
+    <h3 data-chart="damageChart" data-arg="0">Damage #</h3>
+    <h3 data-chart="damageChart" data-arg="1">Damage %</h3>
     <noscript>
       Sorry, but you've disabled JavaScript! It is required to draw the accuracy chart.
     </noscript>
@@ -247,12 +249,16 @@ Player Information
 
 ##### RECENT GAMES (v2) ####
 % if recent_games:
+<%
+i = 0
+%>
 <div class="row">
   <div class="span12">
     <h3>Recent Games</h3>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
+          <th>#</th>
           <th></th>
           <th>Type</th>
           <th>Server</th>
@@ -266,6 +272,8 @@ Player Information
       <tbody>
       % for rg in recent_games:
       <tr>
+        <% i = i + 1 %>
+        <td>${i}</td>
         <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
         <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"></td>
         <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
