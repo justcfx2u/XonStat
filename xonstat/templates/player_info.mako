@@ -41,28 +41,23 @@ $(function () {
 
 // game type buttons
 % for g in games_played:
-$('.tab-${g.game_type_cd}').click(function() {
-  $.getJSON(jsonUrl + "&amp;game_type=${g.game_type_cd}", function(data) {
-    chartData = data;
-    drawChart(chartName);
-  });
+$('.tab-${g.game_type_cd}').click(function() { 
+  chartGameType="${g.game_type_cd}";
+  loadDataAndDrawChart(); 
 });
 % endfor
 
 // weapon accuracy and damage charts
-var chartData, chartName = "accuracyChart";
+var chartData, chartName = "accuracyChart", chartOpt = null, chartLimit=20, chartGameType=null;
 google.load('visualization', '1.1', {packages: ['corechart']});
-$.getJSON(jsonUrl, function(data) {
-  chartData=data;
-  drawChart(chartName);
-});
-$("#chartRow h3").click(function() {
-  $("#chartRow h3").removeClass("selected");
-  $(this).addClass("selected");
-  //$("#chartRow>div>div").css("display", "none");
-  //$("#" + $(this).data("chart")).css("display", "block");
-  drawChart($(this).data("chart"), $(this).data("arg"))
-})
+function loadDataAndDrawChart() {
+  var url = jsonUrl + (chartGameType ? "&game_type=" + chartGameType : "");
+  url = url.replace(/limit=\d+/, "limit=" + chartLimit);
+  $.getJSON(url, function(data) {
+    chartData = data;
+    drawChart(chartName);
+  });
+}
 function drawChart(chart, opt) {
   $(".row #chartArea").empty();
   $(".row #chartArea").append('<svg id="' + chart + 'SVG"></svg>')
@@ -73,8 +68,23 @@ function drawChart(chart, opt) {
   else if (chart == "fragChart")
     drawFragChart(chartData, opt == "1");
   chartName = chart;
+  chartOpt = opt;
 }
-
+$("#chartRow h3").click(function() {
+  $("#chartRow h3").removeClass("selected");
+  $(this).addClass("selected");
+  drawChart($(this).data("chart"), $(this).data("arg"));
+});
+$("#chartRow h4").click(function() {
+  $("#chartRow h4").removeClass("selected");
+  $(this).addClass("selected");
+  chartLimit=parseInt($(this).text()) || 20;
+  if (!chartData || chartLimit != chartData.games.length)
+    loadDataAndDrawChart();
+  //else
+  //  drawChart(chartName, chartOpt);
+});
+loadDataAndDrawChart();
 </script>
 <script src="https://login.persona.org/include.js" type="text/javascript"></script>
 <script type="text/javascript">${request.persona_js}</script>
@@ -84,7 +94,7 @@ function drawChart(chart, opt) {
 Player Information
 </%block>
 
-<div class="row">
+<div class="row" style="min-height: 200px">
   <div class="span3">
     <h2 style="display:inline-block">${player.nick_html_colors()|n}</h2> <a href="/aliases/${hashkey}">Aliases</a>
     <p>
@@ -102,7 +112,7 @@ Player Information
     </p>
   </div>
 
-  <div class="span">
+  <div class="span6">
     <ul id="gbtab" class="nav nav-tabs" style="margin-top:20px">
       % for g in games_played:
       <li class="tab-${g.game_type_cd}">
@@ -116,10 +126,7 @@ Player Information
     </ul>
   </div>
 
-</div>
-
-<div class="row">
-  <div id="gbtabcontainer" class="tabbable tabs-below">
+  <div id="gbtabcontainer" class="span3 tabbable tabs-below">
     <div class="tab-content">
       % for g in games_played:
       % if not g.game_type_cd in ['cq']:
@@ -128,10 +135,9 @@ Player Information
         active
         % endif
         " id="tab-${g.game_type_cd}">
-        <div class="span4"></div>
-        <div class="span4">
+
           <p>
-          Win Percentage: <small>${round(g.win_pct,2)}% (${g.wins} wins, ${g.losses} losses) <br /></small>
+          Win Rate: <small>${round(g.win_pct,2)}% (${g.wins} wins, ${g.losses} losses) <br /></small>
 
           % if g.game_type_cd in overall_stats:
           % if overall_stats[g.game_type_cd].k_d_ratio is not None:
@@ -187,8 +193,7 @@ Player Information
           <small><br /></small>
           % endif
           </p>
-        </div>
-        <div class="span4">
+
           <p>
           % if g.game_type_cd in overall_stats:
           Last Played: <small><span class="abstime" data-epoch="${overall_stats[g.game_type_cd].last_played_epoch}" title="${overall_stats[g.game_type_cd].last_played.strftime('%a, %d %b %Y %H:%M:%S UTC')}"> ${overall_stats[g.game_type_cd].last_played_fuzzy} </span> <br /></small>
@@ -221,35 +226,35 @@ Player Information
           % else:
           <small><br /></small>
           % endif
-
           </p>
         </div>
+        % endif
+        % endfor
       </div>
-      % endif
-      % endfor
     </div>
   </div>
+
+
+  ##### Charts ####
+  <div class="row" id="chartRow">
+    <div class="span12">
+      <h3 data-chart="accuracyChart" class="selected">Accuracy</h3>
+      <h3 data-chart="fragChart" data-arg="0">Frag #</h3>
+      <h3 data-chart="fragChart" data-arg="1">Frag %</h3>
+      <h3 data-chart="damageChart" data-arg="0">Damage #</h3>
+      <h3 data-chart="damageChart" data-arg="1">Damage %</h3>
+      <h4 class="selected">20</h4>
+      <h4>50</h4>
+      <h4>100</h4>
+      <noscript>
+        Sorry, but you've disabled JavaScript! It is required to draw the accuracy chart.
+      </noscript>
+      <div id="chartArea" style="height:300px">
+        <!--<svg id="....ChartSVG"></svg>-->
+      </div>
+    </div> <!-- end span12 -->
+  </div> <!-- end row -->
 </div>
-
-
-
-##### Charts ####
-<div class="row" id="chartRow">
-  <div class="span12">
-    <h3 data-chart="accuracyChart" class="selected">Accuracy</h3>
-    <h3 data-chart="fragChart" data-arg="0">Frag #</h3>
-    <h3 data-chart="fragChart" data-arg="1">Frag %</h3>
-    <h3 data-chart="damageChart" data-arg="0">Damage #</h3>
-    <h3 data-chart="damageChart" data-arg="1">Damage %</h3>
-    <noscript>
-      Sorry, but you've disabled JavaScript! It is required to draw the accuracy chart.
-    </noscript>
-    <div id="chartArea" style="height:250px">
-      <!--<svg id="....ChartSVG"></svg>-->
-    </div>
-  </div> <!-- end span12 -->
-</div> <!-- end row -->
-
 
 ##### RECENT GAMES (v2) ####
 % if recent_games:
@@ -324,7 +329,7 @@ i = 0
       % endfor
       </tbody>
     </table>
-    % if total_games > 10:
+    % if total_games > 20:
     <p><a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="Game index for ${player.stripped_nick}">More...</a></p>
     % endif
   </div>

@@ -123,6 +123,9 @@ table td {
 }
 
 /* Navigation bar */
+.navbar {
+    margin-bottom: 10px;
+}
 .navbar-brand {
     margin-left: 0;
     padding-bottom: 0px;
@@ -355,3 +358,5 @@ img.flag { margin-top: -3px; margin-bottom: -3px }
 
 #chartRow h3 { display: inline-block;margin-right: 40px;cursor: pointer;border-bottom: #222 solid thick; }
 #chartRow h3.selected { border-bottom: white solid thick; }
+#chartRow h4 { display: inline-block;margin-right: 20px;cursor: pointer;border-bottom: #222 solid thick; }
+#chartRow h4.selected { border-bottom: white solid thick; }

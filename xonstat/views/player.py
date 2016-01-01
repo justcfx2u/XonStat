@@ -402,7 +402,7 @@ def get_elos(player_id):
     return elos
 
 
-def get_recent_games(player_id, limit=10):
+def get_recent_games(player_id, limit=20):
     """
     Provides a list of recent games for a player. Uses the recent_games_q helper.
     """
@@ -1080,8 +1080,8 @@ def player_weaponstats_data_json(request):
 
         if limit < 0:
             limit = 20
-        if limit > 50:
-            limit = 50
+        if limit > 100:
+            limit = 100
 
 
     # the game_ids of the most recently played ones 
