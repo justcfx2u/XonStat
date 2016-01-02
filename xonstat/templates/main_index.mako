@@ -22,75 +22,119 @@ Leaderboard
   </div>
 </%block>
 
-##### RANKS #####
-% if True or len(ranks) < 4:
-<!--
-  <div class="row">
+<%block name="js">
+  ${parent.js()}
+  <script>
+  var region=1;
+  var gameType="duel";
+  var dataCache={};
+
+  function fillRanking(region, gameType) {
+    $("#moreRanking").attr("href", "/ranks/" + gameType + "/" + region);
+
+    if (dataCache.hasOwnProperty(gameType + region))
+      fillTable();
+    else {
+      dataCache[gameType + region] = null;
+      $.getJSON("/ranks/" + gameType + "/" + region + ".json", { limit: 10 }, function(data) {
+        dataCache[gameType + region] = data;
+        fillTable();
+      })
+      .fail(function(err) { console.log(err); });
+    }
+
+    function fillTable() {
+      var data = dataCache[gameType + region] || { players: []};
+      for (var i=1, c=data.players.length; i<=10; i++) {
+        var player=data.players[i-1];
+        var $row = $($("#rankingTable tr")[i]);
+        var $cells = $row.children();
+        $($cells[1]).html(i < c ? "<a href='/player/" + player.player_id + "'>" + player.html_name + "</a>" : "");
+        $($cells[2]).html(i < c ? player.rating : "");
+      }
+      $("#ratingSelection a").removeClass("selected");
+      $("#ratingSelection a[data-region='" + region + "']").addClass("selected");
+      $("#ratingSelection a[data-gt='" + gameType + "']").addClass("selected");
+    }
+  }
+
+  $("#ratingSelection a").on("mouseover", function() {
+    var r = $(this).data("region");
+    if (r)
+      region = r;
+    else
+      gameType = $(this).data("gt");
+    fillRanking(region, gameType);
+  });
+
+  fillRanking(region, gameType);
+  </script>
+</%block>
+
+<div class="row">
+
+  ##### RANKS #####
+  <div class="span3">
+    <h3>Player Ranking</h3>
+  % if len(ranks) == 0:
     <div class="span12">
       <p style="text-align: center;"><i class="icon-white icon-info-sign"> </i> You don't seem to have any ranks yet.</p>
     </div>
-  </div> 
--->
-% else:
-  <div class="row">
-    % for rs in ranks[:8]:
-    % if len(rs) > 0:
-    <div class="span3">
-      % if rs[0].game_type_cd == 'duel':
-      <h3>Duel Ranks</h3>
-      % elif rs[0].game_type_cd == 'ca':
-      <h3>CA Ranks</h3>
-      % elif rs[0].game_type_cd == 'ctf':
-      <h3>CTF Ranks</h3>
-      % elif rs[0].game_type_cd == 'ffa':
-      <h3>FFA Ranks</h3>
-      % elif rs[0].game_type_cd == 'tdm':
-      <h3>TDM Ranks</h3>
-      % elif rs[0].game_type_cd == 'ft':
-      <h3>Freeze Tag Ranks</h3>
-      % elif rs[0].game_type_cd == 'race':
-      <h3>Race Ranks</h3>
-      % endif
-
-      <table class="table table-hover table-condensed">
+  % else:
+    <div id="ratingSelection" style="display:inline-block;width:50px;white-space:nowrap">
+      <a data-region="1">EU</a><br>
+      <a data-region="5">NA</a><br>
+      <a data-region="6">SA</a><br>
+      <a data-region="4">AU</a><br>
+      <a data-region="3">AS</a><br>
+      <a data-region="2">AF</a><br>
+      <br>
+      <a data-gt="duel">Duel</a><br>
+      <a data-gt="ca">CA</a><br>
+      <a data-gt="ffa">FFA</a><br>
+      <a data-gt="ctf">CTF</a><br>
+      <a data-gt="tdm">TDM</a><br>
+      <a data-gt="ft">FT</a>
+    </div>
+    <div style="display:inline-block;vertical-align:top">
+      <table id="rankingTable" class="table table-hover table-condensed" style="width:210px">
         <thead>
           <tr>
-            <th style="width:40px;">#</th>
-            <th style="width:150px;">Nick</th>
-            <th style="width:60px;">Elo</th>
+            <th style="width:25px">#</th>
+            <th>Player</th>
+            <th style="width:40px">Glicko</th>
           </tr>
         </thead>
         <tbody>
+
         <% i = 1 %>
-        % for r in rs:
+        % while i <= 10:
         <tr>
           <td>${i}</td>
-          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=r.player_id)}" title="Go to the player info page for this player">${r.nick_html_colors()|n}</a></td>
-          <td>${int(round(r.elo))}</td>
+          <td style="width:100px;max-width:100px;overflow-x:hidden;white-space:nowrap"></td>
+          <td></td>
         </tr>
         <% i = i+1 %>
-        % endfor
+        % endwhile
+
         </tbody>
       </table>
-      <p class="note"><a href="${request.route_url('rank_index', page=1, game_type_cd=rs[0].game_type_cd)}" title="See more ${rs[0].game_type_cd} rankings">More...</a></p>
-    </div> <!-- /span4 -->
+      <p class="note"><a id="moreRanking" href="" title="See more rankings">More...</a></p>
+    </div>
   % endif
-
-  % endfor
-</div> <!-- row -->
-% endif
+  </div> <!-- /span3 -->
 
 
 
-##### ACTIVE SERVERS #####
-  <div class="span8">
-    <h3>Most Active Servers</h3>
+  ##### ACTIVE SERVERS #####
+  <div class="span6">
+    <h3 style="display:inline-block">Most Active Servers</h3> <p class="note" style="display:inline-block">*Most active stats are from the past 7 days</p>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
           <th style="width:40px;">#</th>
           <th style="width:40px;">Loc</th>
-          <th style="width:380px;">Server</th>
+          <th style="width:250px;">Server</th>
           <th style="width:60px;">Games</th>
         </tr>
       </thead>
@@ -121,7 +165,7 @@ Leaderboard
 
 
 ##### ACTIVE MAPS #####
-  <div class="span4">
+  <div class="span3">
     <h3>Most Active Maps</h3>
     <table class="table table-hover table-condensed">
       <thead>
@@ -150,9 +194,9 @@ Leaderboard
     <p class="note"><a href="${request.route_url('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
   </div> <!-- /span4 -->
 </div> <!-- /row -->
-<row class="span12">
-    <p class="note">*Most active stats are from the past 7 days</p>
+
 </div>
+
 
 
 ##### RECENT GAMES #####

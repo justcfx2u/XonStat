@@ -391,11 +391,11 @@ def get_elos(player_id):
             order_by(PlayerElo.elo.desc()).all()
 
     elos = {}
-    found_max_elo = False
+    found_max_elo = 0
     for row in raw_elos:
-        if not found_max_elo:
+        if found_max_elo == 0 or row.g2_r - row.g2_rd > found_max_elo:
             elos['overall'] = row
-            found_max_elo = True
+            found_max_elo = row.g2_r - row.g2_rd 
 
         elos[row.game_type_cd] = row
 

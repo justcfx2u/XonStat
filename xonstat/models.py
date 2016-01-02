@@ -274,6 +274,9 @@ class PlayerRank(object):
         else:
             return html_colors(self.nick, limit)
 
+    def __json__(self, request):
+        return self.to_dict()
+
     def __repr__(self):
         return "<PlayerRank(pid=%s, gametype=%s, rank=%s)>" % (self.player_id, self.game_type_cd, self.rank)
 

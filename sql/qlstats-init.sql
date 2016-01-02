@@ -47,9 +47,18 @@ alter table servers
   add column latitude decimal(7,4),
   add column longitude decimal(7,4);
 
+
+
 alter table player_ranks
   add column g2_r smallint,
   add column g2_rd smallint,
+  add column g2_games int,
+  add column region smallint;
+
+alter table player_ranks_history
+  add column g2_r smallint,
+  add column g2_rd smallint,
+  add column g2_games int,
   add column region smallint;
 
 alter table players

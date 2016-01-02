@@ -148,11 +148,11 @@ def _rank_index_data(request):
         current_page = 1
 
     game_type_cd = request.matchdict['game_type_cd']
+    region = request.matchdict['region'] if 'region' in request.matchdict else None
 
-    ranks_q = DBSession.query(PlayerRank, PlayerElo).\
-            join(PlayerElo, PlayerElo.player_id == PlayerRank.player_id).\
+    ranks_q = DBSession.query(PlayerRank).\
             filter(PlayerRank.game_type_cd==game_type_cd).\
-            filter(PlayerElo.game_type_cd==game_type_cd).\
+            filter(PlayerRank.region==region).\
             order_by(PlayerRank.rank)
 
     ranks = Page(ranks_q, current_page, url=page_url)
@@ -163,6 +163,7 @@ def _rank_index_data(request):
     return {
             'ranks':ranks,
             'game_type_cd':game_type_cd,
+            'region': region
            }
 
 
@@ -177,7 +178,16 @@ def rank_index_json(request):
     """
     Provide a list of gametype ranks, paginated. JSON.
     """
-    return [{'status':'not implemented'}]
+    data = _rank_index_data(request)
+    players = []
+    if data["ranks"]:
+      for player in data["ranks"]:
+        players.append({"rank": player.rank, "player_id": player.player_id, "html_name": html_colors(player.nick), "rating": int(player.g2_r - player.g2_rd)})
+    return {
+      "region": request.matchdict.get("region", None),
+      "game_type_cd": request.matchdict.get("game_type_cd", None),
+      "players": players
+      }
 
 
 def game_finder_data(request):
