@@ -24,6 +24,7 @@ Leaderboard
 
 <%block name="js">
   ${parent.js()}
+
   <script>
   var region=1;
   var gameType="duel";
@@ -74,14 +75,12 @@ Leaderboard
 <div class="row">
 
   ##### RANKS #####
-  <div class="span3">
+  <div class="col-sm-6 col-md-3">
     <h3>Player Ranking</h3>
   % if len(ranks) == 0:
-    <div class="span12">
-      <p style="text-align: center;"><i class="icon-white icon-info-sign"> </i> You don't seem to have any ranks yet.</p>
-    </div>
-  % else:
-    <div id="ratingSelection" style="display:inline-block;width:50px;white-space:nowrap">
+    <p style="text-align: center;"><i class="icon-white icon-info-sign"> </i> You don't seem to have any ranks yet.</p>
+  % else: 
+    <div id="ratingSelection" style="float:left;width:50px">
       <a data-region="1">EU</a><br>
       <a data-region="5">NA</a><br>
       <a data-region="6">SA</a><br>
@@ -96,13 +95,13 @@ Leaderboard
       <a data-gt="tdm">TDM</a><br>
       <a data-gt="ft">FT</a>
     </div>
-    <div style="display:inline-block;vertical-align:top">
-      <table id="rankingTable" class="table table-hover table-condensed" style="width:210px">
+    <div style="overflow:hidden">
+      <table id="rankingTable" class="table table-hover table-condensed" style="table-layout:fixed;width:100%">
         <thead>
           <tr>
             <th style="width:25px">#</th>
             <th>Player</th>
-            <th style="width:40px">Glicko</th>
+            <th style="width:50px">Glicko</th>
           </tr>
         </thead>
         <tbody>
@@ -111,7 +110,7 @@ Leaderboard
         % while i <= 10:
         <tr>
           <td>${i}</td>
-          <td style="width:100px;max-width:100px;overflow-x:hidden;white-space:nowrap"></td>
+          <td style="white-space:nowrap;overflow-x:hidden"></td>
           <td></td>
         </tr>
         <% i = i+1 %>
@@ -124,10 +123,39 @@ Leaderboard
   % endif
   </div> <!-- /span3 -->
 
+   ##### ACTIVE MAPS #####
+  <div class="col-sm-6 col-md-3 col-md-push-6">
+    <h3>Most Active Maps</h3>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th style="width:180px;">Map</th>
+          <th style="width:60px;">Games</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% i = 1 %>
+      % for (map_id, name, count) in top_maps:
+        <tr>
+          <td>${i}</td>
+          % if map_id != '-':
+          <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
+          % else:
+          <td class="nostretch" style="max-width:180px;">${name}</td>
+          % endif
+          <td>${count}</td>
+        </tr>
+        <% i = i+1 %>
+      % endfor
+      </tbody>
+    </table>
+    <p class="note"><a href="${request.route_url('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
+  </div> <!-- /span4 -->
 
 
   ##### ACTIVE SERVERS #####
-  <div class="span6">
+  <div class="col-sm-12 col-md-6 col-md-pull-3">
     <h3 style="display:inline-block">Most Active Servers</h3> <p class="note" style="display:inline-block">*Most active stats are from the past 7 days</p>
     <table class="table table-hover table-condensed">
       <thead>
@@ -164,45 +192,13 @@ Leaderboard
   </div> <!-- /span4 -->
 
 
-##### ACTIVE MAPS #####
-  <div class="span3">
-    <h3>Most Active Maps</h3>
-    <table class="table table-hover table-condensed">
-      <thead>
-        <tr>
-          <th style="width:40px;">#</th>
-          <th style="width:180px;">Map</th>
-          <th style="width:60px;">Games</th>
-        </tr>
-      </thead>
-      <tbody>
-      <% i = 1 %>
-      % for (map_id, name, count) in top_maps:
-        <tr>
-          <td>${i}</td>
-          % if map_id != '-':
-          <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
-          % else:
-          <td class="nostretch" style="max-width:180px;">${name}</td>
-          % endif
-          <td>${count}</td>
-        </tr>
-        <% i = i+1 %>
-      % endfor
-      </tbody>
-    </table>
-    <p class="note"><a href="${request.route_url('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
-  </div> <!-- /span4 -->
 </div> <!-- /row -->
-
-</div>
-
 
 
 ##### RECENT GAMES #####
 % if len(recent_games) > 0:
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <h3>Recent Games</h3>
     <table class="table table-hover table-condensed">
       <thead>

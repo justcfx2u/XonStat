@@ -15,7 +15,7 @@ Map Index
 
 % else:
 <div class="row">
-  <div class="span6 offset3">
+  <div class="col-sm-8 col-sm-offset-2">
     <form class="indexform" method="get" action="${request.route_url('search')}">
       <input type="hidden" name="fs" />
       <input class="indexbox" type="text" name="map_name" />

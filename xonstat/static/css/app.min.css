@@ -7,6 +7,7 @@
 
 /* Primary elements */
 body {
+  margin-top: 60px;
     background: #202020 ;	
     color: #D0D0D0;
     font-family: "Open Sans", sans-serif;
@@ -123,6 +124,8 @@ table td {
 }
 
 /* Navigation bar */
+
+/*
 .navbar {
     margin-bottom: 10px;
 }
@@ -139,8 +142,8 @@ table td {
     background: none repeat scroll 0 0 rgba(49, 49, 49, 0.6);
 }
 .navbar-inverse .nav>li>a, .navbar-brand {
-    /*font-family: XoloniumNormal;*/
 }
+  */
 .search, input[type="search"] {
     background-color: #606060;
     border: 1px solid #202020;
@@ -234,7 +237,7 @@ table td {
 
 .flot table, .flot td {
   background-color: black;
-	border: 0;
+  border: 0;
 }
 
 /* Player Info Tabs */
@@ -362,3 +365,26 @@ img.flag { margin-top: -3px; margin-bottom: -3px }
 #chartRow h4.selected { border-bottom: white solid thick; }
 #ratingSelection a { cursor:pointer;border-left: #222 solid thick;padding-left: 3px;}
 #ratingSelection a.selected { border-left: white solid thick; }
+
+
+/* bootstrap overrides */
+
+a {
+    color: #428bca;
+    text-decoration: none;
+}
+.btn {
+  padding: 1px 12px;
+}
+.table-condensed>tbody>tr>td, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>td, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>thead>tr>th {
+    padding: 4px 5px;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: #888;
+    cursor: default;
+    background-color: #222;
+    border: 1px solid #888;  
+}
+button, input, optgroup, select, textarea {
+    color: black;
+}

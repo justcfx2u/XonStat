@@ -16,7 +16,7 @@ Map captimes
 % else:
 
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
 
     <h2>${map.name}</h2>
     <p><a href="${request.route_url('map_info', id=map.map_id)}">Back to map info page</a></p>

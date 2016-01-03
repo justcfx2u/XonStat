@@ -11,7 +11,7 @@ ${nav.nav('players')}
 
 % if len(request.session.peek_flash("failure")) > 0:
 <div class="row">
-  <div class="span6">
+  <div class="col-md-6">
     <div class="alert alert-error">
       <button type="button" class="close" data-dismiss="alert">&times;</button>
       ${request.session.pop_flash("failure")[0]}
@@ -30,7 +30,7 @@ ${nav.nav('players')}
 % endif
 
 <div class="row">
-  <div class="span6">
+  <div class="col-md-6">
     <form style="margin-top:20px;" class="form-horizontal">
       <fieldset>
 

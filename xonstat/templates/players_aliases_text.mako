@@ -19,26 +19,37 @@ Aliases
 </%block>
 
 %if data is None:
-  <p>No data found</p>
+<div class="row">
+  <div class="col-xs-12" style="text-align:center">
+    <p>No data found</p>
+  </div>
+</div>
 %else:
 %for steamid in data:
-<h2><a href="/player/${steamid}">${steamid}</a></h2>
-<table>
-  <thead>
-    <tr>
-      <th>Nickname</th>
-      <th>Created</th>
-    </tr>
-  </thead>
-  <tbody>
-      
-  %for alias in data[steamid]:
-  <tr>
-    <td class="tdcenter">${html_colors(data[steamid][alias]["nick"])|n}</td>
-    <td class="tdcenter">${data[steamid][alias]["created"]}</td>
-  </tr>
-  %endfor
-  </tbody>
-</table>
+<div class="row">
+  <div class="col-xs-12" style="text-align:center;margin-bottom:30px">
+    Steam-ID: <a href="/player/${steamid}">${steamid}</a>
+  </div>
+  <div class="col-sm-6 col-sm-offset-3">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th>Nickname</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        %for alias in data[steamid]:
+        <tr>
+          <td>${html_colors(data[steamid][alias]["nick"])|n}</td>
+          <td class="tdcenter">${data[steamid][alias]["created"]}</td>
+        </tr>
+        %endfor
+      </tbody>
+    </table>
+  </div>
+</div>
 %endfor
 %endif
+

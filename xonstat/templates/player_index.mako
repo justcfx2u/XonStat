@@ -15,7 +15,7 @@ Player Index
 
 % else:
 <div class="row">
-  <div class="span6 offset3">
+  <div class="col-sm-12 col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
     <form class="indexform" method="get" action="${request.route_url('search')}">
       <input type="hidden" name="fs" />
       <input class="indexbox" type="text" name="nick" />
@@ -25,13 +25,13 @@ Player Index
       <tr>
         <th style="width:100px;">Player ID</th>
         <th>Nick</th>
-        <th class="create-dt">Joined</th>
-        <th></th>
+        <th class="create-dt" style="width:180px">Joined</th>
+        <th style="width:50px"></th>
       </tr>
     % for player in players:
       <tr>
         <td>${player.player_id}</th>
-        <td class="player-nick"><a href="${request.route_url("player_info", id=player.player_id)}" title="Go to this player's info page">${player.nick_html_colors()|n}</a></th>
+        <td ><a href="${request.route_url("player_info", id=player.player_id)}" title="Go to this player's info page">${player.nick_html_colors()|n}</a></th>
         <td><span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${player.joined_pretty_date()}</span></th>
         <td class="tdcenter">
           <a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="View recent games by this player">

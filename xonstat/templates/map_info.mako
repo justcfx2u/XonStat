@@ -27,7 +27,7 @@ ${parent.title()}
   Added <span class="abstime" data-epoch="${gmap.epoch()}" title="${gmap.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${gmap.fuzzy_date()}</span>
 </p>
 <div class="row">
-  <div class="span4">
+  <div class="col-sm-6 col-md-4">
     <h3>Top Scoring Players</h3>
     <table class="table table-hover table-condensed">
       <thead>
@@ -56,98 +56,98 @@ ${parent.title()}
   </div>
 
 
-<div class="span4">
-  <h3>Most Active Players</h3>
-  <table class="table table-hover table-condensed">
-    <thead>
-      <tr>
-        <th style="width:40px;">#</th>
-        <th style="width:150px;">Nick</th>
-        <th style="width:90px;">Playing Time</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% i = 1 %>
-    % for (player_id, nick, alivetime) in top_players:
-      <tr>
-        <td>${i}</td>
-        % if player_id != '-':
-        <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
-        % else:
-        <td class="nostretch" style="max-width:150px;">${nick}</td>
-        % endif
-        <td>${alivetime}</td>
-      </tr>
-      <% i = i+1 %>
-    % endfor
-    </tbody>
-  </table>
-</div>
+  <div class="col-sm-6 col-md-4">
+    <h3>Most Active Players</h3>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th style="width:150px;">Nick</th>
+          <th style="width:90px;">Playing Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% i = 1 %>
+        % for (player_id, nick, alivetime) in top_players:
+        <tr>
+          <td>${i}</td>
+          % if player_id != '-':
+          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
+          % else:
+          <td class="nostretch" style="max-width:150px;">${nick}</td>
+          % endif
+          <td>${alivetime}</td>
+        </tr>
+        <% i = i+1 %>
+        % endfor
+      </tbody>
+    </table>
+  </div>
 
 
-<div class="span4">
-  <h3>Most Active Servers</h3>
-  <table class="table table-hover table-condensed">
-    <thead>
-      <tr>
-        <th style="width:40px;">#</th>
-        <th style="width:150px;">Name</th>
-        <th style="width:90px;"># Games</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% i = 1 %>
-    % for (server_id, name, times_played) in top_servers:
-      <tr>
-        <td>${i}</td>
-        <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('server_info', id=server_id)}" title="Go to the server info page for this server">${name}</a></td>
-        <td>${times_played}</td>
-      </tr>
-      <% i = i+1 %>
-    % endfor
-    </tbody>
-</table>
-</div>
+  <div class="col-sm-6 col-md-4">
+    <h3>Most Active Servers</h3>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th style="width:150px;">Name</th>
+          <th style="width:90px;"># Games</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% i = 1 %>
+        % for (server_id, name, times_played) in top_servers:
+        <tr>
+          <td>${i}</td>
+          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('server_info', id=server_id)}" title="Go to the server info page for this server">${name}</a></td>
+          <td>${times_played}</td>
+        </tr>
+        <% i = i+1 %>
+        % endfor
+      </tbody>
+    </table>
+  </div>
 </div> <!-- /row -->
 
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <p class="note">*Most active stats are from the past 7 days</p>
   </div>
 </div>
 
 % if len(captimes) > 0:
 <div class="row">
-  <div class="span6">
+  <div class="col-sm-6 col-md-4">
     <h3>Best Flag Capture Times</h3>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
-           <th>Nick</th>
-           <th>Captime</th>
+          <th>Nick</th>
+          <th>Captime</th>
         </tr>
       </thead>
       <tbody>
-      % for c in captimes:
+        % for c in captimes:
         <tr>
           <td>
-          % if c.player_id > 2:
-            <a href="${request.route_url("player_info", id=c.player_id)}"
-             title="Go to the info page for this player">
-            <span class="nick">${c.nick_html_colors|n}</span>
+            % if c.player_id > 2:
+            <a href="${request.route_url(" player_info", id=c.player_id)}"
+               title="Go to the info page for this player">
+              <span class="nick">${c.nick_html_colors|n}</span>
             </a>
-          % else:
+            % else:
             <span class="nick">${c.nick_html_colors|n}</span>
-          % endif
+            % endif
           </td>
           <td>
-            <a href="${request.route_url("game_info", id=c.game_id)}"
-             title="View the game in which this cap was made">
+            <a href="${request.route_url(" game_info", id=c.game_id)}"
+               title="View the game in which this cap was made">
               ${round(float(c.fastest_cap.seconds) + (c.fastest_cap.microseconds/1000000.0), 2)}
             </a>
           </td>
         </tr>
-      % endfor
+        % endfor
       </tbody>
     </table>
   </div>
@@ -157,7 +157,7 @@ ${parent.title()}
 
 % if len(recent_games) > 0:
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <h3>Most Recent Games</h3>
     <table class="table table-hover table-condensed">
       <thead>

@@ -28,22 +28,25 @@ $("#chartRow h3[data-region='${region}']").addClass("selected");
 </%block>
 
 <div id="chartRow" class="row">
-  <div style="margin:auto; width:800px">
-  <h3 data-region="1">Europe</h3>
-  <h3 data-region="5">North America</h3>
-  <h3 data-region="6">South America</h3>
-  <h3 data-region="4">Australia</h3>
-  <h3 data-region="3">Asia<h3>
-  <h3 data-region="2">Africa</h3>
+  <div class="col-xs-12">
+    <div style="width:100%;margin-bottom:30px;text-align:center">
+      <h3 data-region="1">Europe</h3>
+      <h3 data-region="5">North America</h3>
+      <h3 data-region="6">South America</h3>
+      <h3 data-region="4">Australia</h3>
+      <h3 data-region="3">Asia</h3>
+      <h3 data-region="2" style="margin-right:0">Africa</h3>
+    </div>
   </div>
 
-  <div class="span6 offset3">
+  <div class="col-sm-8 col-sm-offset-2 col-lg-6 col-lg-offset-3">
     % if not region:
       &nbsp;
     % elif not ranks:
     <h2>Sorry, no ranks yet</h2>
-
+    
     % else:
+
     <table id="rank-index-table" class="table table-hover table-condensed" border="1">
       <tr>
         <th style="width:40px;">Rank</th>
@@ -72,12 +75,6 @@ Low RD => high confidence, smaller changes">Glicko<br>r-RD &nbsp; (RD)</th>
   </div> <!-- /span6 -->
 </div> <!-- /row -->
 
-<div class="row">
-  <div class="span6 offset3">
-    <!-- navigation links -->
-    ${navlinks("rank_index", ranks.page, ranks.last_page, game_type_cd=game_type_cd, region=region)}
-  </div> <!-- /span6 -->
-</div> <!-- /row -->
+<!-- navigation links -->
+${navlinks("rank_index", ranks.page, ranks.last_page, game_type_cd=game_type_cd, region=region)}
 % endif
-
-</div>

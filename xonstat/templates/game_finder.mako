@@ -16,7 +16,7 @@ Game Index
 
 ##### ROW OF GAME TYPE ICONS #####
 <div class="row">
-  <div class="span12 tabbable">
+  <div class="col-sm-12 tabbable">
     <ul class="nav nav-tabs">
       % for gt, url in game_type_links:
       <li
@@ -37,7 +37,7 @@ Game Index
 
 ##### RECENT GAMES TABLE #####
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     % if len(recent_games) > 0:
     <table class="table table-hover table-condensed">
       <thead>
@@ -56,7 +56,7 @@ Game Index
       % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
-          <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt = "${rg.game_type_cd}" title="${rg.game_type_descr}"> ${rg.game_type_cd}</td>
+          <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt = "${rg.game_type_cd}" title="${rg.game_type_descr}"> ${rg.game_type_cd}</td>
           <td>
             % if rg.country is not None:
             <img src="/static/images/flags/${rg.country.lower()}.png" width="24" height="24" class="flag"> ${rg.country}
@@ -88,7 +88,7 @@ Game Index
 
 % if len(recent_games) == 20:
 <div class="row">
-  <div class="span12 text-center">
+  <div class="col-sm-12 text-center">
     <ul class="pagination">
       <li>
         <a  href="${request.route_url('game_index', _query=query)}" name="Next Page">Next <i class="glyphicon glyphicon-arrow-right"></i></a>

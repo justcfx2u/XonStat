@@ -1,8 +1,9 @@
-<%namespace name="nav" file="nav.mako"/>
+﻿<%namespace name="nav" file="nav.mako"/>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>QLStats: Player Statistics for Quake Live</title>
     <meta name="description" content="">
     <meta name="author" content="">
@@ -14,7 +15,9 @@
     <link rel="shortcut icon" href="/static/favicon.ico?v=2">
 
     <%block name="css">
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!--<link href="/static/css/bootstrap.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
     <link href="/static/css/app.min.css" rel="stylesheet">
     </%block>
 
@@ -33,36 +36,36 @@
     ${nav.nav("leaderboard")}
     </%block>
 
-    <div class="container">
-
+    <div class="container-fluid" style="margin-left:15px;margin-right:15px;">
       <%block name="hero_unit">
       </%block>
 
       <div class="row">
-        <div class="span12" id="xonborder">
+        <div class="col-sm-12" id="xonborder">
           <div id="title"><%block name="title"></%block></div>
-            ${self.body()}
-        </div> <!-- /xonborder -->
-      </div> <!-- /main row -->
+          ${self.body()}
+        </div>
+      </div>
 
       <%block name="footer">
       <div class="row shadowtext">
-        <div class="span10 offset1">
-          <p class="text-center" >
-            QLStats was created by PredatH0r as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>, 
+        <div class="col-sm-10 col-sm-offset-1">
+          <p class="text-center">
+            QLStats was created by PredatH0r as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
             the <a href="http://www.xonotic.org" target="_blank">Xonotic</a> stats tracking system created by Antibody.
-		        
-            <br>Both are licensed under GPLv2 and available on Github: <a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats</a>, 
+
+            <br>Both are licensed under GPLv2 and available on Github: <a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats</a>,
             <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat</a>
             <br>Geo-IP information provided by <a href="http://www.freegeoip.net">freegeoip.net</a> | Flag images provided by <a href="http://www.icondrawer.com/flag-icons.php">icondrawer.com</a>
-		      </p>
+          </p>
         </div>
       </div>
       </%block>
 
       <%block name="js">
       <script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
-      <script type='text/javascript' src='/static/js/bootstrap.min.js'></script>
+      <!--<script type='text/javascript' src='/static/js/bootstrap.min.js'></script>-->
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
       </%block>
 
       <!-- RELATIVE TIME CONVERSION -->
@@ -75,8 +78,10 @@
         var dt = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).toString().substr(-2) + "-" + ("0" + d.getDate()).substr(-2);
         var tm = ("0" + d.getHours()).toString().substr(-2) + ":" + ("0" + d.getMinutes()).toString().substr(-2) + ":" + ("0" + d.getSeconds()).toString().substr(-2);
         $e.attr("title", $e.text());
-        $e.text(dt + "   " + tm);  
+        $e.text(dt + "   " + tm);
       });
       </script>
-    </body>
+
+    </div>
+  </body>
 </html>

@@ -16,7 +16,7 @@ Active Players Index
 % else:
 ##### ACTIVE PLAYERS #####
 <div class="row">
-  <div class="span6 offset3">
+  <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
@@ -26,9 +26,9 @@ Active Players Index
         </tr>
       </thead>
       <tbody>
-      ##### this is to get around the actual row_number/rank of the player not being in the actual query
-      <% i = 1 + (top_players.page-1) * 25%>
-      % for (player_id, nick, alivetime) in top_players.items:
+        ##### this is to get around the actual row_number/rank of the player not being in the actual query
+        <% i = 1 + (top_players.page-1) * 25%>
+        % for (player_id, nick, alivetime) in top_players.items:
         <tr>
           <td>${i}</td>
           % if player_id != '-':
@@ -39,13 +39,16 @@ Active Players Index
           <td class="play-time">${alivetime}</td>
         </tr>
         <% i = i+1 %>
-      % endfor
+        % endfor
       </tbody>
     </table>
     <p class="note">*figures are from the past 7 days</p>
   </div> <!-- /span4 -->
+</div>
 % endif
 
-${navlinks("top_players_by_time", top_players.page, top_players.last_page)}
+<div class="row">
+  <div class="col-sm-12">
+    ${navlinks("top_players_by_time", top_players.page, top_players.last_page)}
   </div> <!-- /span4 -->
 </div> <!-- /row -->

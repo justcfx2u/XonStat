@@ -16,7 +16,7 @@ Player captimes
 % else:
 
 <div class="row">
-  <div class="span12">
+  <div class="col-md-8 col-md-offset-2">
     <h3>Fastest Flag Captures by
       <a href="${request.route_url('player_info', id=player.player_id)}">
         ${player.nick_html_colors()|n}

@@ -3,7 +3,11 @@
 <%namespace file="navlinks.mako" import="navlinks" />
 
 <%block name="navigation">
-${nav.nav('games')}
+<%
+navareas = { "player": "players", "server": "servers", "map": "maps", "game": "games"}
+navarea = navareas[result_type] if result_type in navareas else "games"
+%>
+${nav.nav(navarea)}
 </%block>
 
 % if results == None:
@@ -13,93 +17,93 @@ Advanced Search
 </%block>
 
 <div class="row">
-  <div class="span6 offset3">
-
-
-    <form style="margin-top: 20px;" class="form-horizontal">
+  <div class="col-sm-12">
+    <form class="form-horizontal" style="display:block; width:340px; margin: 20px auto 0 auto;">
       <fieldset>
 
         <!-- Form submitted? -->
         <input type="hidden" name="fs" />
 
-        <!-- Text input-->
-        <div class="control-group">
-          <label class="control-label">Nick</label>
-          <div class="controls">
-            <input id="nick" name="nick" type="text" placeholder="player nick" class="input-xlarge">
-            <p class="help-block"></p>
+        <div style="display:inline-block">
+          <!-- Text input-->
+          <div class="control-group">
+            <label class="control-label">Nick</label>
+            <div class="controls">
+              <input id="nick" name="nick" type="text" placeholder="player nick" class="input-xlarge">
+              <p class="help-block"></p>
+            </div>
+          </div>
+
+          <!-- Text input-->
+          <div class="control-group">
+            <label class="control-label">Server</label>
+            <div class="controls">
+              <input id="server_name" name="server_name" type="text" placeholder="server name" class="input-xlarge">
+              <p class="help-block"></p>
+            </div>
+          </div>
+
+          <!-- Text input-->
+          <div class="control-group">
+            <label class="control-label">Map</label>
+            <div class="controls">
+              <input id="map_name" name="map_name" type="text" placeholder="map name" class="input-xlarge">
+              <p class="help-block"></p>
+            </div>
           </div>
         </div>
 
-        <!-- Text input-->
-        <div class="control-group">
-          <label class="control-label">Server</label>
-          <div class="controls">
-            <input id="server_name" name="server_name" type="text" placeholder="server name" class="input-xlarge">
-            <p class="help-block"></p>
+        <div style="display:inline-block;margin-left:50px">
+          <!-- Multiple Checkboxes -->
+          <div class="control-group">
+            <label class="control-label">Game Types</label>
+            <div class="controls">
+              <label class="checkbox">
+                <input type="checkbox" name="dm" value="Deathmatch">
+                Deathmatch
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="duel" value="Duel">
+                Duel
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="ctf" value="Capture The Flag">
+                Capture The Flag
+              </label>
+              <label class="checkbox">
+                <input type="checkbox" name="tdm" value="Team Deathmatch">
+                Team Deathmatch
+              </label>
+            </div>
+          </div>
+
+          <!-- Button -->
+          <div class="control-group">
+            <label class="control-label"></label>
+            <div class="controls">
+              <button id="submit" name="submit" type="submit" class="btn btn-primary">Submit</button>
+            </div>
           </div>
         </div>
-
-        <!-- Text input-->
-        <div class="control-group">
-          <label class="control-label">Map</label>
-          <div class="controls">
-            <input id="map_name" name="map_name" type="text" placeholder="map name" class="input-xlarge">
-            <p class="help-block"></p>
-          </div>
-        </div>
-
-        <!-- Multiple Checkboxes -->
-        <div class="control-group">
-          <label class="control-label">Game Types</label>
-          <div class="controls">
-            <label class="checkbox">
-              <input type="checkbox" name="dm" value="Deathmatch">
-              Deathmatch
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" name="duel" value="Duel">
-              Duel
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" name="ctf" value="Capture The Flag">
-              Capture The Flag
-            </label>
-            <label class="checkbox">
-              <input type="checkbox" name="tdm" value="Team Deathmatch">
-              Team Deathmatch
-            </label>
-          </div>
-        </div>
-
-        <!-- Button -->
-        <div class="control-group">
-          <label class="control-label"></label>
-          <div class="controls">
-            <button id="submit" name="submit" type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </div>
-
       </fieldset>
     </form>
-
   </div>
 </div>
 
 
-    % elif len(results) == 0:
+% elif len(results) == 0:
 <div class="row">
-  <div class="span6 offset3">
+  <div class="col-sm-12">
     <h1 class="text-center">Sorry, nothing found!</h1>
   </div>
 </div>
-    % else:
+% else:
 
 
 ##### player-only results #####
 % if result_type == "player":
 <div class="row">
-  <div class="span6 offset3">
+  <div class="col-sm-12 col-md-6 col-md-offset-3">
     <table class="table table-hover table-condensed">
       <tr>
         <th style="width:100px;">Player ID</th>
@@ -120,12 +124,14 @@ Advanced Search
       </tr>
       % endfor
     </table>
+  </div>
+</div>
 % endif
 
 ##### server-only results #####
 % if result_type == "server":
 <div class="row">
-  <div class="span8 offset2">
+  <div class="col-sm-12 col-md-8 col-md-offset-2">
     <table class="table table-hover table-condensed">
       <tr>
         <th style="width:60px;">ID</th>
@@ -146,38 +152,42 @@ Advanced Search
       </tr>
       % endfor
     </table>
+  </div>
+</div>
 % endif
 
 ##### map-only results #####
 % if result_type == "map":
 <div class="row">
-  <div class="span6 offset3">
-      <table class="table table-hover table-condensed">
-        <tr>
-          <th style="width:70px;">ID</th>
-          <th>Name</th>
-          <th>Added</th>
-          <th></th>
-        </tr>
-        % for map in results:
-        <tr>
-          <td>${map.map_id}</td>
-          <td><a href="${request.route_url("map_info", id=map.map_id)}" title="Go to this map's info page">${map.name}</a></th>
-          <td><span class="abstime" data-epoch="${map.epoch()}" title="${map.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${map.fuzzy_date()}</span></td>
-           <td class="tdcenter">
-            <a href="${request.route_url("game_index", _query={'map_id':map.map_id})}" title="View recent games on this map">
-              <i class="glyphicon glyphicon-list"></i>
-            </a>
-          </td>
-        </tr>
-        % endfor
-      </table>
+  <div class="col-sm-12 col-md-6 col-md-offset-3">
+    <table class="table table-hover table-condensed">
+      <tr>
+        <th style="width:70px;">ID</th>
+        <th>Name</th>
+        <th>Added</th>
+        <th></th>
+      </tr>
+      % for map in results:
+      <tr>
+        <td>${map.map_id}</td>
+        <td><a href="${request.route_url("map_info", id=map.map_id)}" title="Go to this map's info page">${map.name}</a></th>
+        <td><span class="abstime" data-epoch="${map.epoch()}" title="${map.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${map.fuzzy_date()}</span></td>
+          <td class="tdcenter">
+          <a href="${request.route_url("game_index", _query={'map_id':map.map_id})}" title="View recent games on this map">
+            <i class="glyphicon glyphicon-list"></i>
+          </a>
+        </td>
+      </tr>
+      % endfor
+    </table>
+  </div>
+</div>
 % endif
 
 ##### game results #####
 % if result_type == "game":
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <table class="table table-hover table-condensed">
       <tr>
         <th></th>

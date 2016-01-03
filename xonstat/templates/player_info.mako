@@ -95,7 +95,7 @@ Player Information
 </%block>
 
 <div class="row" style="min-height: 200px">
-  <div class="span3">
+  <div class="col-sm-6 col-md-3">
     <h2 style="display:inline-block">${player.nick_html_colors()|n}</h2> <a href="/aliases/${hashkey}">Aliases</a>
     <p>
       <% 
@@ -104,7 +104,7 @@ Player Information
       %>
       Region: ${region}
       <br>Player ID: ${player.player_id}
-	    <br>Steam ID: ${hashkey}
+      <br>Steam ID: ${hashkey}
       <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
       % if cake_day:
       <img src="/static/images/icons/24x24/cake.png" title="Happy cake day!" />
@@ -112,21 +112,21 @@ Player Information
     </p>
   </div>
 
-  <div class="span6">
+  <div class="col-sm-12 col-md-9 col-lg-6">
     <ul id="gbtab" class="nav nav-tabs" style="margin-top:20px">
       % for g in games_played:
       <li class="tab-${g.game_type_cd}">
-      <a href="#tab-${g.game_type_cd}" data-toggle="tab" alt="${g.game_type_cd}" title="${overall_stats[g.game_type_cd].game_type_descr}">
-        <img src="/static/images/icons/24x24/${g.game_type_cd}.png" width="24" height="24"><br />
-        ${g.game_type_cd} <br />
-        <small>(${g.games})</small>
-      </a>
+        <a href="#tab-${g.game_type_cd}" data-toggle="tab" alt="${g.game_type_cd}" title="${overall_stats[g.game_type_cd].game_type_descr}">
+          <img src="/static/images/icons/24x24/${g.game_type_cd}.png" width="24" height="24"><br />
+          ${g.game_type_cd} <br />
+          <small>(${g.games})</small>
+        </a>
       </li>
       % endfor
     </ul>
   </div>
 
-  <div id="gbtabcontainer" class="span3 tabbable tabs-below">
+  <div id="gbtabcontainer" class="col-sm-6 col-md-9 col-lg-3 tabbable tabs-below">
     <div class="tab-content">
       % for g in games_played:
       % if not g.game_type_cd in ['cq']:
@@ -230,14 +230,17 @@ Player Information
         </div>
         % endif
         % endfor
-      </div>
     </div>
   </div>
 
+  
+
+  
+</div>
 
   ##### Charts ####
-  <div class="row" id="chartRow">
-    <div class="span12">
+  <div id="chartRow" class="row">
+    <div class="col-sm-12">
       <h3 data-chart="accuracyChart" class="selected">Accuracy</h3>
       <h3 data-chart="fragChart" data-arg="0">Frag #</h3>
       <h3 data-chart="fragChart" data-arg="1">Frag %</h3>
@@ -254,7 +257,7 @@ Player Information
       </div>
     </div> <!-- end span12 -->
   </div> <!-- end row -->
-</div>
+
 
 ##### RECENT GAMES (v2) ####
 % if recent_games:
@@ -262,7 +265,7 @@ Player Information
 i = 0
 %>
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <h3>Recent Games</h3>
     <table class="table table-hover table-condensed">
       <thead>

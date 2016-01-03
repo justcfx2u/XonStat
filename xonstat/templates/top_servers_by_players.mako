@@ -15,7 +15,8 @@ Active Servers Index
 
 % else:
 ##### ACTIVE SERVERS #####
-  <div class="span8 offset2">
+<div class="row">
+  <div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
@@ -26,9 +27,9 @@ Active Servers Index
         </tr>
       </thead>
       <tbody>
-      ##### this is to get around the actual row_number/rank of the server not being in the actual query
-      <% i = 1 + (top_servers.page-1) * 25%>
-      % for (server_id, name, count, country_code, country_name) in top_servers.items:
+        ##### this is to get around the actual row_number/rank of the server not being in the actual query
+        <% i = 1 + (top_servers.page-1) * 25%>
+        % for (server_id, name, count, country_code, country_name) in top_servers.items:
         <tr>
           <td>${i}</td>
           <td>
@@ -44,13 +45,16 @@ Active Servers Index
           <td>${count}</td>
         </tr>
         <% i = i+1 %>
-      % endfor
+        % endfor
       </tbody>
     </table>
     <p class="note">*figures are from the past 7 days</p>
   </div> <!-- /span4 -->
+</div>
 % endif
 
-${navlinks("top_servers_by_players", top_servers.page, top_servers.last_page)}
+<div class="row">
+  <div class="col-sm-12">
+    ${navlinks("top_servers_by_players", top_servers.page, top_servers.last_page)}
   </div> <!-- /span4 -->
 </div> <!-- /row -->

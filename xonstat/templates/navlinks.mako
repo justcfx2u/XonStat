@@ -12,7 +12,7 @@ if 'search_query' in kwargs.keys():
 
 % if not (curr == last and curr == 1):
 <div class="row">
-<div class="span12 text-center">
+<div class="col-sm-12 text-center">
 <ul class="pagination">
     % if curr != 1:
             <% kwargs['_query']['page'] = curr-1 %>

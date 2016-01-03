@@ -15,7 +15,7 @@ Server Index
 
 % else:
 <div class="row">
-  <div class="span8 offset2">
+  <div class="col-sm-12 col-md-8 col-md-offset-2">
     <form class="indexform" method="get" action="${request.route_url('search')}">
       <input type="hidden" name="fs" />
       <input class="indexbox" type="text" name="server_name" />

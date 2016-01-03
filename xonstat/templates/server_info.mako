@@ -15,12 +15,16 @@ Server Information
     ${parent.css()}
 </%block>
 
+<%block name="js">
+  ${parent.js()}
+</%block>
+
 % if server is None:
 <h2>Sorry, that server wasn't found!</h2>
 
 % else:
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <h2>${server.name}</h2>
     <p style="display:inline-block">
       IP Address: 
@@ -43,7 +47,7 @@ Server Information
 
 
 <div class="row">
-  <div class="span4">
+  <div class="col-sm-4 col-md-4">
     <h3>Top Scoring Players</h3>
       <table class="table table-hover table-condensed">
         <thead>
@@ -72,19 +76,19 @@ Server Information
   </div> <!-- /span4 -->
 
 
-  <div class="span4">
+  <div class="col-sm-4 col-md-4">
     <h3>Most Active Players</h3>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
           <th style="width:40px;">#</th>
           <th style="width:150px;">Nick</th>
-          <th style="width:90px;">Playing Time</th>
+          <th style="width:90px;">Play Time</th>
         </tr>
       </thead>
       <tbody>
-      <% i = 1 %>
-      % for (player_id, nick, alivetime) in top_players:
+        <% i = 1 %>
+        % for (player_id, nick, alivetime) in top_players:
         <tr>
           <td>${i}</td>
           % if player_id != '-':
@@ -95,13 +99,13 @@ Server Information
           <td>${alivetime}</td>
         </tr>
         <% i = i+1 %>
-      % endfor
+        % endfor
       </tbody>
     </table>
   </div> <!-- /span4 -->
 
 
-  <div class="span4">
+  <div class="col-sm-4 col-md-4">
     <h3>Most Active Maps</h3>
     <table class="table table-hover table-condensed">
       <thead>
@@ -112,8 +116,8 @@ Server Information
         </tr>
       </thead>
       <tbody>
-      <% i = 1 %>
-      % for (map_id, name, count) in top_maps:
+        <% i = 1 %>
+        % for (map_id, name, count) in top_maps:
         <tr>
           <td>${i}</td>
           % if map_id != '-':
@@ -124,14 +128,15 @@ Server Information
           <td>${count}</td>
         </tr>
         <% i = i+1 %>
-      % endfor
+        % endfor
       </tbody>
     </table>
   </div> <!-- /span4 -->
 
 </div> <!-- /row -->
+
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <p class="note">*Most active stats are from the past 7 days</p>
   </div>
 </div>
@@ -139,7 +144,7 @@ Server Information
 
 % if len(recent_games) > 0:
 <div class="row">
-  <div class="span12">
+  <div class="col-sm-12">
     <h3>Most Recent Games</h2>
     <table class="table table-hover table-condensed">
       <thead>
