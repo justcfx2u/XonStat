@@ -142,12 +142,12 @@ def is_supported_gametype(gametype, version):
     # here and add the restriction for a specific version below
     supported_game_types = (
             'ffa',
-			'duel',
+      'duel',
             'tdm',
             'ctf',
             'ca',
             'ft',
-			'race',
+      'race',
         )
 
     if gametype in supported_game_types:
@@ -273,10 +273,8 @@ def should_do_elos(game_type_cd):
     """True of the game type should process Elos. False otherwise."""
     elo_game_types = ('duel', 'ffa', 'ctf', 'tdm', 'ca', 'ft')
 
-    if game_type_cd in elo_game_types:
-        return True
-    else:
-        return False
+    #return game_type_cd in elo_game_types
+    return False
 
 
 def register_new_nick(session, player, new_nick):
