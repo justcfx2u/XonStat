@@ -9,6 +9,7 @@ from xonstat.models import initialize_db
 from xonstat.views import *
 from xonstat.security import *
 from calendar import datetime
+from decimal import *
 
 
 def main(global_config, **settings):
@@ -41,8 +42,14 @@ def main(global_config, **settings):
     # for json-encoded responses
     def datetime_timedelta_adapter(obj, request):
         return obj.seconds;
+    def datetime_datetime_adapter(obj, request):
+        return obj.isoformat();
+    def decimal_adapter(obj, request):
+        return float(obj);
     jsonp = JSONP(param_name='callback')
     jsonp.add_adapter(datetime.timedelta, datetime_timedelta_adapter)
+    jsonp.add_adapter(datetime.datetime, datetime_datetime_adapter)
+    jsonp.add_adapter(Decimal, decimal_adapter)
     config.add_renderer('jsonp', jsonp)
 
     # for static assets
@@ -95,6 +102,9 @@ def main(global_config, **settings):
     config.add_view(players_aliases_json, route_name="players_aliases_json", renderer="jsonp")
     config.add_route("players_aliases_text", "/aliases/{hashkeys}");
     config.add_view(players_aliases_text, route_name="players_aliases_text", renderer="players_aliases_text.mako")
+
+    config.add_route("player_recent_games_json", "/player/{id:\d+}/recent_games.json");
+    config.add_view(player_recent_games_json, route_name="player_recent_games_json", renderer="jsonp");
 
 
     # FIXME - needs an additional method to convert to JSON

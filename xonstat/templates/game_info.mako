@@ -46,23 +46,6 @@ Game Information
     <a class="btn btn-primary btn-small" style="vertical-align:top; margin-top: 40px; margin-left: 30px" href="steam://connect/${server.ip_addr}:${server.port}" title="Connect to game server">Join Server</a>
     <span class="clear"></span>
   </div>
-  <!--
-  % if teamscores:
-  <div class="span3 teamscores">
-    <table class="table table-condensed">
-      <thead>
-      <th>Team</th>
-      <th>Score</th>
-      </thead>
-      <tbody>
-        % for ts in teamscores:
-        <tr class="${ts.team}"><td>${ts.team.capitalize()}</td><td>${ts.score}</td></tr>
-        % endfor
-      </tbody>
-    </table>
-  </div>
-  % endif
-  -->
 </div>
 
 % if len(tgstats) == len(stats_by_team):

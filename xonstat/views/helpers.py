@@ -45,6 +45,7 @@ class RecentGame(object):
         self.nick_html_colors = html_colors(row.nick)
         self.rank = row.rank
         self.team = row.team
+        self.g2_status = row.g2_status
 
         try:
             self.elo_delta = row.elo_delta
@@ -72,6 +73,8 @@ class RecentGame(object):
             self.country = None
             self.location = None
 
+    def __json__(self, request):
+        return self._asdict()
 
     def _asdict(self):
         return {
@@ -93,7 +96,8 @@ class RecentGame(object):
             "team": self.team,
             "elo_delta": self.elo_delta,
             "g2_delta_r": self.g2_delta_r,
-            "g2_delta_rd": self.g2_delta_rd
+            "g2_delta_rd": self.g2_delta_rd,
+            "g2_status": self.g2_status
             }
 
     def __repr__(self):
@@ -102,8 +106,8 @@ class RecentGame(object):
 def games_q():
     result = DBSession.query(GameType.game_type_cd).\
             filter(GameType.active_ind==True).\
-	        order_by(expr.asc(GameType.game_type_cd)).\
-			all();
+          order_by(expr.asc(GameType.game_type_cd)).\
+      all();
     return [row[0] for row in result];
 
 def recent_games_q(server_id=None, map_id=None, player_id=None,
@@ -122,16 +126,16 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
 
     recent_games_q = DBSession.query(Game.game_id, GameType.game_type_cd,
             Game.winner, Game.start_dt, GameType.descr.label('game_type_descr'),
-            Game.score1, Game.score2,
+            Game.score1, Game.score2, Game.g2_status,
             Server.server_id, Server.name.label('server_name'), Server.country, Server.location,
-            Map.map_id, Map.name.label('map_name'), PlayerGameStat.player_id,
-            PlayerGameStat.nick, PlayerGameStat.rank, PlayerGameStat.team,           
+            Map.map_id, Map.name.label('map_name'), 
+            PlayerGameStat.player_id, PlayerGameStat.nick, PlayerGameStat.rank, PlayerGameStat.team,           
             PlayerGameStat.elo_delta, PlayerGameStat.g2_delta_r, PlayerGameStat.g2_delta_rd).\
             filter(Game.server_id==Server.server_id).\
             filter(Game.map_id==Map.map_id).\
             filter(Game.game_id==PlayerGameStat.game_id).\
             filter(Game.game_type_cd==GameType.game_type_cd).\
-            order_by(expr.desc(Game.create_dt))
+            order_by(expr.desc(Game.start_dt))
 
     # the various filters provided get tacked on to the query
     if server_id is not None:

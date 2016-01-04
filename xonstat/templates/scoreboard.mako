@@ -28,8 +28,8 @@
       % if game_type_cd != 'cts' and game_type_cd != 'race':
         <td class="player-score">${pgstat.score}</td>
       % endif
-      % if game_type_cd == "ctf":
-        <td class="player-score">${pgstat.g2_score}</td>
+      % if game_type_cd in ["ctf", "ft"]:
+        <td class="player-score">${ "-" if pgstat.g2_score is None else pgstat.g2_score}</td>
       % endif
 
       % if show_elo and game_type_cd != 'race':
@@ -92,7 +92,8 @@
     <th class="pickups">Damage Dealt</th>
     <th class="fck">Damage Taken</th>
     <th class="score">Score</th>
-    <th class="score">Perf</th>
+    <th class="score" title="Performance metric for Glicko rating:
+clamp(damage_dealt/damage_taken, 0.5, 2.0) * (score + damage_dealt/20)">Perf</th>
     % if show_elo:
     <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
     <th>Elo Change</th>
@@ -112,7 +113,11 @@
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="revivals">Thaws</th>
+    <th class="pickups">Damage Dealt</th>
+    <th class="fck">Damage Taken</th>
     <th class="score">Score</th>
+    <th class="score" title="Performance metric for Glicko rating:
+damage_dealt/100 + net_frags/2 + thaws*2">Perf</th>
     % if show_elo:
     <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
     <th>Elo Change</th>
@@ -194,6 +199,8 @@
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.revivals}</td>
+  <td>${pgstat.pushes}</td>
+  <td>${pgstat.destroys}</td>
 % endif
 
 % if game_type_cd in 'ka' 'keepaway':

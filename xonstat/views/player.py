@@ -402,15 +402,24 @@ def get_elos(player_id):
     return elos
 
 
-def get_recent_games(player_id, limit=20):
+def get_recent_games(player_id, limit=20, game_type_cd=None):
     """
     Provides a list of recent games for a player. Uses the recent_games_q helper.
     """
     # recent games played in descending order
-    rgs = recent_games_q(player_id=player_id, force_player_id=True).limit(limit).all()
+    q = recent_games_q(player_id=player_id, force_player_id=True)
+    if game_type_cd is not None:
+      q = q.filter(Game.game_type_cd == game_type_cd)
+    rgs = q.limit(limit).all()
     recent_games = [RecentGame(row) for row in rgs]
 
     return recent_games
+
+def player_recent_games_json(request):
+    player_id = int(request.matchdict["id"])
+    limit = request.params.get("limit", 20)
+    game_type_cd = request.params.get("game_type_cd")
+    return get_recent_games(player_id, limit=limit, game_type_cd=game_type_cd)
 
 
 def get_accuracy_stats(player_id, weapon_cd, games):
@@ -496,6 +505,7 @@ def get_damage_stats(player_id, weapon_cd, games):
 
 def player_info_data(request):
     player_id = int(request.matchdict['id'])
+    game_type_cd = request.params.get("game_type_cd");
     if player_id <= 2:
         player_id = -1;
     
@@ -513,7 +523,7 @@ def player_info_data(request):
         fav_maps       = get_fav_maps(player_id)
         elos           = get_elos(player_id)
         ranks          = get_ranks(player_id)
-        recent_games   = get_recent_games(player_id)
+        recent_games   = get_recent_games(player_id, game_type_cd=game_type_cd)
         cake_day       = is_cake_day(row.Player.create_dt)
 
     except Exception as e:

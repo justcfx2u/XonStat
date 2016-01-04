@@ -48,29 +48,33 @@ $("#chartRow h3[data-region='${region}']").addClass("selected");
     % else:
 
     <table id="rank-index-table" class="table table-hover table-condensed" border="1">
-      <tr>
-        <th style="width:40px;">Rank</th>
-        <th style="width:420px;">Nick</th>
-        <th style="width:170px;" title="r: estimated rating
+      <thead>
+        <tr>
+          <th style="width:40px;">Rank</th>
+          <th style="width:420px;">Nick</th>
+          <th style="width:170px;" title="r: estimated rating
 RD: rating deviation
 r-RD: conservative rating
 r&#xb1;RD: 68% confidence interval
 r&#xb1;2*RD: 95% confidence interval
 Low RD => high confidence, smaller changes">Glicko<br>r-RD &nbsp; (RD)</th>
-        <th style="width:90px;">Elo<br>(old)</th>
-        <th style="width:90px;" title="Number games included in the rating">Games</th>
-      </tr>
-      <% i = 1 %>
-      % for rank in ranks:
-      <tr>
-        <td>${rank.rank}</td>
-        <td class="nostretch" style="max-width:420px;"><a href="${request.route_url("player_info", id=rank.player_id)}" title="Go to this player's info page">${rank.nick_html_colors()|n}</a></td>
-        <td>${int(round(rank.g2_r - rank.g2_rd))} &nbsp; (${int(round(rank.g2_rd))})</td>
-        <td>${int(round(rank.elo))}</td>
-        <td>${rank.g2_games}</td>
-      </tr>
-      <% i += 1 %>
-      % endfor
+          <th style="width:90px;">Elo<br>(old)</th>
+          <th style="width:90px;" title="Number games included in the rating">Games</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% i = 1 %>
+        % for rank in ranks:
+        <tr>
+          <td>${rank.rank}</td>
+          <td class="nostretch" style="max-width:420px;"><a href="${request.route_url("player_info", id=rank.player_id)}" title="Go to this player's info page">${rank.nick_html_colors()|n}</a></td>
+          <td>${int(round(rank.g2_r - rank.g2_rd))} &nbsp; (${int(round(rank.g2_rd))})</td>
+          <td>${int(round(rank.elo))}</td>
+          <td>${rank.g2_games}</td>
+        </tr>
+        <% i += 1 %>
+        % endfor
+      </tbody>
     </table>
   </div> <!-- /span6 -->
 </div> <!-- /row -->

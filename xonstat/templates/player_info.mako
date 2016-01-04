@@ -1,5 +1,8 @@
 <%inherit file="base.mako"/>
 <%namespace name="nav" file="nav.mako" />
+<%
+import json 
+%>
 
 <%block name="navigation">
 % if player.email_addr is not None:
@@ -85,6 +88,63 @@ $("#chartRow h4").click(function() {
   //  drawChart(chartName, chartOpt);
 });
 loadDataAndDrawChart();
+
+///////////////////////////////////////////////////////////////////////////////
+
+var data = [];
+function loadRecentGames(game_type_cd) {
+  var args = {};
+  if (game_type_cd)
+    args.game_type_cd = game_type_cd;
+  $.getJSON("/player/${player.player_id}/recent_games.json", args, function(data) {
+    fillRecentGames(data);
+  });
+}
+
+function fillRecentGames(data) {
+  var $tbody = $("#recentGames tbody");
+  $tbody.empty();
+  for (var i=0, c=data.length; i<c; i++) {
+    var html=[];
+    var rg = data[i];
+    html.push('<td>' + (i+1) + '</td>');
+    html.push('<td class="tdcenter"><a class="btn btn-primary btn-small" href="/game/' + rg.game_id + '" title="View detailed information about this game">view</a></td>');
+    html.push('<td><img src="/static/images/icons/24x24/' + rg.game_type_cd + '.png" width="24" height="24" alt="' + rg.game_type_cd + '" title="' + rg.game_type_descr + '"> ' + rg.game_type_cd + '</td>');
+    html.push('<td><a href="/server/' + rg.server_id + '" title="Go to the detail page for this server">' + rg.server_name + '</a></td>');
+    html.push('<td><a href="/map/' + rg.map_id + '" title="Go to the detail page for this map">' + rg.map_name + '</a></td>');
+    html.push('<td>' + (rg.team ? (rg.team == rg.winner ? "Win" : "Loss") : rg.rank == 1 ? "Win" : "Loss (#" + rg.rank + ")") + "</td>");
+    html.push('<td><span class="abstime" data-epoch="' + rg.epoch + '">' + dateStr(rg.epoch) + '</span></td>');
+    html.push('<td class="tdcenter"><a href="/game/' + rg.game_id + '" title="View detailed information about this game">');
+    var delta = Math.round(rg.g2_delta_r) - Math.round(rg.g2_delta_rd);
+    var alt = "r: " + Math.round(rg.g2_delta_r) + "; rd: " + Math.round(rg.g2_delta_rd);
+    if (rg.g2_status != 1 || typeof(rg.g2_delta_r) !== "number")
+      html.push('<span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>');
+    else if (rg.g2_delta_r > 0)
+      html.push('<span class="eloup" title="' + alt + '">+' + delta + '</span>');
+    else
+      html.push('<span class="elodown" title="' + alt + '">' + delta + '</span>');
+    html.push('</a></td>');
+
+    $tbody.append("<tr>" + html.join("\n") + "</tr>");
+  }
+}
+
+function dateStr(unixtimestamp) {
+  var date = new Date();
+  date.setTime(unixtimestamp * 1000);
+  return (1900 + date.getYear()) + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDay()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+
+  function pad(num) {
+    return ("0" + num).substr(-2);
+  }
+}
+
+loadRecentGames(null);
+
+$("#gbtab li a").click(function() {
+  var alt = $(this).attr("alt");
+  loadRecentGames(alt == "overall" ? null : alt);
+});
 </script>
 <script src="https://login.persona.org/include.js" type="text/javascript"></script>
 <script type="text/javascript">${request.persona_js}</script>
@@ -260,12 +320,9 @@ Player Information
 
 
 ##### RECENT GAMES (v2) ####
-% if recent_games:
-<%
-i = 0
-%>
+
 <div class="row">
-  <div class="col-sm-12">
+  <div class="col-sm-12" id="recentGames">
     <h3>Recent Games</h3>
     <table class="table table-hover table-condensed">
       <thead>
@@ -278,63 +335,12 @@ i = 0
           <th>Result</th>
           <th>Played</th>
           <th title="Rating (Uncertainty)">Glicko Change</th>
-          <th>Elo Change</th>
         </tr>
       </thead>
       <tbody>
-      % for rg in recent_games:
-      <tr>
-        <% i = i + 1 %>
-        <td>${i}</td>
-        <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
-        <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"></td>
-        <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
-        <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the detail page for this map">${rg.map_name}</a></td>
-        <td>
-          % if rg.team != None:
-          % if rg.team == rg.winner:
-          Win
-          % else:
-          Loss
-          % endif
-          % else:
-          % if rg.rank == 1:
-          Win
-          % else:
-          Loss (#${rg.rank})
-          % endif
-          % endif
-        </td>
-        <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
-        <td class="tdcenter">
-          <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">           
-            % if rg.g2_delta_r is None or rg.g2_delta_r==0:
-            <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
-            % elif rg.g2_delta_r > 0:
-            <span class="eloup">+${round(rg.g2_delta_r,0)} &nbsp; (${round(rg.g2_delta_rd, 0)})</span>
-            %else:
-            <span class="elodown">${round(rg.g2_delta_r,0)} &nbsp; (${round(rg.g2_delta_rd, 0)})</span>
-            % endif
-          </a>
-        </td>
-        <td>
-          <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">                               
-            % if rg.elo_delta is None or rg.elo_delta==0:
-            <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
-            % elif rg.elo_delta > 0:
-            <span class="eloup">+${round(rg.elo_delta,2)}</span>
-            % else:
-            <span class="elodown">${round(rg.elo_delta,2)}</span>
-            % endif
-          </a>
-        </td>
-      </tr>
-      % endfor
+
       </tbody>
     </table>
-    % if total_games > 20:
     <p><a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="Game index for ${player.stripped_nick}">More...</a></p>
-    % endif
   </div>
 </div>
-% endif
