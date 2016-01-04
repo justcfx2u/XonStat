@@ -299,7 +299,7 @@ def main_index(request):
         mainindex_data['top_players'].append(('-', '-', '-'))
 
     for i in range(leaderboard_count-len(mainindex_data['top_servers'])):
-        mainindex_data['top_servers'].append(('-', '-', '-','-','-'))
+        mainindex_data['top_servers'].append(('-', '-', '-',None,None))
 
     for i in range(leaderboard_count-len(mainindex_data['top_maps'])):
         mainindex_data['top_maps'].append(('-', '-', '-'))
