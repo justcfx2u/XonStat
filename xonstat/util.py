@@ -136,7 +136,7 @@ _dec_spans = [
  "<span style='color:rgb(51,102,255)'>",
  "<span style='color:rgb(51,255,255)'>",
  "<span style='color:rgb(197,0,255)'>",
- "<span style='color:rgb(255,255,255)'>",
+ "<span style='color:rgb(204,204,204)'>",
  "<span style='color:rgb(153,153,153)'>",
  "<span style='color:rgb(128,128,128)'>"
 ]

@@ -12,7 +12,7 @@
 ## [3] = Fired
 
 <div style="width:100%;overflow-x:auto">
-<table class="table table-condensed" style="margin-bottom:5px">
+<table class="table table-condensed table-hover" style="margin-bottom:5px" id="accuracyTable">
 <colgroup>
   <col style="min-width:150px">
   <col width="80px" style="min-width:80px">

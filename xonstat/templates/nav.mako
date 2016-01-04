@@ -3,7 +3,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="height: auto;">
   <div class="container-fluid">
     <div class="navbar-header">  
-      <a class="navbar-toggle collapsed" data-toggle="collapse" data-target=".nav-collapse">
+      <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -13,7 +13,7 @@
         QLStats
       </a>           
     </div>
-    <div class="nav-collapse in collapse">
+    <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li 
           % if active=="leaderboard":

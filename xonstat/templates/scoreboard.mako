@@ -28,23 +28,16 @@
       % if game_type_cd != 'cts' and game_type_cd != 'race':
         <td class="player-score">${pgstat.score}</td>
       % endif
-      % if game_type_cd in ["ctf", "ft"]:
-        <td class="player-score">${ "-" if pgstat.g2_score is None else pgstat.g2_score}</td>
-      % endif
+
 
       % if show_elo and game_type_cd != 'race':
+        <td class="player-score">${ "-" if pgstat.g2_score is None else pgstat.g2_score}</td>
+
         % if pgstat.g2_delta_r is not None:
-          <td>${round(pgstat.g2_delta_r,0)} &nbsp; (${round(pgstat.g2_delta_rd, 0)})</td>
+          <td title="r: ${int(round(pgstat.g2_delta_r,0))}; RD: ${int(round(pgstat.g2_delta_rd, 0))}">${int(round(pgstat.g2_delta_r,0) - round(pgstat.g2_delta_rd, 0))}</td>
         % else:
           <td>-</td>
         % endif
-
-        <% delta = None if pgstat.elo_delta is None else round(pgstat.elo_delta,2) %>
-        % if delta is not None:
-          <td>${delta}</td>
-        % else:
-          <td>-</td>
-        % endif                  
 
       % endif
     </tr>
@@ -56,6 +49,18 @@
 ##### SCOREBOARD HEADER #####
 <%def name="scoreboard_header(game_type_cd, pgstat, show_elo)">
 
+<%
+metric_text_dict = {
+  "ffa": "kills\n[adjusted by time played]",
+  "ca": "damage_dealt/100 + kills\n[adjusted by time played]",
+  "duel": "kills",
+  "ctf": "clamp(damage_dealt/damage_taken, 0.5, 2.0) * (score + damage_dealt/20)\n[adjusted by time played]",
+  "tdm": "5*net_kills + 4*net_damage/100 + 3*damage_dealt/100\n[adjusted by time played]",
+  "ft": "damage_dealt/100 + net_frags/2 + thaws*2\n[adjusted by time played]"
+}
+metric_text = metric_text_dict.get(game_type_cd, "score/time_played")
+metric_text = "Performance metric for Glicko rating:\n" + metric_text
+%>
 % if game_type_cd in 'ca' 'ffa' 'duel' 'tdm':
 <thead>
   <tr>
@@ -70,8 +75,8 @@
     <th class="deaths">Damage Taken</th>
     <th class="score">Score</th>
     % if show_elo:
-    <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
-    <th>Elo Change</th>
+    <th class="score" title="${metric_text}">Perf</th>
+    <th width="110">Glicko Change</th>
     % endif
   </tr>
 </thead>
@@ -92,11 +97,9 @@
     <th class="pickups">Damage Dealt</th>
     <th class="fck">Damage Taken</th>
     <th class="score">Score</th>
-    <th class="score" title="Performance metric for Glicko rating:
-clamp(damage_dealt/damage_taken, 0.5, 2.0) * (score + damage_dealt/20)">Perf</th>
     % if show_elo:
-    <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
-    <th>Elo Change</th>
+    <th class="score" title="${metric_text}">Perf</th>
+    <th width="110">Glicko Change</th>
     % endif
   </tr>
 </thead>
@@ -116,11 +119,9 @@ clamp(damage_dealt/damage_taken, 0.5, 2.0) * (score + damage_dealt/20)">Perf</th
     <th class="pickups">Damage Dealt</th>
     <th class="fck">Damage Taken</th>
     <th class="score">Score</th>
-    <th class="score" title="Performance metric for Glicko rating:
-damage_dealt/100 + net_frags/2 + thaws*2">Perf</th>
     % if show_elo:
-    <th width="110" title="rating (RD rating deviation)">Glicko Change</th>
-    <th>Elo Change</th>
+    <th class="score" title="${metric_text}">Perf</th>
+    <th width="110">Glicko Change</th>
     % endif
   </tr>
 </thead>
