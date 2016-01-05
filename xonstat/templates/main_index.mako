@@ -20,6 +20,15 @@ Leaderboard
     <p id="statline">${day_stat_line|n} in the past 24 hours.</p>
     % endif
   </div>
+
+<div class="row" id="notice" style="background-color:#444;padding:0 10px 10px 10px;border-radius:10px;margin-top:0px;margin-bottom:10px">
+  <div class="sm-12">
+    <h3 style="display:inline-block">News</h3> <span class="note">2016-01-05 16:20 CET</span>
+    <br/>CA ratings were recalculated today. They include 3v3 matches and use a new metric to evaluate each player's performance in a match:
+    <br/>damage_dealt/100 + 0.25*kills is used to order all players (regardless of teams) and decide pairwise winner, loser or a draw within a 2pt margin.
+    <br/>Also, for any new matches, the number of rounds played per player is counted and used instead of time_played to scale up partial play time in a match.
+  </div>
+</div>
 </%block>
 
 <%block name="js">
