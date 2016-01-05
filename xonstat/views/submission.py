@@ -435,7 +435,7 @@ def get_or_create_map(session=None, name=None):
 
 
 def create_game(session, start_dt, game_type_cd, server_id, map_id,
-        match_id, duration, mod, winner=None, score1=None, score2=None):
+        match_id, duration, mod, winner=None, score1=None, score2=None, rounds=None):
     """
     Creates a game. Parameters:
 
@@ -451,7 +451,7 @@ def create_game(session, start_dt, game_type_cd, server_id, map_id,
     seq = Sequence('games_game_id_seq')
     game_id = session.execute(seq)
     game = Game(game_id=game_id, start_dt=start_dt, game_type_cd=game_type_cd,
-                server_id=server_id, map_id=map_id, winner=winner, score1=score1, score2=score2)
+                server_id=server_id, map_id=map_id, winner=winner, score1=score1, score2=score2, rounds=rounds)
     game.match_id = match_id
     game.mod = mod[:64]
 
@@ -854,6 +854,7 @@ def submit_stats(request):
         
         score1 = None
         score2 = None
+        rounds = game_meta.get('2', None)
         if len(raw_teams) > 0:
             score1 = max(raw_teams[0].get("scoreboard-score", 0), raw_teams[0].get("scoreboard-rounds", 0), raw_teams[0].get("scoreboard-caps", 0))
             score2 = max(raw_teams[1].get("scoreboard-score", 0), raw_teams[1].get("scoreboard-rounds", 0), raw_teams[1].get("scoreboard-caps", 0))
@@ -873,7 +874,8 @@ def submit_stats(request):
                 duration     = duration,
                 mod          = game_meta.get('O', None),
                 score1       = score1,
-                score2       = score2)
+                score2       = score2,
+                rounds       = rounds)
 
         # keep track of the players we've seen
         player_ids = []

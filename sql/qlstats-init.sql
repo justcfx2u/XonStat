@@ -63,3 +63,6 @@ alter table player_ranks_history
 
 alter table players
   add column region smallint;
+
+alter table games
+  add column rounds smallint;
