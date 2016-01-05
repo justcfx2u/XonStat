@@ -24,7 +24,11 @@ function loadLivePlayers() {
   $.getJSON("http://qlstats.net:8088/api/server/${server.ip_addr}:${server.port}/players", function(data) {
     if (!data.ok)
       return;
-    data.players.sort(function(a,b) { return (b.rating||0) - (a.rating||0) });
+    data.players.sort(function(a,b) {
+      var c = [5,3,1,2,4][a.team+1] - [5,3,1,2,4][b.team+1]; // red, blue, free, spec, unknown
+      if (c != 0) return c;
+      return (b.rating||0) - (a.rating||0) 
+    });
     var $table=$("#livePlayers tbody");
     var rows = $table.children();
     for (var i=0, c=data.players.length; i<10; i++) {
