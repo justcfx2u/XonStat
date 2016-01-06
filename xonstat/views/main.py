@@ -354,3 +354,6 @@ def top_maps_by_times_played(request):
     top_maps = Page(top_maps_q, current_page, items_per_page=25, url=page_url)
 
     return {'top_maps':top_maps}
+
+def news_index(request):
+    return {}

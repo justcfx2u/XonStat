@@ -36,10 +36,10 @@ Game Information
     % if game.duration is not None:
     Duration: ${"%s:%02d" % (game.duration.seconds/60, game.duration.seconds%60)}
     % endif
-    <br>Glicko:
+    <br>Rating Status:
     <%
-    statusMsg={0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 5: "uneven playtime in teams", 6: "not enough players", 7: "missing data", 8: "unsupported game settings/factory" }
-    msg= statusMsg[game.g2_status] if game.g2_status<=1 else "Not rated (" + statusMsg[game.g2_status] + ")"
+    statusMsg={0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 5: "uneven playtime in teams", 6: "not enough players", 7: "missing data", 8: "B-rated (custom settings/factory)" }
+    msg= statusMsg[game.g2_status] if game.g2_status in (1,8) else "Not rated (" + statusMsg[game.g2_status] + ")"
     %>
     ${msg}
     </p>

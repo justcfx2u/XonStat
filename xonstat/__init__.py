@@ -66,6 +66,10 @@ def main(global_config, **settings):
     config.add_route("main_index", "/")
     config.add_view(main_index, route_name="main_index", renderer="main_index.mako")
 
+    config.add_route("news_index", "/news")
+    config.add_view(news_index, route_name="news_index", renderer="news_index.mako")
+
+
     # MAIN SUBMISSION ROUTE
     config.add_route("submit_stats", "stats/submit")
     config.add_view(submit_stats, route_name="submit_stats", renderer="jsonp")

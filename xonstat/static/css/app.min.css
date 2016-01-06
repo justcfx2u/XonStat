@@ -368,6 +368,7 @@ img.flag { margin-top: -3px; margin-bottom: -3px }
 #ratingSelection a { cursor:pointer;border-left: #222 solid thick;padding-left: 3px;}
 #ratingSelection a.selected { border-left: white solid thick; }
 
+.newsitem { background-color:#444;padding:10px;border-radius:10px;margin-top:0px;margin:10px }
 
 /* bootstrap overrides */
 

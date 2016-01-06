@@ -21,6 +21,11 @@
           % endif
           ><a href="${request.route_url('main_index')}" title="Leaderboard">Leaderboard</a></li>
         <li 
+          % if active=="news":
+          class="active"
+          % endif
+          ><a href="${request.route_url('news_index')}" title="News">News</a></li>
+        <li 
           % if active=="players":
           class="active"
           % endif
