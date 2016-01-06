@@ -66,3 +66,18 @@ alter table players
 
 alter table games
   add column rounds smallint;
+
+-- 2016-01-06 02:00 CET
+
+alter table player_elos 
+  alter column g2_r drop default, 
+  alter column g2_rd drop default, 
+  alter column g2_dt drop default, 
+  alter column g2_games drop default;
+
+alter table player_elos
+  add column b_games int,
+  add column b_r float,
+  add column b_rd float,
+  add column b_dt int;
+

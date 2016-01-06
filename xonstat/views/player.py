@@ -513,7 +513,7 @@ def player_info_data(request):
         row = DBSession.query(Player, Hashkey).\
                 join(Hashkey, Hashkey.player_id == Player.player_id).\
                 filter((Player.player_id == player_id) | (Hashkey.hashkey == str(player_id))).\
-                filter(Player.active_ind == True).one_or_none()
+                filter(Player.active_ind == True).first()
 
         if row is not None:
                 player_id = row.Player.player_id
@@ -1147,7 +1147,7 @@ def player_weaponstats_data_json(request):
         "averages": avgs,
     }
 
-def players_elo(request):
+def players_elo(request, b_rating = False):
     hashkeys = request.matchdict["hashkeys"]
     p = re.compile("\\d+(?:\\+\\d+)*")
     if not p.match(hashkeys):
@@ -1164,11 +1164,18 @@ def players_elo(request):
         if row.Hashkey.hashkey not in players:
             players[row.Hashkey.hashkey] = { "steamid": row.Hashkey.hashkey }
         #players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "elo": int(row.PlayerElo.elo*10), "games": row.PlayerElo.games }
-        players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "elo": int(row.PlayerElo.g2_r - row.PlayerElo.g2_rd), "games": row.PlayerElo.g2_games }
+        if b_rating:
+          data = { "elo": int(row.PlayerElo.b_r - row.PlayerElo.b_rd), "games": row.PlayerElo.b_games } if row.PlayerElo.b_r is not None else None
+        else:
+          data = { "elo": int(row.PlayerElo.g2_r - row.PlayerElo.g2_rd), "games": row.PlayerElo.g2_games } if row.PlayerElo.g2_r is not None else None
+        if data is not None:
+          players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = data;
+    return { "players": players.values() }
 
-    return {
-      "players": players.values()
-    }
+
+def players_elo_b(request):
+    return players_elo(request, True);
+
 
 def players_glicko(request):
     hashkeys = request.matchdict["hashkeys"]

@@ -95,6 +95,9 @@ def main(global_config, **settings):
     config.add_route("players_elo", "/elo/{hashkeys}");
     config.add_view(players_elo, route_name="players_elo", renderer="jsonp")
 
+    config.add_route("players_elo_b", "/elo_b/{hashkeys}");
+    config.add_view(players_elo_b, route_name="players_elo_b", renderer="jsonp")
+
     config.add_route("players_glicko", "/glicko/{hashkeys}");
     config.add_view(players_glicko, route_name="players_glicko", renderer="jsonp")
 
