@@ -33,8 +33,14 @@
       % if show_elo and game_type_cd != 'race':
         <td class="player-score">${ "-" if pgstat.g2_score is None else pgstat.g2_score}</td>
 
+        % if pgstat.g2_old_r is not None:
+        <td>${int(round(pgstat.g2_old_r,0))} &plusmn; ${int(round(pgstat.g2_old_rd, 0))}</td>
+        % else:
+        <td>-</td>
+        % endif
+
         % if pgstat.g2_delta_r is not None:
-          <td title="r: ${int(round(pgstat.g2_delta_r,0))}; RD: ${int(round(pgstat.g2_delta_rd, 0))}">${int(round(pgstat.g2_delta_r,0) - round(pgstat.g2_delta_rd, 0))}</td>
+          <td>${int(round(pgstat.g2_delta_r,0))} / ${int(round(pgstat.g2_delta_rd, 0))}</td>
         % else:
           <td>-</td>
         % endif
@@ -76,7 +82,8 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
     <th class="score">Score</th>
     % if show_elo:
     <th class="score" title="${metric_text}">Perf</th>
-    <th width="110">Glicko Change</th>
+    <th width="110" title="estimated rating &plusmn; uncertainty">Old Glicko</th>
+    <th width="110" title="estimated rating / uncertainty">Glicko Change</th>
     % endif
   </tr>
 </thead>

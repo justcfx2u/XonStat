@@ -20,11 +20,13 @@
           class="active"
           % endif
           ><a href="${request.route_url('main_index')}" title="Leaderboard">Leaderboard</a></li>
+        % if request.registry.settings.get("qlstat.forum_index_url", "") != "":
         <li 
           % if active=="news":
           class="active"
           % endif
-          ><a href="${request.route_url('news_index')}" title="News">News</a></li>
+          ><a href="${request.route_url('news_index')}" title="News/Forum">News/Forum</a></li>
+        % endif
         <li 
           % if active=="players":
           class="active"

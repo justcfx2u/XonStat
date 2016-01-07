@@ -81,3 +81,9 @@ alter table player_elos
   add column b_rd float,
   add column b_dt int;
 
+
+-- 2016-01-07 18:00 CET
+
+alter table player_game_stats
+  add column g2_old_r float,
+  add column g2_old_rd float;

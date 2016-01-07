@@ -6,38 +6,37 @@
 ${nav.nav('news')}
 </%block>
 
-<%block name="title">
-News
+<%block name="css">
+${parent.css()}
+<style>
+  #pageFooter { display:none }
+</style>
 </%block>
 
-<%block name="js">
-${parent.js()}
-</%block>
+<!DOCTYPE html>
 
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <style>
+    html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
+    iframe { position: absolute; top: 60px; left: 0; overflow: hidden; width: 100%; height: 90%; }
+  </style>
+</head>
+<body>
+  <iframe src="" frameborder="0" id="forumIframe"></iframe>
 
-<div class="row newsitem">
-  <div class="col-sm-2">
-    2016-01-06 04:50 CET
-  </div>
-  <div class="col-sm-10">
-    <b>"B-Rating", Recalculated FFA, CTF, FT and TDM ratings</b>
-    <br />Matches with custom game settings and factories were removed from the standard rating.
-    <br />To provide balancing data for Vampiric PQL CA, instaFreeze, instaCTF and other mods there is now a separate B-rating for all custom matches.
-    <br />Support for the B-ratings on the web site is currently under construction.
-    <br />The B-ratings can be used by minqlx for balancing by using the /elo_b API URL instead of /elo
-    <br />With that in place, FFA, CTF, FT and TDM have been recalculated to remove custom matches from the main ratings and put them in the B-ratings.
-  </div>
-</div>
+  <script>
+    function onResize() { document.getElementById("forumIframe").style.height = (window.innerHeight - 65) + "px"; }
 
+    onResize();
+    var url = location.hash ?
+      "${request.registry.settings.get('qlstat.forum_posting_url', '')}".replace("$1", location.hash.substr(1)) :
+      "${request.registry.settings.get('qlstat.forum_index_url', '')}";
+    document.getElementById("forumIframe").src = url;
 
-<div class="row newsitem">
-  <div class="col-sm-2">
-    2016-01-05 16:20 CET
-  </div>
-  <div class="col-sm-10">
-    <b>Recalculated CA ratings</b>
-    <br />CA ratings were recalculated today. They include 3v3 matches and use a new metric to evaluate each player's performance in a match:
-    <br />damage_dealt/100 + 0.25*kills is used to order all players (regardless of teams) and decide pairwise winner, loser or a draw within a 2pt margin.
-    <br />Also, for any new matches, the number of rounds played per player is counted and used instead of time_played to scale up partial play time in a match.
-  </div>
-</div>
+    window.onresize = onResize;
+  </script>
+</body>
+</html>

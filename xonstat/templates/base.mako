@@ -48,7 +48,7 @@
       </div>
 
       <%block name="footer">
-      <div class="row shadowtext">
+      <div class="row shadowtext" id="pageFooter">
         <div class="col-sm-10 col-sm-offset-1">
           <p class="text-center">
             QLStats was created by PredatH0r as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,

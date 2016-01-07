@@ -236,6 +236,9 @@ def get_top_maps_by_times_played(cutoff_days):
 
     return top_maps
 
+@cache_region('seconds_term')
+def get_recent_games(limit):
+    return recent_games_q().limit(limit).all()
 
 def _main_index_data(request):
     try:
@@ -254,16 +257,17 @@ def _main_index_data(request):
 
     # the three top ranks tables
     ranks = []
-    for gtc in ['duel', 'ca', 'ctf', 'tdm', 'ffa', 'ft', 'race']:
-        rank = get_ranks(gtc)
-        if len(rank) != 0:
-            ranks.append(rank)
+    #for gtc in ['duel', 'ca', 'ctf', 'tdm', 'ffa', 'ft', 'race']:
+    #    rank = get_ranks(gtc)
+    #    if len(rank) != 0:
+    #        ranks.append(rank)
 
     right_now = datetime.utcnow()
     back_then = datetime.utcnow() - timedelta(days=leaderboard_lifetime)
 
     # top players by playing time
-    top_players = get_top_players_by_time(leaderboard_lifetime)
+    #top_players = get_top_players_by_time(leaderboard_lifetime)
+    top_players = []
 
     # top servers by number of total players played
     top_servers = get_top_servers_by_players(leaderboard_lifetime)
@@ -272,7 +276,7 @@ def _main_index_data(request):
     top_maps = get_top_maps_by_times_played(leaderboard_lifetime)
 
     # recent games played in descending order
-    rgs = recent_games_q(cutoff=back_then).limit(recent_games_count).all()
+    rgs = get_recent_games(recent_games_count)
     recent_games = [RecentGame(row) for row in rgs]
 
     return {'top_players':top_players,

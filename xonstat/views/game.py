@@ -5,6 +5,7 @@ import time
 from collections import OrderedDict
 from pyramid.response import Response
 from sqlalchemy import desc, func, over
+from beaker.cache import cache_regions, cache_region
 from webhelpers.paginate import Page, PageURL
 from xonstat.models import *
 from xonstat.util import page_url
@@ -141,6 +142,7 @@ def game_info_json(request):
     return _game_info_data(request)
 
 
+@cache_region('hourly_term')
 def _rank_index_data(request):
     if request.params.has_key('page'):
         current_page = request.params['page']

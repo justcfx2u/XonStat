@@ -72,8 +72,7 @@ Recent Games
           <th>Map</th>
           <th>Result</th>
           <th>Played</th>
-          <th title="Rating (Uncertainty)">Glicko Change</th>
-          <th>Elo Change</th>
+          <th title="r=Rating, RD=Rating Deviation (Uncertainty)">Glicko Change</th>
         </tr>
       </thead>
       <tbody>
@@ -104,22 +103,14 @@ Recent Games
             % if rg.g2_delta_r is None or rg.g2_delta_r==0:
             <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
             % elif rg.g2_delta_r > 0:
-            <span class="eloup">+${round(rg.g2_delta_r,0)} &nbsp; (${round(rg.g2_delta_rd, 0)})</span>
+            <span class="eloup" title="r: ${int(round(rg.g2_delta_r,0))}, RD: ${int(round(rg.g2_delta_rd,0))}">+${int(round(rg.g2_delta_r,0) - round(rg.g2_delta_rd, 0))}</span>
             %else:
-            <span class="elodown">${round(rg.g2_delta_r,0)} &nbsp; (${round(rg.g2_delta_rd, 0)})</span>
+            <span class="elodown" title="r: ${int(round(rg.g2_delta_r,0))}, RD: ${int(round(rg.g2_delta_rd,0))}">${int(round(rg.g2_delta_r,0) - round(rg.g2_delta_rd, 0))}</span>
             % endif
           </a>
-        </td>
-        <td>
-          <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">                               
-            % if rg.elo_delta is None or rg.elo_delta==0:
-            <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
-            % elif rg.elo_delta > 0:
-            <span class="eloup">+${round(rg.elo_delta,2)}</span>
-            % else:
-            <span class="elodown">${round(rg.elo_delta,2)}</span>
-            % endif
-          </a>
+          %if rg.g2_status == 8:
+          &nbsp; (<span title="B-Rating for fun mods">B</span>)
+          %endif
         </td>
       </tr>
       % endfor

@@ -9,37 +9,50 @@ Leaderboard
 </%block>
 
 <%block name="hero_unit">
-  <div class="text-center shadowtext" style="margin-top: 40px">
-    % if stat_line is None:
-    <p id="statline">Tracking Quake Live statistics since November 2015.</p>
-    % else:
-    <p id="statline">Tracking ${stat_line|n} since November 2015.</p>
-    % endif
+<div class="text-center shadowtext" style="margin-top: 40px">
+  % if stat_line is None:
+  <p id="statline">Tracking Quake Live statistics since November 2015.</p>
+  % else:
+  <p id="statline">Tracking ${stat_line|n} since November 2015.</p>
+  % endif
 
-    % if day_stat_line is not None:
-    <p id="statline">${day_stat_line|n} in the past 24 hours.</p>
-    % endif
+  % if day_stat_line is not None:
+  <p id="statline">${day_stat_line|n} in the past 24 hours.</p>
+  % endif
+</div>
+
+<div class="row newsitem" style="background-color:#822;display:none">
+  <div class="col-sm-2">
+    2016-01-06 07:50 CET
   </div>
+  <div class="col-sm-10">
+    FFA ratings are currently being recalculated and unavailable for about 1h.
+  </div>
+</div>
+
+<div class="row newsitem">
+  <div class="col-sm-2">
+    2016-01-06 21:00 CET
+  </div>
+  <div class="col-sm-10">
+    added <a href="/news">News/Forum</a> (hosted by plusforward.net) with a <a href="/news#4488">Rating Q&A</a> thread
+</div>
+</div>
 
 <div class="row newsitem">
   <div class="col-sm-2">
     2016-01-06 04:50 CET
   </div>
   <div class="col-sm-10">
-    <b>"B-Rating", Recalculated FFA, CTF, FT and TDM ratings</b>
-    <br />Matches with custom game settings and factories were removed from the standard rating.
-    <br />To provide balancing data for Vampiric PQL CA, instaFreeze, instaCTF and other mods there is now a separate B-rating for all custom matches.
-    <br />Support for the B-ratings on the web site is currently under construction.
-    <br />The B-ratings can be used by minqlx for balancing by using the /elo_b API URL instead of /elo
-    <br />With that in place, FFA, CTF, FT and TDM have been recalculated to remove custom matches from the main ratings and put them in the B-ratings.
-  </div>
+    added <a href="/news#4485">B-Rating</a> for custom modes, recalculated all game types <a href="/news#4485"> ...</a>
+</div>
 </div>
 </%block>
 
 <%block name="js">
   ${parent.js()}
 
-  <script>
+<script>
   var region=1;
   var gameType="duel";
   var dataCache={};
@@ -83,7 +96,16 @@ Leaderboard
   });
 
   fillRanking(region, gameType);
-  </script>
+
+  /***************************/
+
+  function setLinkToServerAdminPanel() {
+    var url = '${request.registry.settings.get("qlstats.server_admin_panel_url", "")}' || "http://" + location.hostname + ":8081/server.html";
+    if (url && url.toLowerCase().trim() != "false")
+      $("#btnAddServer").attr("href", url).css("display", "inline-block");
+  }
+  setLinkToServerAdminPanel();
+</script>
 </%block>
 
 <div class="row">
@@ -91,9 +113,6 @@ Leaderboard
   ##### RANKS #####
   <div class="col-sm-6 col-md-3">
     <h3>Player Ranking</h3>
-  % if len(ranks) == 0:
-    <p style="text-align: center;"><i class="icon-white icon-info-sign"> </i> You don't seem to have any ranks yet.</p>
-  % else: 
     <div id="ratingSelection" style="float:left;width:50px">
       <a data-region="1">EU</a><br>
       <a data-region="5">NA</a><br>
@@ -120,24 +139,22 @@ Leaderboard
         </thead>
         <tbody>
 
-        <% i = 1 %>
-        % while i <= 10:
-        <tr>
-          <td>${i}</td>
-          <td style="white-space:nowrap;overflow-x:hidden"></td>
-          <td></td>
-        </tr>
-        <% i = i+1 %>
-        % endwhile
+          <% i = 1 %>
+          % while i <= 10:
+          <tr>
+            <td>${i}</td>
+            <td style="white-space:nowrap;overflow-x:hidden"></td>
+            <td></td>
+          </tr>
+          <% i = i+1 %>
+          % endwhile
 
         </tbody>
       </table>
       <p class="note"><a id="moreRanking" href="" title="See more rankings">More...</a></p>
     </div>
-  % endif
   </div> <!-- /span3 -->
-
-   ##### ACTIVE MAPS #####
+  ##### ACTIVE MAPS #####
   <div class="col-sm-6 col-md-3 col-md-push-6">
     <h3>Most Active Maps</h3>
     <table class="table table-hover table-condensed">
@@ -149,8 +166,8 @@ Leaderboard
         </tr>
       </thead>
       <tbody>
-      <% i = 1 %>
-      % for (map_id, name, count) in top_maps:
+        <% i = 1 %>
+        % for (map_id, name, count) in top_maps:
         <tr>
           <td>${i}</td>
           % if map_id != '-':
@@ -161,16 +178,15 @@ Leaderboard
           <td>${count}</td>
         </tr>
         <% i = i+1 %>
-      % endfor
+        % endfor
       </tbody>
     </table>
     <p class="note"><a href="${request.route_url('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
   </div> <!-- /span4 -->
-
-
   ##### ACTIVE SERVERS #####
   <div class="col-sm-12 col-md-6 col-md-pull-3">
     <h3 style="display:inline-block">Most Active Servers</h3> <p class="note" style="display:inline-block">*Most active stats are from the past 7 days</p>
+    <p style="position:absolute;right:15px;top:20px"><a id="btnAddServer" class="btn btn-primary btn-small" style="display:none" href="">Add Server</a></p>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
@@ -181,14 +197,14 @@ Leaderboard
         </tr>
       </thead>
       <tbody>
-      <% i = 1 %>
-      % for (server_id, name, count, country_code, country_name) in top_servers:
+        <% i = 1 %>
+        % for (server_id, name, count, country_code, country_name) in top_servers:
         <tr>
           <td>${i}</td>
           <td>
-          % if country_code is not None:
-          <img src="/static/images/flags/${country_code.lower()}.png" alt="${country_name}" class="flag"> ${country_code}
-          % endif
+            % if country_code is not None:
+            <img src="/static/images/flags/${country_code.lower()}.png" alt="${country_name}" class="flag"> ${country_code}
+            % endif
           </td>
           % if server_id != '-':
           <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('server_info', id=server_id)}" title="Go to the server info page for ${name}">${name}</a></td>
@@ -198,17 +214,14 @@ Leaderboard
           <td>${count}</td>
         </tr>
         <% i = i+1 %>
-      % endfor
+        % endfor
       </tbody>
-    </table>
-    <p style="float:right"><a href="http://qlstats.net:8081/servers.html">Add servers...</a></p>
-    <p class="note"><a href="${request.route_url('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>    
+    </table>   
+    <p class="note"><a href="${request.route_url('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>
   </div> <!-- /span4 -->
 
 
 </div> <!-- /row -->
-
-
 ##### RECENT GAMES #####
 % if len(recent_games) > 0:
 <div class="row">
@@ -228,7 +241,7 @@ Leaderboard
         </tr>
       </thead>
       <tbody>
-      % for rg in recent_games:
+        % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
           <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24"> ${rg.game_type_cd}</td>
@@ -242,18 +255,19 @@ Leaderboard
           <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
           <td class="nostretch">
             % if rg.player_id > 2:
-            <a href="${request.route_url('player_info', id=rg.player_id)}" title="Go to the player info page for this player">${rg.nick_html_colors|n}</a></td>
-            % else:
-            ${rg.nick_html_colors|n}</td>
-            % endif
-          <td>
-          % if rg.score1 is not None:
-          ${rg.score1}:${rg.score2}
+            <a href="${request.route_url('player_info', id=rg.player_id)}" title="Go to the player info page for this player">${rg.nick_html_colors|n}</a>
+          </td>
+          % else:
+          ${rg.nick_html_colors|n}</td>
           % endif
+          <td>
+            % if rg.score1 is not None:
+            ${rg.score1}:${rg.score2}
+            % endif
           </td>
         </tr>
         % endfor
-        </tbody>
+      </tbody>
     </table>
     <p><a href="${request.route_url('game_index')}">More...</a></p>
   </div> <!-- /span12 -->
