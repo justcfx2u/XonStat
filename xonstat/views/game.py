@@ -28,11 +28,18 @@ def _game_info_data(request):
     try:
         notfound = False
 
-        (game, server, map, gametype) = DBSession.query(Game, Server, Map, GameType).\
-                filter(Game.game_id == game_id).\
+        q = DBSession.query(Game, Server, Map, GameType).\
                 filter(Game.server_id == Server.server_id).\
                 filter(Game.map_id == Map.map_id).\
-                filter(Game.game_type_cd == GameType.game_type_cd).one()
+                filter(Game.game_type_cd == GameType.game_type_cd)
+        if "-" in game_id:
+                q = q.filter(Game.match_id == game_id)
+        else:
+                q = q.filter(Game.game_id == game_id)
+
+        
+        (game, server, map, gametype) = q.one()
+        game_id = game.game_id
 
         pgstats = DBSession.query(PlayerGameStat).\
                 filter(PlayerGameStat.game_id == game_id).\

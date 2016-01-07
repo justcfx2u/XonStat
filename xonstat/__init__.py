@@ -149,7 +149,7 @@ def main(global_config, **settings):
     config.add_view(top_maps_by_times_played, route_name="top_maps_by_times_played", renderer="top_maps_by_times_played.mako")
 
     # GAME ROUTES
-    config.add_route("game_info",      "/game/{id:\d+}")
+    config.add_route("game_info",      "/game/{id:\d+|[0-9a-fA-F]+-[0-9a-fA-F\-]+}")
     config.add_view(game_info,      route_name="game_info",      renderer="game_info.mako")
 
     config.add_route("game_info_json", "/game/{id:\d+}.json")

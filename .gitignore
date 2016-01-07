@@ -18,3 +18,4 @@ feeder/bin/
 feeder/.*
 XonStat.egg-info/
 feeder/temp/
+qlstats.ini

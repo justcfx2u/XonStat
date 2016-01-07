@@ -21,7 +21,9 @@ Server Information
   ${parent.js()}
 <script>
 function loadLivePlayers() {
-  $.getJSON("http://qlstats.net:8088/api/server/${server.ip_addr}:${server.port}/players", function(data) {
+  var url = "${request.registry.settings.get('qlstat.feeder_webapi_url', '')}" || "http://" + location.hostname + ":8081";
+  var url = url.replace(/\/$/, "") + "/api/server/${server.ip_addr}:${server.port}/players";
+  $.getJSON(url, function(data) {
     if (!data.ok)
       return;
     data.players.sort(function(a,b) {
