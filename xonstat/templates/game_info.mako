@@ -126,3 +126,6 @@ Game Information
 % endif
 
 % endif
+
+
+<script src="/static/js/weaponInfo.js"></script>
