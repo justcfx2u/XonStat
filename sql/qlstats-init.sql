@@ -91,3 +91,9 @@ alter table player_game_stats
 -- 2016-01-08 13:40 CET
 
 insert into cd_game_type (game_type_cd,descr,active_ind) values ('ad','Attack & Defend', true);
+alter table player_elos 
+  alter column g2_r drop not null,
+  alter column g2_rd drop not null,
+  alter column g2_vol drop not null,
+  alter column g2_dt drop not null,
+  alter column g2_games drop not null;
