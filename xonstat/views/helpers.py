@@ -46,6 +46,8 @@ class RecentGame(object):
         self.rank = row.rank
         self.team = row.team
         self.g2_status = row.g2_status
+        self.g2_old_r = row.g2_old_r
+        self.g2_old_rd = row.g2_old_rd
 
         try:
             self.elo_delta = row.elo_delta
@@ -94,10 +96,11 @@ class RecentGame(object):
             "nick_html_colors": self.nick_html_colors,
             "rank": self.rank,
             "team": self.team,
-            "elo_delta": self.elo_delta,
-            "g2_delta_r": self.g2_delta_r,
-            "g2_delta_rd": self.g2_delta_rd,
-            "g2_status": self.g2_status
+            "g2_delta_r": int(round(self.g2_delta_r,0)) if self.g2_delta_r else None,
+            "g2_delta_rd": int(round(self.g2_delta_rd, 0)) if self.g2_delta_rd else None,
+            "g2_status": self.g2_status,
+            "g2_old_r":int(round(self.g2_old_r, 0)) if self.g2_old_r else None,
+            "g2_old_rd":int(round(self.g2_old_rd, 0)) if self.g2_old_rd else None
             }
 
     def __repr__(self):
@@ -130,7 +133,7 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
             Server.server_id, Server.name.label('server_name'), Server.country, Server.location,
             Map.map_id, Map.name.label('map_name'), 
             PlayerGameStat.player_id, PlayerGameStat.nick, PlayerGameStat.rank, PlayerGameStat.team,           
-            PlayerGameStat.elo_delta, PlayerGameStat.g2_delta_r, PlayerGameStat.g2_delta_rd).\
+            PlayerGameStat.g2_old_r, PlayerGameStat.g2_old_rd, PlayerGameStat.g2_delta_r, PlayerGameStat.g2_delta_rd).\
             filter(Game.server_id==Server.server_id).\
             filter(Game.map_id==Map.map_id).\
             filter(Game.game_id==PlayerGameStat.game_id).\

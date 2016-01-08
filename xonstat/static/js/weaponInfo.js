@@ -1,111 +1,70 @@
-var tableId = "#accuracyTable";
+var weaponStats, weaponCols; // arrays generated in accuracy.mako
 
-function main(data, container, show_weapon_kills) {
-  var wpns = ['gt', 'mg', 'sg', 'gl', 'rl', 'lg', 'rg', 'pg', 'hmg', 'bfg', 'cg', 'ng', 'pm', 'gh'];
-  container.append($(document.createElement('table')).prop({
-    'id': tableId.substring(1),
-    'class': 'table table-hover table-condensed',
-    'style': 'margin-bottom:5px'
-  }));
-  $(tableId).append(document.createElement('colgroup'));
-  $(tableId).append(document.createElement('thead'));
-  $(tableId + ' thead').append(document.createElement('tr'));
-  $(tableId).append(document.createElement('tbody'));
-  
-  data.weaponFired.gt = true;
-  
-  
-  $(tableId + ' colgroup').append('<col style="min-width:150px">');
-  $(tableId + ' thead tr').append('<th></th>');
-  
-  // making headers
-  wpns.forEach(function(item) {
-    if (data.weaponFired[item]) {
-      $(tableId + ' colgroup').append('<col width="80px" style="min-width:80px">');
-      $(tableId + ' thead tr').append('<th style="padding: 4px 5px;"><img src="/static/images/24x24/' + item + '.png" alt="' + data.weapons[item].name + '" style="width:24px; height:24px;">' + item.toUpperCase() + '</th>');
-    }
-  });
-  
-  // apending weapons stats
-  data.pgstats.forEach(function(item) {
-    var row = $(document.createElement('tr'));
-    var player_weapon_stats = data.pwstats[item.player_id.toString()];
-    
-    row.append('<td><a href="/player/' + item.player_id.toString() + '"><span style="color: white">' + player_weapon_stats.nick + '</span></a></td>');
-    wpns.forEach(function(wpn) {
-      if (data.weaponFired[wpn])
-        if (show_weapon_kills) {
-          if (player_weapon_stats.weapons[wpn][0] != 0)
-            row.append('<td class="weapon_'  + wpn + '">' + player_weapon_stats.weapons[wpn][0] + '</td>');
-          else
-            row.append('<td></td>');
-        } else {
-          if (player_weapon_stats.weapons[wpn][2] != 0) {
-            var acc = player_weapon_stats.weapons[wpn][2] / player_weapon_stats.weapons[wpn][3] * 100;
-            row.append('<td class="weapon_'  + wpn + '">' + Math.floor(acc) + '%</td>');
-          } else
-            row.append('<td></td>');
-        }
-    });
-    
-    $(tableId + ' tbody').append(row);
-    
-  });
-  
-  // making max values bold and underlined
-  wpns.forEach(function(wpn) {
-    var maxItems = [];
-    var max = 0;
-    $(tableId + ' td.weapon_' + wpn).each(function() {
-      var item = $(this);
-      var item_value = parseInt(item.html());
-      if ( (max == 0) || (item_value > max) ) {
-        maxItems = [item];
-        max = item_value;
-      } else if (item_value == max) {
-        maxItems.push(item);
-      }
-    });
-    
-    maxItems.forEach(function (item) {
-      item.css({
-        'font-weight': 'bold',
-        'text-decoration': 'underline'
-      });
-    });
-  });
+function showStats(info) {
+  switch (info) {
+    case "all":
+      showWeaponStats('<div>Kills / Acc</div><div style="font-size:x-small; color:#888">Hits / Shots</div>', getWeaponSummary);
+      break;
+    case "acc":
+      showWeaponStats("", getWeaponValue, "acc", getMaxColumnValue("acc"), "%");
+      break;
+    case "kills":
+      showWeaponStats("", getWeaponValue, "kills", getMaxColumnValue("kills"));
+      break;
+    case "hits":
+      showWeaponStats("", getWeaponValue, "hits", getMaxColumnValue("hits"));
+      break;
+    case "shots":
+      showWeaponStats("", getWeaponValue, "fired", getMaxColumnValue("fired"));
+      break;
+  }  
 }
 
-$(document).ready(function() {
-  var gamedata;
-  var main_container = $(tableId).parent().parent();
-  var table_container;
-  main_container.empty();
-  $.get(window.location.href + '.json', function (data) {
-    main_container.append("<h3>Weapon Info</h3>");
-    main_container.append(
-    $(document.createElement('a'))
-      .prop('href', 'javascript:void(0)')
-      .html("Accuracy")
-      .on('click', function() {
-        $(tableId).remove();
-        main(gamedata, table_container, 0); 
-      })
-    );
-    main_container.append("<span> | </span>");
-    main_container.append(
-    $(document.createElement('a'))
-      .prop('href', 'javascript:void(0)')
-      .html("Frags")
-      .on('click', function() {
-        $(tableId).remove();
-        main(gamedata, table_container, 1); 
-      })
-    );
-    main_container.append('<div style="width:100%;overflow-x:auto">');
-    table_container = main_container.find("div");
-    
-    gamedata = data;
-    main(gamedata, table_container, 0);
+function showWeaponStats(legend, contentProvider, field, maxVals, suffix) {
+  for (var i = 0; i<weaponStats.length; i++) {
+    var cells = $($("#accuracyTable tbody tr")[i]).children();
+    $(cells[1]).html(legend);
+
+    for (var j = 0; j<weaponCols.length; j++) {
+      var $cell = $(cells[j + 2]);
+      var data = weaponStats[i][weaponCols[j]];
+      $cell.html(contentProvider(data, i, j, field, maxVals, suffix || ""));
+    }
+  }
+}
+
+function getWeaponSummary(data) {
+  if (!data || !data.kills && !data.fired && !data.hits)
+    return "";
+  var html = "<div>" + data.kills + " / " + data.acc + "%</div>";
+  html += '<div style="font-size:x-small; color:#888">' + data.hits + " / " + data.fired + '</div>';
+  return html;
+}
+
+function getWeaponValue(data, i, j, field, maxVals, suffix) {
+  var val = data[field];
+  if (!val) return "";
+  if (val == maxVals[j])
+    return "<span style='color:yellow'>" + val + suffix + "</span>";
+  return val + suffix;
+}
+
+function getMaxColumnValue(field) {
+  var maxColVal = [];
+  weaponCols.forEach(function(w, i) {
+    for (var j = 0; j < weaponStats.length; j++) {
+      maxColVal[i] = Math.max(maxColVal[i] || 0, weaponStats[j][w][field]);
+    }
   });
+  return maxColVal;
+}
+
+
+
+$("#chartRow h3").click(function() {
+  $("#chartRow h3").removeClass("selected");
+  $(this).addClass("selected");
+  showStats($(this).data("info"));
 });
+
+showStats("all");

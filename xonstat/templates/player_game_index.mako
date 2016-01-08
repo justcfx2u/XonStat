@@ -72,7 +72,8 @@ Recent Games
           <th>Map</th>
           <th>Result</th>
           <th>Played</th>
-          <th title="r=Rating, RD=Rating Deviation (Uncertainty)">Glicko Change</th>
+          <th title="Rating &plusmn; Uncertainty">Old Glicko</th>
+          <th title="Rating / Uncertainty">Glicko Change</th>
         </tr>
       </thead>
       <tbody>
@@ -98,14 +99,15 @@ Recent Games
           % endif
         </td>
         <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
-        <td class="tdcenter">
+        <td>${str(int(round(rg.g2_old_r,0))) + " &plusmn; " + str(int(round(rg.g2_old_rd,0))) if rg.g2_old_r else ""|n}</td>
+        <td>
           <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">           
             % if rg.g2_delta_r is None or rg.g2_delta_r==0:
             <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
             % elif rg.g2_delta_r > 0:
-            <span class="eloup" title="r: ${int(round(rg.g2_delta_r,0))}, RD: ${int(round(rg.g2_delta_rd,0))}">+${int(round(rg.g2_delta_r,0) - round(rg.g2_delta_rd, 0))}</span>
+            <span class="eloup">+${int(round(rg.g2_delta_r,0))} / ${int(round(rg.g2_delta_rd, 0))}</span>
             %else:
-            <span class="elodown" title="r: ${int(round(rg.g2_delta_r,0))}, RD: ${int(round(rg.g2_delta_rd,0))}">${int(round(rg.g2_delta_r,0) - round(rg.g2_delta_rd, 0))}</span>
+            <span class="elodown">${int(round(rg.g2_delta_r,0))} / ${int(round(rg.g2_delta_rd, 0))}</span>
             % endif
           </a>
           %if rg.g2_status == 8:

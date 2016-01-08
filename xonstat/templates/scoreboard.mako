@@ -106,7 +106,8 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
     <th class="score">Score</th>
     % if show_elo:
     <th class="score" title="${metric_text}">Perf</th>
-    <th width="110">Glicko Change</th>
+    <th width="110" title="estimated rating &plusmn; uncertainty">Old Glicko</th>
+    <th width="110" title="estimated rating / uncertainty">Glicko Change</th>
     % endif
   </tr>
 </thead>
@@ -128,7 +129,8 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
     <th class="score">Score</th>
     % if show_elo:
     <th class="score" title="${metric_text}">Perf</th>
-    <th width="110">Glicko Change</th>
+    <th width="110" title="estimated rating &plusmn; uncertainty">Old Glicko</th>
+    <th width="110" title="estimated rating / uncertainty">Glicko Change</th>
     % endif
   </tr>
 </thead>

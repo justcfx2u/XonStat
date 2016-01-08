@@ -7,13 +7,18 @@
 ${nav.nav('games')}
 </%block>
 
+
 <%block name="css">
 ${parent.css()}
 </%block>
 
+
 <%block name="js">
+
 ${parent.js()}
+<script src="/static/js/weaponInfo.js"></script>
 </%block>
+
 
 <%block name="title">
 Game Information
@@ -117,9 +122,13 @@ Game Information
 
 
 % if len(pwstats) > 0:
-<div class="row">
+<div class="row" id="chartRow">
   <div class="col-sm-12">
-    <h3>Accuracy Information</h3>
+    <h3 data-info="all" class="selected">Weapon Summary</h3>
+    <h3 data-info="acc">Accuracy</h3>
+    <h3 data-info="kills">Kills</h3>
+    <h3 data-info="hits">Hits</h3>
+    <h3 data-info="shots">Shots</h3>
     ${accuracy(pwstats, weapons, weaponFired)}
   </div>
 </div>
@@ -127,5 +136,3 @@ Game Information
 
 % endif
 
-
-<script src="/static/js/weaponInfo.js"></script>

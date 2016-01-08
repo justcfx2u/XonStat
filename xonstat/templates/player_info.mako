@@ -104,19 +104,19 @@ function fillRecentGames(data) {
     html.push('<td><a href="/map/' + rg.map_id + '" title="Go to the detail page for this map">' + rg.map_name + '</a></td>');
     html.push('<td>' + (rg.team ? (rg.team == rg.winner ? "Win" : "Loss") : rg.rank == 1 ? "Win" : "Loss (#" + rg.rank + ")") + "</td>");
     html.push('<td><span class="abstime" data-epoch="' + rg.epoch + '">' + dateStr(rg.epoch) + '</span></td>');
+    html.push('<td>' + (rg.g2_old_r ? rg.g2_old_r + " &plusmn; " + rg.g2_old_rd : "") + '</td>')
     html.push('<td class="tdcenter">');
-    html.push('<a href="/game/' + rg.game_id + '" title="View detailed information about this game">');
-    var delta = Math.round(rg.g2_delta_r) - Math.round(rg.g2_delta_rd);
-    var alt = "r: " + Math.round(rg.g2_delta_r) + "; rd: " + Math.round(rg.g2_delta_rd);
+    html.push('<a href="/game/' + rg.game_id + '" title="View detailed information about this game">');  
+    var delta =  rg.g2_delta_r + " / " + rg.g2_delta_rd;
     if ((rg.g2_status != 1 && rg.g2_status != 8) || typeof(rg.g2_delta_r) !== "number")
       html.push('<span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>');
     else if (rg.g2_delta_r > 0)
-      html.push('<span class="eloup" title="' + alt + '">+' + delta + '</span>');
+      html.push('<span class="eloup">+' + delta + '</span>');
     else
-      html.push('<span class="elodown" title="' + alt + '">' + delta + '</span>');
+      html.push('<span class="elodown">' + delta + '</span>');
     html.push('</a>');
     if (rg.g2_status == 8)
-      html.push(' &nbsp; (<span title="B-Rating for fun mods">B</span>) ');
+      html.push(' &nbsp; (<span title="B-Rating for custom settings/factories">B</span>) ');
     html.push('</td>');
 
     $tbody.append("<tr>" + html.join("\n") + "</tr>");
@@ -205,17 +205,22 @@ Player Information
         </div>
 
         <div class="col-sm-4">
-          % if g.game_type_cd in elos:
+          <%
+            def tostr(game_type_cd, games, r, rd):
+              if not r:
+                return "-"
+              return str(int(round(r,0))) + " &plusmn; " + str(int(round(rd, 0))) + " (" + game_type_cd + ", " + str(games or 0) + " games)"
+            
+            ratings = elos.get(g.game_type_cd)
+            rating_a = tostr(ratings.game_type_cd, ratings.g2_games, ratings.g2_r, ratings.g2_rd) if ratings else "-"
+            rating_b = tostr(ratings.game_type_cd, ratings.b_games, ratings.b_r, ratings.b_rd) if ratings else "-"
+          %>
           % if g.game_type_cd == 'overall':
-          Best Rating: <small>${int(elos[g.game_type_cd].g2_r - elos[g.game_type_cd].g2_rd) if elos[g.game_type_cd].g2_r is not None else ""} (${elos[g.game_type_cd].game_type_cd}, ${elos[g.game_type_cd].g2_games} games)</small>
-          <br />Best B-Rating: 
+          Best Rating: <small>${rating_a|n}</small>
+          <br />Best B-Rating: TBD
           % else:
-          Rating: <small>${int(elos[g.game_type_cd].g2_r - elos[g.game_type_cd].g2_rd) if elos[g.game_type_cd].g2_r is not None else ""} (${elos[g.game_type_cd].g2_games} games)</small>
-          <br /><span title="Rating for fun mods">B-Rating: <small>${int(elos[g.game_type_cd].b_r - elos[g.game_type_cd].b_rd) if elos[g.game_type_cd].b_r is not None else ""} (${elos[g.game_type_cd].b_games or 0} games) </small></span>
-          % endif
-          % else:
-          Rating: -
-          <br />B-Rating: -
+          Rating: <small>${rating_a|n}</small>
+          <br /><span title="Rating for custom settings/factories">B-Rating: <small>${rating_b|n}</small></span>
           % endif
           <br />
 
@@ -321,7 +326,8 @@ Player Information
           <th>Map</th>
           <th>Result</th>
           <th>Played</th>
-          <th title="Rating (Uncertainty)">Glicko Change</th>
+          <th title="Rating &plusmn; Uncertainty">Old Glicko</th>
+          <th title="Rating / Uncertainty">Glicko Change</th>
         </tr>
       </thead>
       <tbody>

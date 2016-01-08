@@ -1165,9 +1165,9 @@ def players_elo(request, b_rating = False):
             players[row.Hashkey.hashkey] = { "steamid": row.Hashkey.hashkey }
         #players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "elo": int(row.PlayerElo.elo*10), "games": row.PlayerElo.games }
         if b_rating:
-          data = { "elo": int(row.PlayerElo.b_r - row.PlayerElo.b_rd), "games": row.PlayerElo.b_games } if row.PlayerElo.b_r is not None else None
+          data = { "elo": int(round(row.PlayerElo.b_r,0)), "games": row.PlayerElo.b_games } if row.PlayerElo.b_r is not None else None
         else:
-          data = { "elo": int(row.PlayerElo.g2_r - row.PlayerElo.g2_rd), "games": row.PlayerElo.g2_games } if row.PlayerElo.g2_r is not None else None
+          data = { "elo": int(round(row.PlayerElo.g2_r,0)), "games": row.PlayerElo.g2_games } if row.PlayerElo.g2_r is not None else None
         if data is not None:
           players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = data;
     return { "players": players.values() }
