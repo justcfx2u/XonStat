@@ -87,3 +87,7 @@ alter table player_elos
 alter table player_game_stats
   add column g2_old_r float,
   add column g2_old_rd float;
+
+-- 2016-01-08 13:40 CET
+
+insert into cd_game_type (game_type_cd,descr,active_ind) values ('ad','Attack & Defend', true);
