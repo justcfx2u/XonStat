@@ -60,13 +60,13 @@ h6 {
   text-transform: uppercase;
 }
 table {
-  background: #222;
+  background: #111;
     --background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
     /*border: 1px solid #436688;*/
 }
 table th {
    /*border: 1px solid #436688; */
-   background-color: #002850;
+   background-color: #003060;
 }
 table td {
     /*border: 1px solid #436688;*/
@@ -99,7 +99,7 @@ table td {
     top: -25px;
 }
 #xonborder {
-  background: #333;
+  background: #222;
     --background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
     border-radius: 15px 15px 15px 15px;
     margin-bottom: 30px;
@@ -361,12 +361,12 @@ img.flag { margin-top: -3px; margin-bottom: -3px }
 
 .abstime { white-space: pre; }
 
-#chartRow h3 { display: inline-block;margin-right: 40px;cursor: pointer;border-bottom: #222 solid thick; }
-#chartRow h3.selected { border-bottom: white solid thick; }
-#chartRow h4 { display: inline-block;margin-right: 20px;cursor: pointer;border-bottom: #222 solid thick; }
-#chartRow h4.selected { border-bottom: white solid thick; }
-#ratingSelection a { cursor:pointer;border-left: #222 solid thick;padding-left: 3px;}
-#ratingSelection a.selected { border-left: white solid thick; }
+#chartRow h3 { display: inline-block;margin-right: 40px;cursor: pointer;border-bottom: #444 solid thick; }
+#chartRow h3.selected { border-bottom: #ccc solid thick; }
+#chartRow h4 { display: inline-block;margin-right: 20px;cursor: pointer;border-bottom: #444 solid thick; }
+#chartRow h4.selected { border-bottom: #ccc solid thick; }
+#ratingSelection a { cursor:pointer;border-left: #444 solid thick;padding-left: 3px;}
+#ratingSelection a.selected { border-left: #ccc solid thick; }
 
 .newsitem { background-color:#666;padding:10px;border-radius:10px;margin-top:0px;margin:10px }
 
@@ -377,14 +377,26 @@ span.ql3 { color: rgb(255, 255, 0); }
 span.ql4 { color:rgb(51,102,255); }
 span.ql5 { color:rgb(51,255,255); }
 span.ql6 { color:rgb(197,0,255); }
-span.ql7 { color:rgb(240,240,240); }
+span.ql7 { color:rgb(204,204,204); }
 
 /* bootstrap overrides */
 
 a {
-    color: #428bca;
-    text-decoration: none;
+  color: rgb(82, 173, 252); /*#428bca;*/
+   text-decoration: none;
 }
+a:hover {
+  color: goldenrod;
+  text-decoration:none
+}
+table a {
+  color: #428bca;
+}
+table a:hover {
+   color: rgb(82, 173, 252); /*#428bca;*/
+   text-decoration: none;  
+}
+
 .btn {
   padding: 1px 12px;
 }
