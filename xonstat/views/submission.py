@@ -136,30 +136,8 @@ def get_remote_addr(request):
 
 def is_supported_gametype(gametype, version):
     """Whether a gametype is supported or not"""
-    is_supported = False
-
-    # if the type can be supported, but with version constraints, uncomment
-    # here and add the restriction for a specific version below
-    supported_game_types = (
-            'ffa',
-      'duel',
-            'tdm',
-            'ctf',
-            'ca',
-            'ft',
-      'race',
-        )
-
-    if gametype in supported_game_types:
-        is_supported = True
-    else:
-        is_supported = False
-
-    # some game types were buggy before revisions, thus this additional filter
-    if gametype == 'ca' and version <= 5:
-        is_supported = False
-
-    return is_supported
+    # for QL this check is already done in feeder.node.js
+    return True
 
 
 def do_precondition_checks(request, game_meta, raw_players):

@@ -1,6 +1,6 @@
 <%def name="nav(active='leaderboard', login_logout=False)">
 
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="height: auto;">
+<nav class="navbar navbar-inverse navbar-fixed-top" style="height: auto;">
   <div class="container-fluid">
     <div class="navbar-header">  
       <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -9,7 +9,7 @@
         <span class="icon-bar"></span>
       </a>                      
       <a class="navbar-brand" href="${request.route_url('main_index')}">
-        <img width="32" height="32" src="/static/css/img/menu_icon.png" style="float:left;margin-top:-5px;margin-right:10px;-webkit-filter: drop-shadow(0px 5px 5px grey);" />
+        <img width="32" height="32" src="/static/css/img/menu_icon.png" alt="QL Logo" style="float:left;margin-top:-5px;margin-right:10px;-webkit-filter: drop-shadow(0px 5px 5px grey);" />
         QLStats
       </a>           
     </div>

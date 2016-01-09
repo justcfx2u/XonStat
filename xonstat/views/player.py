@@ -400,7 +400,7 @@ def get_elos(player_id):
         elos[row.game_type_cd] = row
 
     return elos
-
+  
 
 def get_recent_games(player_id, limit=20, game_type_cd=None):
     """

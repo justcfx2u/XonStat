@@ -10,23 +10,35 @@ Leaderboard
 
 <%block name="hero_unit">
 <div class="text-center shadowtext" style="margin-top: 40px">
-  % if stat_line is None:
-  <p id="statline">Tracking Quake Live statistics since November 2015.</p>
-  % else:
-  <p id="statline">Tracking ${stat_line|n} since November 2015.</p>
-  % endif
+  <p id="statline">
+    % if stat_line is None:
+    Tracking Quake Live statistics since November 2015.
+    % else:
+    Tracking ${stat_line|n} since November 2015.
+    % endif
 
-  % if day_stat_line is not None:
-  <p id="statline">${day_stat_line|n} in the past 24 hours.</p>
-  % endif
+    % if day_stat_line is not None:
+    <br />${day_stat_line|n} in the past 24 hours.
+    % endif
+  </p>
 </div>
 
 <div class="row newsitem" style="background-color:#822;display:none">
   <div class="col-sm-2">
-    2016-01-06 07:50 CET
+    2016-01-07 22:16 CET
   </div>
   <div class="col-sm-10">
-    FFA ratings are currently being recalculated and unavailable for about 1h.
+    Duel ratings are being recalculated. ETA ~1.5h
+    <br />CA, FFA, TDM, CTF and FT are already done.
+  </div>
+</div>
+
+<div class="row newsitem">
+  <div class="col-sm-2">
+    2016-01-09 20:35 CET
+  </div>
+  <div class="col-sm-10">
+    added 1-Flag CTF, A&D, DOM, Harvester, Race and RR <a href="/news#4490"> ...</a>
   </div>
 </div>
 
@@ -36,17 +48,9 @@ Leaderboard
   </div>
   <div class="col-sm-10">
     added <a href="/news">News/Forum</a> (hosted by plusforward.net) with a <a href="/news#4488">Rating Q&A</a> thread
-</div>
+  </div>
 </div>
 
-<div class="row newsitem">
-  <div class="col-sm-2">
-    2016-01-06 04:50 CET
-  </div>
-  <div class="col-sm-10">
-    added <a href="/news#4485">B-Rating</a> for custom modes, recalculated all game types <a href="/news#4485"> ...</a>
-</div>
-</div>
 </%block>
 
 <%block name="js">
@@ -96,15 +100,6 @@ Leaderboard
   });
 
   fillRanking(region, gameType);
-
-  /***************************/
-
-  function setLinkToServerAdminPanel() {
-    var url = '${request.registry.settings.get("qlstats.feeder_webadmin_url", "")}' || "http://" + location.hostname + ":8081/";
-    if (url && url.toLowerCase().trim() != "false")
-      $("#btnAddServer").attr("href", url).css("display", "inline-block");
-  }
-  setLinkToServerAdminPanel();
 </script>
 </%block>
 
@@ -186,7 +181,7 @@ Leaderboard
   ##### ACTIVE SERVERS #####
   <div class="col-sm-12 col-md-6 col-md-pull-3">
     <h3 style="display:inline-block">Most Active Servers</h3> <p class="note" style="display:inline-block">*Most active stats are from the past 7 days</p>
-    <p style="position:absolute;right:15px;top:20px"><a id="btnAddServer" class="btn btn-primary btn-small" style="display:none" href="">Add Server</a></p>
+    <p style="position:absolute;right:15px;top:20px"><a class="btn btn-primary btn-small" href="http://qlstats.net:8081/servers.html">Add Server</a></p>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
@@ -216,7 +211,7 @@ Leaderboard
         <% i = i+1 %>
         % endfor
       </tbody>
-    </table>   
+    </table>
     <p class="note"><a href="${request.route_url('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>
   </div> <!-- /span4 -->
 
@@ -244,10 +239,10 @@ Leaderboard
         % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
-          <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24"> ${rg.game_type_cd}</td>
+          <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" alt="${rg.game_type_cd}" width="24" height="24"> ${rg.game_type_cd}</td>
           <td>
             % if rg.country is not None:
-            <img src="/static/images/flags/${rg.country.lower()}.png" width="24" height="24" class="flag"> ${rg.country}
+            <img src="/static/images/flags/${rg.country.lower()}.png" alt="${rg.country}" width="24" height="24" class="flag"> ${rg.country}
             % endif
           </td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>

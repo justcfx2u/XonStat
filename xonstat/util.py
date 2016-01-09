@@ -129,16 +129,14 @@ _qfont_unicode_glyphs = [
 
 # Hex-colored spans for decimal color codes ^0 - ^9
 _dec_spans = [
- "<span style='color:rgb(128,128,128)'>",
- "<span style='color:rgb(255,0,0)'>",
- "<span style='color:rgb(51,255,0)'>",
- "<span style='color:rgb(255,255,0)'>",
- "<span style='color:rgb(51,102,255)'>",
- "<span style='color:rgb(51,255,255)'>",
- "<span style='color:rgb(197,0,255)'>",
- "<span style='color:rgb(204,204,204)'>",
- "<span style='color:rgb(153,153,153)'>",
- "<span style='color:rgb(128,128,128)'>"
+ "<span class='ql0'>",
+ "<span class='ql1'>",
+ "<span class='ql2'>",
+ "<span class='ql3'>",
+ "<span class='ql4'>",
+ "<span class='ql5'>",
+ "<span class='ql6'>",
+ "<span class='ql7'>"
 ]
 
 # Color code patterns

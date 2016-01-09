@@ -8,7 +8,7 @@
 /* Primary elements */
 body {
   margin-top: 60px;
-    background: #202020 ;	
+    background: #444 ;	
     color: #D0D0D0;
     font-family: "Open Sans", sans-serif;
 }
@@ -60,13 +60,13 @@ h6 {
   text-transform: uppercase;
 }
 table {
-    background: rgb(0, 0, 0); /* IE Fallback */
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
+  background: #222;
+    --background: none repeat scroll 0 0 rgba(0, 0, 0, 0.7);
     /*border: 1px solid #436688;*/
 }
 table th {
    /*border: 1px solid #436688; */
-   background-color: #001838;
+   background-color: #002850;
 }
 table td {
     /*border: 1px solid #436688;*/
@@ -99,8 +99,8 @@ table td {
     top: -25px;
 }
 #xonborder {
-    background: rgb(0, 0, 0); /* IE Fallback */
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
+  background: #333;
+    --background: none repeat scroll 0 0 rgba(0, 0, 0, 0.5);
     border-radius: 15px 15px 15px 15px;
     margin-bottom: 30px;
     margin-left: 0px;
@@ -368,7 +368,16 @@ img.flag { margin-top: -3px; margin-bottom: -3px }
 #ratingSelection a { cursor:pointer;border-left: #222 solid thick;padding-left: 3px;}
 #ratingSelection a.selected { border-left: white solid thick; }
 
-.newsitem { background-color:#444;padding:10px;border-radius:10px;margin-top:0px;margin:10px }
+.newsitem { background-color:#666;padding:10px;border-radius:10px;margin-top:0px;margin:10px }
+
+span.ql0 { color: rgb(128,128,128); }
+span.ql1 { color: rgb(255, 0, 0); }
+span.ql2 { color: rgb(51, 255, 0); }
+span.ql3 { color: rgb(255, 255, 0); }
+span.ql4 { color:rgb(51,102,255); }
+span.ql5 { color:rgb(51,255,255); }
+span.ql6 { color:rgb(197,0,255); }
+span.ql7 { color:rgb(240,240,240); }
 
 /* bootstrap overrides */
 
