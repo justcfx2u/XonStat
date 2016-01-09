@@ -22,27 +22,31 @@ Player Index
       <input type="submit" value="search" />
     </form>
     <table class="table table-hover table-condensed">
-      <tr>
-        <th style="width:100px;">Player ID</th>
-        <th>Nick</th>
-        <th class="create-dt" style="width:180px">Joined</th>
-        <th style="width:50px"></th>
-      </tr>
-    % for player in players:
-      <tr>
-        <td>${player.player_id}</th>
-        <td ><a href="${request.route_url("player_info", id=player.player_id)}" title="Go to this player's info page">${player.nick_html_colors()|n}</a></th>
-        <td><span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${player.joined_pretty_date()}</span></th>
-        <td class="tdcenter">
-          <a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="View recent games by this player">
-            <i class="glyphicon glyphicon-list"></i>
-          </a>
-        </td>
-      </tr>
-    % endfor
+      <thead>
+        <tr>
+          <th style="width:100px;">Player ID</th>
+          <th>Nick</th>
+          <th class="create-dt" style="width:180px">Joined</th>
+          <th style="width:50px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        % for player in players:
+        <tr>
+          <td>${player.player_id}</td>
+          <td><a href="${request.route_url("player_info", id=player.player_id)}" title="Go to this player's info page">${player.nick_html_colors()|n}</a></td>
+          <td><span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${player.joined_pretty_date()}</span></td>
+          <td class="tdcenter">
+            <a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="View recent games by this player">
+              <i class="glyphicon glyphicon-list"></i>
+            </a>
+          </td>
+        </tr>
+        % endfor
+      </tbody>
     </table>
-% endif
 
     ${navlinks("player_index", players.page, players.last_page)}
   </div> <!-- /span4 -->
 </div> <!-- /row -->
+% endif

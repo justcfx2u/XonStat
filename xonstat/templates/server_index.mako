@@ -22,27 +22,31 @@ Server Index
       <input type="submit" value="search" />
     </form>
     <table class="table table-hover table-condensed">
-      <tr>
-        <th style="width:60px;">ID</th>
-        <th>Name</th>
-        <th class="create-dt">Added</th>
-        <th></th>
-      </tr>
-    % for server in servers:
-      <tr>
-        <td>${server.server_id}</td>
-        <td><a href="${request.route_url("server_info", id=server.server_id)}" title="Go to this server's info page">${server.name}</a></th>
-        <td><span class="abstime" data-epoch="${server.epoch()}" title="${server.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${server.fuzzy_date()}</span></td>
-        <td class="tdcenter">
-          <a href="${request.route_url("game_index", _query={'server_id':server.server_id})}" title="View recent games on this server">
-            <i class="glyphicon glyphicon-list"></i>
-          </a>
-        </td>
-      </tr>
-    % endfor
+      <thead>
+        <tr>
+          <th style="width:60px;">ID</th>
+          <th>Name</th>
+          <th class="create-dt">Added</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        % for server in servers:
+        <tr>
+          <td>${server.server_id}</td>
+          <td><a href="${request.route_url("server_info", id=server.server_id)}" title="Go to this server's info page">${server.name}</a></td>
+          <td><span class="abstime" data-epoch="${server.epoch()}" title="${server.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${server.fuzzy_date()}</span></td>
+          <td class="tdcenter">
+            <a href="${request.route_url("game_index", _query={'server_id':server.server_id})}" title="View recent games on this server">
+              <i class="glyphicon glyphicon-list"></i>
+            </a>
+          </td>
+        </tr>
+        % endfor
+      </tbody>
     </table>
-    % endif
 
     ${navlinks("server_index", servers.page, servers.last_page)}
   </div> <!-- /span4 -->
 </div> <!-- /row -->
+% endif
