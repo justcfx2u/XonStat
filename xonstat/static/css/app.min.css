@@ -365,6 +365,7 @@ img.flag { margin-top: -3px; margin-bottom: -3px }
 #chartRow h3.selected { border-bottom: #ccc solid thick; }
 #chartRow h4 { display: inline-block;margin-right: 20px;cursor: pointer;border-bottom: #444 solid thick; }
 #chartRow h4.selected { border-bottom: #ccc solid thick; }
+#chartRow svg>g:nth-child(2)>g { cursor: pointer; }
 #ratingSelection a { cursor:pointer;border-left: #444 solid thick;padding-left: 3px;}
 #ratingSelection a.selected { border-left: #ccc solid thick; }
 
