@@ -103,7 +103,7 @@ function fillRecentGames(data) {
     html.push('<td><a href="/server/' + rg.server_id + '" title="Go to the detail page for this server">' + rg.server_name + '</a></td>');
     html.push('<td><a href="/map/' + rg.map_id + '" title="Go to the detail page for this map">' + rg.map_name + '</a></td>');
     html.push('<td>' + (rg.team ? (rg.team == rg.winner ? "Win" : "Loss") : rg.rank == 1 ? "Win" : "Loss (#" + rg.rank + ")") + "</td>");
-    html.push('<td><span class="abstime" data-epoch="' + rg.epoch + '">' + dateStr(rg.epoch) + '</span></td>');
+    html.push('<td>' + dateStr(rg.epoch) + '</td>');
     html.push('<td>' + (rg.g2_old_r ? rg.g2_old_r + " &plusmn; " + rg.g2_old_rd : "") + '</td>')
     html.push('<td class="tdcenter">');
     html.push('<a href="/game/' + rg.game_id + '" title="View detailed information about this game">');  
@@ -126,7 +126,7 @@ function fillRecentGames(data) {
 function dateStr(unixtimestamp) {
   var date = new Date();
   date.setTime(unixtimestamp * 1000);
-  return (1900 + date.getYear()) + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDay()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+  return (1900 + date.getYear()) + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
 
   function pad(num) {
     return ("0" + num).substr(-2);
