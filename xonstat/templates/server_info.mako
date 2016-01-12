@@ -22,18 +22,27 @@ Server Information
 <script>
 function loadLivePlayers() {
   var url = "${request.registry.settings.get('qlstat.feeder_webapi_url', '')}" || "http://" + location.hostname + ":8081";
-  var url = url.replace(/\/$/, "") + "/api/server/${server.ip_addr}:${server.port}/players";
+  url = url.replace(/\/$/, "") + "/api/server/${server.ip_addr}:${server.port}/players";
+  //url = url.replace(/\/$/, "") + "/api/server/5.19.249.101:27961/players";
+
   $.getJSON(url, function(data) {
     if (!data.ok)
       return;
     data.players.sort(function(a,b) {
       var c = [5,3,1,2,4][a.team+1] - [5,3,1,2,4][b.team+1]; // red, blue, free, spec, unknown
       if (c != 0) return c;
-      return (b.rating||0) - (a.rating||0) 
+      return (b.rating||0) - (a.rating||0)
     });
     var $table=$("#livePlayers tbody");
     var rows = $table.children();
-    for (var i=0, c=data.players.length; i<10; i++) {
+
+    if (rows.length > Math.max(10, data.players.length))
+      rows.slice(Math.max(data.players.length, 10)).remove();
+    for (var i=rows.length; i<data.players.length; i++)
+      $table.append("<tr><td></td><td style='overflow-x:hidden;white-space:nowrap'>&nbsp;</td><td></td></tr>");
+    rows=$table.children();
+
+    for (var i=0, c=data.players.length; i<c; i++) {
       var player = data.players[i];
       var cells = $(rows[i]).children();
       $(cells[0]).text(i<c ? ["Play", "Red", "Blue", "Spec" ][player.team] : "")
@@ -42,28 +51,24 @@ function loadLivePlayers() {
       else
         $(cells[1]).html("&nbsp;");
       $(cells[2]).text(i<c ? player.rating : "")
-    }    
+    }
+    for (; i<10; i++) {
+      var cells = $(rows[i]).children();
+      $(cells[0]).html("");
+      $(cells[1]).html("&nbsp;");
+      $(cells[2]).html("");
+    }
   });
 }
 
-htmlColorTable = [
- "<span style='color:rgb(128,128,128)'>",
- "<span style='color:rgb(255,0,0)'>",
- "<span style='color:rgb(51,255,0)'>",
- "<span style='color:rgb(255,255,0)'>",
- "<span style='color:rgb(51,102,255)'>",
- "<span style='color:rgb(51,255,255)'>",
- "<span style='color:rgb(197,0,255)'>",
- "<span style='color:rgb(204,204,204)'>",
- "<span style='color:rgb(153,153,153)'>",
- "<span style='color:rgb(128,128,128)'>"
-];
-
 function htmlColors(text) {
-  return htmlColorTable[7] + text.replace(/\^[0-7]/g, function(match) { 
-    return "</span>" + htmlColorTable[parseInt(match[1])] 
+  return "<span class='ql7'>" + text.replace(/\^[0-7]/g, function(match) {
+    return "</span><span class='ql" + match[1] + "'>";
   }) + "</span>";
 }
+
+// set fixed height to 10 rows so scrollbar appears if necessary
+$("#livePlayersDiv").css("height", $("#topPlayersTable").height() + "px");
 
 loadLivePlayers();
 </script>
@@ -102,29 +107,32 @@ loadLivePlayers();
     <div class="row">
       <div class="col-sm-6">
         <h3>Now Playing <span style="color:red;font-size:large">&#x25cf;</span></h3>
-        <table class="table table-hover table-condensed" id="livePlayers" style="table-layout:fixed">
-          <thead>
-            <tr>
-              <th style="width:50px;">Team</th>
-              <th>Nick</th>
-              <th style="width:55px;">Glicko</th>
-            </tr>
-          </thead>
-          % for i in range(0, 10):
-          <tr>
-            <td></td>
-            <td style="overflow-x:hidden;white-space:nowrap">&nbsp;</td>
-            <td></td>
-          </tr>
-          % endfor
-          <tbody></tbody>
-        </table>
+        <div id="livePlayersDiv" style="overflow-y:auto">
+          <table class="table table-hover table-condensed" id="livePlayers" style="table-layout:fixed;margin-bottom:0">
+            <thead>
+              <tr>
+                <th style="width:50px;">Team</th>
+                <th>Nick</th>
+                <th style="width:55px;">Glicko</th>
+              </tr>
+            </thead>
+            <tbody>
+              % for i in range(0, 10):
+              <tr>
+                <td></td>
+                <td style="overflow-x:hidden;white-space:nowrap">&nbsp;</td>
+                <td></td>
+              </tr>
+              % endfor
+            </tbody>
+          </table>
+        </div>
       </div> <!-- /span4 -->
 
 
       <div class="col-sm-6">
         <h3>Top Scoring Players</h3>
-        <table class="table table-hover table-condensed">
+        <table class="table table-hover table-condensed" id="topPlayersTable">
           <thead>
             <tr>
               <th style="width:40px;">#</th>
