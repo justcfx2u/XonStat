@@ -52,12 +52,7 @@ $("#chartRow h3[data-region='${region}']").addClass("selected");
         <tr>
           <th style="width:40px;">Rank</th>
           <th style="width:420px;">Nick</th>
-          <th style="width:170px;" title="r: estimated rating
-RD: rating deviation
-r-RD: conservative rating
-r&#xb1;RD: 68% confidence interval
-r&#xb1;2*RD: 95% confidence interval
-Low RD => high confidence, smaller changes">Glicko<br>r-RD &nbsp; (RD)</th>
+          <th style="width:170px;" title="estimated rating &plusmn; uncertainty">Glicko</th>
           <th style="width:90px;" title="Number games included in the rating">Games</th>
         </tr>
       </thead>
@@ -67,7 +62,7 @@ Low RD => high confidence, smaller changes">Glicko<br>r-RD &nbsp; (RD)</th>
         <tr>
           <td>${rank.rank}</td>
           <td class="nostretch" style="max-width:420px;"><a href="${request.route_url("player_info", id=rank.player_id)}" title="Go to this player's info page">${rank.nick_html_colors()|n}</a></td>
-          <td>${int(round(rank.g2_r - rank.g2_rd))} &nbsp; (${int(round(rank.g2_rd))})</td>
+          <td>${int(round(rank.g2_r))} &plusmn; ${int(round(rank.g2_rd))}</td>
           <td>${rank.g2_games}</td>
         </tr>
         <% i += 1 %>

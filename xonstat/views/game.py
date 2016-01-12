@@ -191,7 +191,7 @@ def rank_index_json(request):
     players = []
     if data["ranks"]:
       for player in data["ranks"]:
-        players.append({"rank": player.rank, "player_id": player.player_id, "html_name": html_colors(player.nick), "rating": int(player.g2_r - player.g2_rd)})
+        players.append({"rank": player.rank, "player_id": player.player_id, "html_name": html_colors(player.nick), "rating": int(round(player.g2_r)), "rd": int(round(player.g2_rd))})
     return {
       "region": request.matchdict.get("region", None),
       "game_type_cd": request.matchdict.get("game_type_cd", None),

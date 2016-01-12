@@ -82,7 +82,7 @@ Leaderboard
         var $row = $($("#rankingTable tr")[i]);
         var $cells = $row.children();
         $($cells[1]).html(i < c ? "<a href='/player/" + player.player_id + "'>" + player.html_name + "</a>" : "");
-        $($cells[2]).html(i < c ? player.rating : "");
+        $($cells[2]).html(i < c ? player.rating : "").attr("title", "\xb1 " + player.rd).css("cursor", "help");
       }
       $("#ratingSelection a").removeClass("selected");
       $("#ratingSelection a[data-region='" + region + "']").addClass("selected");
