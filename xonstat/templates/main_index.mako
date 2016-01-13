@@ -35,10 +35,10 @@ Leaderboard
 
 <div class="row newsitem">
   <div class="col-sm-2">
-    2016-01-09 20:35 CET
+    2016-01-12 23:15 CET
   </div>
   <div class="col-sm-10">
-    added 1-Flag CTF, A&D, DOM, Harvester, Race and RR <a href="/news#4490"> ...</a>
+    Ranking was changed to use rating value instead of (rating-RD)
   </div>
 </div>
 
@@ -107,7 +107,7 @@ Leaderboard
 
   ##### RANKS #####
   <div class="col-sm-6 col-md-3">
-    <h3>Player Ranking</h3>
+    <div><h3 style="display:inline-block">Player Ranking</h3><img class="info" alt="information" title="updated daily at 12:00 CET" /></div>
     <div id="ratingSelection" style="float:left;width:50px">
       <a data-region="1">EU</a><br>
       <a data-region="5">NA</a><br>
@@ -151,7 +151,7 @@ Leaderboard
   </div> <!-- /span3 -->
   ##### ACTIVE MAPS #####
   <div class="col-sm-6 col-md-3 col-md-push-6">
-    <h3>Most Active Maps</h3>
+    <h3 style="display:inline-block">Most Active Maps</h3><img class="info" alt="information" title="updated every hour with data from the past 7 days" />
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
@@ -180,7 +180,7 @@ Leaderboard
   </div> <!-- /span4 -->
   ##### ACTIVE SERVERS #####
   <div class="col-sm-12 col-md-6 col-md-pull-3">
-    <h3 style="display:inline-block">Most Active Servers</h3> <p class="note" style="display:inline-block">*Most active stats are from the past 7 days</p>
+    <h3 style="display:inline-block">Most Active Servers</h3><img class="info" alt="information" title="updated every hour with data from the past 7 days"/>
     <p style="position:absolute;right:15px;top:20px"><a class="btn btn-primary btn-small" href="http://qlstats.net:8081/servers.html">Add Server</a></p>
     <table class="table table-hover table-condensed">
       <thead>

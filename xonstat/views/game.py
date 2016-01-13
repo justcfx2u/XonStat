@@ -43,6 +43,7 @@ def _game_info_data(request):
 
         pgstats = DBSession.query(PlayerGameStat).\
                 filter(PlayerGameStat.game_id == game_id).\
+                order_by(PlayerGameStat.g2_score.desc().nullslast()).\
                 order_by(PlayerGameStat.score.desc()).\
                 order_by(PlayerGameStat.kills.desc()).\
                 order_by(PlayerGameStat.deaths).\

@@ -50,7 +50,7 @@ function loadLivePlayers() {
         $(cells[1]).html($("<a href='/player/" + player.steamid + "'></a>").append(htmlColors(player.name)));
       else
         $(cells[1]).html("&nbsp;");
-      $(cells[2]).text(i<c ? player.rating : "")
+      $(cells[2]).text(i<c ? player.rating : "").attr("title", "\xb1 " + player.rd).css("cursor", "help");
     }
     for (; i<10; i++) {
       var cells = $(rows[i]).children();

@@ -75,6 +75,9 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
     % endif
     <th class="nick">Nick</th>
     <th class="time">Time</th>
+    % if game_type_cd in 'ca':
+    <th class="time">Rounds</th>
+    % endif
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="kills">Damage Dealt</th>
@@ -121,6 +124,7 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
     % endif
     <th class="nick">Nick</th>
     <th class="time">Time</th>
+    <th class="time">Rounds</th>
     <th class="kills">Kills</th>
     <th class="deaths">Deaths</th>
     <th class="revivals">Thaws</th>
@@ -162,6 +166,9 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
 
 % if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
   <td>${pgstat.alivetime}</td>
+%if game_type_cd in 'ca' 'ft':
+<td>${pgstat.lives}</td>
+%endif
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.pushes}</td>
@@ -206,6 +213,9 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
 
 % if game_type_cd in 'ft' 'freezetag':
   <td>${pgstat.alivetime}</td>
+%if game_type_cd in 'ca' 'ft':
+<td>${pgstat.lives}</td>
+%endif
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
   <td>${pgstat.revivals}</td>
