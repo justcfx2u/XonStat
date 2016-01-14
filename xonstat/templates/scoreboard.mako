@@ -167,7 +167,7 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
 % if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
   <td>${pgstat.alivetime}</td>
 %if game_type_cd in 'ca' 'ft':
-<td>${pgstat.lives}</td>
+<td>${pgstat.lives or ""}</td>
 %endif
   <td>${pgstat.kills}</td>
   <td>${pgstat.deaths}</td>
