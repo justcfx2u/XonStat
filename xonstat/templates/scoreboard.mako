@@ -9,7 +9,7 @@
           ${int(round(pgstat.avg_latency))}
         </td>
       % elif show_latency:
-        <td class="tdcenter">-</td>
+        <td class="tdcenter"><i class="glyphicon glyphicon-minus"></i></td>
       % endif
 
       <td class="player-nick">
@@ -31,18 +31,18 @@
 
 
       % if show_elo and game_type_cd != 'race':
-        <td class="player-score">${ "-" if pgstat.g2_score is None else pgstat.g2_score}</td>
+        <td class="player-score">${ '<i class="glyphicon glyphicon-minus"></i>' if pgstat.g2_score is None else str(pgstat.g2_score)|n}</td>
 
         % if pgstat.g2_old_r is not None:
         <td>${int(round(pgstat.g2_old_r,0))} &plusmn; ${int(round(pgstat.g2_old_rd, 0))}</td>
         % else:
-        <td>-</td>
+        <td><i class="glyphicon glyphicon-minus"></i></td>
         % endif
 
         % if pgstat.g2_delta_r is not None:
           <td>${int(round(pgstat.g2_delta_r,0))} / ${int(round(pgstat.g2_delta_rd, 0))}</td>
         % else:
-          <td>-</td>
+          <td><i class="glyphicon glyphicon-minus"></i></td>
         % endif
 
       % endif

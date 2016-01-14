@@ -82,7 +82,7 @@ Leaderboard
         var $row = $($("#rankingTable tr")[i]);
         var $cells = $row.children();
         $($cells[1]).html(i < c ? "<a href='/player/" + player.player_id + "'>" + player.html_name + "</a>" : "");
-        $($cells[2]).html(i < c ? player.rating : "").attr("title", "\xb1 " + player.rd).css("cursor", "help");
+        $($cells[2]).html(i < c ? player.rating : "").attr("title", i < c ? "\xb1 " + player.rd : "").css("cursor", "help");
       }
       $("#ratingSelection a").removeClass("selected");
       $("#ratingSelection a[data-region='" + region + "']").addClass("selected");
@@ -149,6 +149,7 @@ Leaderboard
       <p class="note"><a id="moreRanking" href="" title="See more rankings">More...</a></p>
     </div>
   </div> <!-- /span3 -->
+
   ##### ACTIVE MAPS #####
   <div class="col-sm-6 col-md-3 col-md-push-6">
     <h3 style="display:inline-block">Most Active Maps</h3><img class="info" alt="information" title="updated every hour with data from the past 7 days" />
@@ -178,6 +179,7 @@ Leaderboard
     </table>
     <p class="note"><a href="${request.route_url('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
   </div> <!-- /span4 -->
+ 
   ##### ACTIVE SERVERS #####
   <div class="col-sm-12 col-md-6 col-md-pull-3">
     <h3 style="display:inline-block">Most Active Servers</h3><img class="info" alt="information" title="updated every hour with data from the past 7 days"/>
@@ -215,8 +217,8 @@ Leaderboard
     <p class="note"><a href="${request.route_url('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>
   </div> <!-- /span4 -->
 
-
 </div> <!-- /row -->
+
 ##### RECENT GAMES #####
 % if len(recent_games) > 0:
 <div class="row">
@@ -233,6 +235,7 @@ Leaderboard
           <th>Time</th>
           <th>Winner</th>
           <th>Score</th>
+          <th>Rated</th>
         </tr>
       </thead>
       <tbody>
@@ -247,18 +250,29 @@ Leaderboard
           </td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
           <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
-          <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
+          <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%Y-%m-%d   %H:%M:%S')}</span></td>
           <td class="nostretch">
             % if rg.player_id > 2:
             <a href="${request.route_url('player_info', id=rg.player_id)}" title="Go to the player info page for this player">${rg.nick_html_colors|n}</a>
+            % else:
+            ${rg.nick_html_colors|n}
+            % endif
           </td>
-          % else:
-          ${rg.nick_html_colors|n}</td>
-          % endif
           <td>
             % if rg.score1 is not None:
-            ${rg.score1}:${rg.score2}
+            ${rg.score1 if rg.score1 is not None else "DNF"}:${rg.score2 if rg.score2 is not None else "DNF"}
             % endif
+          </td>
+          <td class="tdcenter">
+            %if rg.g2_status == 0:
+            TBD
+            %elif rg.g2_status == 1:
+            A
+            %elif rg.g2_status == 8:
+            B
+            %else:
+            <i class="glyphicon glyphicon-minus"></i>
+            %endif
           </td>
         </tr>
         % endfor
