@@ -513,7 +513,8 @@ def player_info_data(request):
         row = DBSession.query(Player, Hashkey).\
                 join(Hashkey, Hashkey.player_id == Player.player_id).\
                 filter((Player.player_id == player_id) | (Hashkey.hashkey == str(player_id))).\
-                filter(Player.active_ind == True).first()
+                first()
+                #filter(Player.active_ind == True)
 
         if row is not None:
                 player_id = row.Player.player_id

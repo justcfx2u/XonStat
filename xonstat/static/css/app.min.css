@@ -362,12 +362,15 @@ img.flag { margin-top: -3px; margin-bottom: -3px }
 .abstime { white-space: pre; }
 
 #chartRow h3 { display: inline-block;margin-right: 40px;cursor: pointer;border-bottom: #444 solid thick; }
-#chartRow h3.selected { border-bottom: #ccc solid thick; }
+#chartRow h3:hover { border-bottom: #888 solid thick; }
+#chartRow h3.selected { border-bottom: #ccc solid thick !important; }
 #chartRow h4 { display: inline-block;margin-right: 20px;cursor: pointer;border-bottom: #444 solid thick; }
-#chartRow h4.selected { border-bottom: #ccc solid thick; }
+#chartRow h4:hover { border-bottom: #888 solid thick; }
+#chartRow h4.selected { border-bottom: #ccc solid thick !important; }
 #chartRow svg>g:nth-child(2)>g { cursor: pointer; }
 #ratingSelection a { cursor:pointer;border-left: #444 solid thick;padding-left: 3px;}
-#ratingSelection a.selected { border-left: #ccc solid thick; }
+#ratingSelection a:hover { border-left: #888 solid thick; }
+#ratingSelection a.selected { border-left: #ccc solid thick !important; }
 
 .newsitem { background-color:#666;padding:10px;border-radius:10px;margin-top:0px;margin:10px }
 
@@ -375,10 +378,10 @@ span.ql0 { color: rgb(128,128,128); }
 span.ql1 { color: rgb(255, 0, 0); }
 span.ql2 { color: rgb(51, 255, 0); }
 span.ql3 { color: rgb(255, 255, 0); }
-span.ql4 { color:rgb(51,102,255); }
-span.ql5 { color:rgb(51,255,255); }
-span.ql6 { color:rgb(197,0,255); }
-span.ql7 { color:rgb(204,204,204); }
+span.ql4 { color: rgb(51,102,255); }
+span.ql5 { color: rgb(51,255,255); }
+span.ql6 { color: rgb(197,0,255); }
+span.ql7 { color: rgb(204,204,204); }
 
 img.info {
   content: url(/static/images/info.png);

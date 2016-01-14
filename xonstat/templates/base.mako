@@ -28,6 +28,20 @@
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       ga('create', 'UA-71098578-1', 'auto');
       ga('send', 'pageview');
+
+      function setCookie(name, value) {
+        document.cookie = name + "=" + value + "; expires=Tue, 1 Jan 2030 12:00:00 UTC; path=/";
+      }
+      function getCookie(name) {
+        var match = document.cookie.match(new RegExp(name + "=([^;]*)"));
+        return match ? match[1] : null;
+      }
+      if (!document.cookie.match(/region=\d/))
+        setCookie("region", "1");
+      if (!document.cookie.match(/gametype=[a-z]*/))
+        setCookie("gametype", "");
+      if (!document.cookie.match(/weapons=[a-z]*/))
+        setCookie("weapons", "mg,lg,rg,hmg");
     </script>
   </head>
 

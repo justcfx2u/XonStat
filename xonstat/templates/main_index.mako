@@ -35,10 +35,10 @@ Leaderboard
 
 <div class="row newsitem">
   <div class="col-sm-2">
-    2016-01-12 23:15 CET
+    2016-01-14 14:45 CET
   </div>
   <div class="col-sm-10">
-    Ranking was changed to use rating value instead of (rating-RD)
+    Players with VAC bans or offending nicknames are no longer included in the ranking (but still have a rating)
   </div>
 </div>
 
@@ -57,8 +57,8 @@ Leaderboard
   ${parent.js()}
 
 <script>
-  var region=1;
-  var gameType="duel";
+  var region=parseInt(getCookie("region")) || 1;
+  var gameType=getCookie("gametype") || "duel";
   var dataCache={};
 
   function fillRanking(region, gameType) {
@@ -90,12 +90,16 @@ Leaderboard
     }
   }
 
-  $("#ratingSelection a").on("mouseover", function() {
+  $("#ratingSelection a").on("click", function() {
     var r = $(this).data("region");
-    if (r)
+    if (r) {
       region = r;
-    else
+      setCookie("region", region);
+    }
+    else {
       gameType = $(this).data("gt");
+      setCookie("gametype", gameType);
+    }
     fillRanking(region, gameType);
   });
 
@@ -107,7 +111,7 @@ Leaderboard
 
   ##### RANKS #####
   <div class="col-sm-6 col-md-3">
-    <div><h3 style="display:inline-block">Player Ranking</h3><img class="info" alt="information" title="updated daily at 12:00 CET" /></div>
+    <div><h3 style="display:inline-block">Player Ranking</h3><img class="info" alt="information" title="updated daily at 12:00 CET&#x0a;requires a minimum of 10 matches&#x0a;offenders are excluded from rankings" /></div>
     <div id="ratingSelection" style="float:left;width:50px">
       <a data-region="1">EU</a><br>
       <a data-region="5">NA</a><br>
