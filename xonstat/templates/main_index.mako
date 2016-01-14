@@ -104,6 +104,16 @@ Leaderboard
   });
 
   fillRanking(region, gameType);
+
+/***************************/
+
+function setLinkToServerAdminPanel() {
+  var url = '${request.registry.settings.get("qlstats.feeder_webadmin_url", "")}' || "http://" + location.hostname + ":8081/";
+  if (url && url.toLowerCase().trim() != "false")
+    $("#btnAddServer").attr("href", url).css("display", "inline-block");
+}
+setLinkToServerAdminPanel();
+
 </script>
 </%block>
 
@@ -187,7 +197,7 @@ Leaderboard
   ##### ACTIVE SERVERS #####
   <div class="col-sm-12 col-md-6 col-md-pull-3">
     <h3 style="display:inline-block">Most Active Servers</h3><img class="info" alt="information" title="updated every hour with data from the past 7 days"/>
-    <p style="position:absolute;right:15px;top:20px"><a class="btn btn-primary btn-small" href="http://qlstats.net:8081/servers.html">Add Server</a></p>
+    <p style="position:absolute;right:15px;top:20px"><a id="btnAddServer" class="btn btn-primary btn-small" style="display:none" href="">Add Server</a></p>
     <table class="table table-hover table-condensed">
       <thead>
         <tr>
