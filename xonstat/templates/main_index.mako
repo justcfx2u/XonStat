@@ -108,7 +108,7 @@ Leaderboard
 /***************************/
 
 function setLinkToServerAdminPanel() {
-  var url = '${request.registry.settings.get("qlstats.feeder_webadmin_url", "")}' || "http://" + location.hostname + ":8081/";
+  var url = '${request.registry.settings.get("qlstat.feeder_webadmin_url", "")}' || "http://" + location.hostname + ":8081/";
   if (url && url.toLowerCase().trim() != "false")
     $("#btnAddServer").attr("href", url).css("display", "inline-block");
 }
