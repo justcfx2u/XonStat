@@ -140,6 +140,17 @@ $("#gbtab li a").click(function() {
   loadRecentGames(alt == "overall" ? null : alt);
 });
 
+//////////////////////////////
+
+function locatePlayer() {
+  $.getJSON("${request.registry.settings.get('qlstat.feeder_webapi_url','')}api/player/${hashkey}/locate", function(data) {
+    if (data.ok && data.server) {
+      $("#btnNowPlaying").css("display", "inline").attr("href", "/server/" + data.server);
+    }
+  });
+}
+
+locatePlayer();
 </script>
 <script src="https://login.persona.org/include.js" type="text/javascript"></script>
 <script type="text/javascript">${request.persona_js}</script>
@@ -165,6 +176,7 @@ Player Information
       <img src="/static/images/icons/24x24/cake.png" title="Happy cake day!" />
       % endif
     </p>
+    <a id="btnNowPlaying" class="btn btn-primary btn-small" href="" style="display:none">Now Playing</a>
   </div>
 
   <div class="col-xs-6 col-sm-8 col-md-9">

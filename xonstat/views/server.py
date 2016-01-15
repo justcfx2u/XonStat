@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 import sqlalchemy.sql.functions as func
 import sqlalchemy.sql.expression as expr
 from datetime import datetime, timedelta
@@ -55,7 +55,11 @@ def _server_info_data(request):
     recent_games_count = 20
 
     try:
-        server = DBSession.query(Server).filter_by(server_id=server_id).one()
+        if "." in server_id:
+                server = DBSession.query(Server).filter_by(hashkey=server_id).one()
+                server_id = server.server_id
+        else:
+                server = DBSession.query(Server).filter_by(server_id=server_id).one()
 
         # top maps by total times played
         top_maps = DBSession.query(Game.map_id, Map.name,
