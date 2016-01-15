@@ -91,7 +91,7 @@ loadLivePlayers();
       <br />Added <span class="abstime" data-epoch="${server.epoch()}" title="${server.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${server.fuzzy_date()}</span>
       <br />Location: 
             % if server.country is not None:
-            <img src="/static/images/flags/${server.country}.png" width="16" height="16" class="flag"> ${server.location}
+            <img src="/static/images/flags/${(server.country or "").lower()}.png" width="16" height="16" class="flag"> ${server.location}
             % else:
               unknown
             % endif
