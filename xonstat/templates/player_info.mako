@@ -107,7 +107,7 @@ function fillRecentGames(data) {
     html.push('<td>' + (rg.g2_old_r ? rg.g2_old_r + " &plusmn; " + rg.g2_old_rd : "") + '</td>')
     html.push('<td class="tdcenter">');
     html.push('<a href="/game/' + rg.game_id + '" title="View detailed information about this game">');  
-    var delta =  rg.g2_delta_r + " / " + rg.g2_delta_rd;
+    var delta =  rg.g2_delta_r + " / " + (rg.g2_delta_rd || 0);
     if ((rg.g2_status != 1 && rg.g2_status != 8) || typeof(rg.g2_delta_r) !== "number")
       html.push('<span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>');
     else if (rg.g2_delta_r > 0)
