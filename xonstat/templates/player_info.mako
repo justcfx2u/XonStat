@@ -26,25 +26,36 @@ ${parent.js()}
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/weaponCharts.min.js"></script>
 
-<a id="jsonUrl" href="${request.route_url('player_weaponstats_data_json', id=player.player_id, _query={'limit':20})}" style="display:none"></a>
 <script type="text/javascript">
-// allow IIS URL rewriting by putting the URL inside <a href="...">
-// (URLs in the JavaScript source won't be rewritten by IIS)
-var jsonUrl = $("#jsonUrl").attr("href"); 
 
-// game type buttons
-%for g in games_played:
-$('.tab-${g.game_type_cd}').click(function() { 
-  chartGameType="${g.game_type_cd}";
+var gametype = ((location.hash || "").indexOf("#") == 0 ? location.hash.substr(1) : getCookie("gametype")) || "overall";
+
+$("#gbtab li").click(function() {
+  gametype = $(this).data("gametype");
+  setCookie("gametype", gametype == "overall" ? null : gametype);
+  window.location.hash = "#" + gametype;
   loadDataAndDrawChart(); 
+  loadRecentGames();
 });
-%endfor
 
+$(document).ready(function() {
+  $("#gbtab li[data-gametype='" + gametype + "']").addClass("active");
+  $("#gbtabcontainer div").removeClass("active");
+  $("#tab-" + gametype).addClass("active");
+  window.location.hash = "#" + gametype;
+  loadDataAndDrawChart();
+  loadRecentGames();
+});
+
+///////////////////////////////
+  
+var jsonUrl = "${request.route_url('player_weaponstats_data_json', id=player.player_id, _query={'limit':20})}";
+  
 // weapon accuracy and damage charts
-var chartData, chartName = "accuracyChart", chartOpt = null, chartLimit=20, chartGameType=null;
+var chartData, chartName = "accuracyChart", chartOpt = null, chartLimit=20;
 google.load('visualization', '1.1', {packages: ['corechart']});
 function loadDataAndDrawChart() {
-  var url = jsonUrl + (chartGameType ? "&game_type=" + chartGameType : "");
+  var url = jsonUrl + (gametype ? "&game_type=" + gametype : "");
   url = url.replace(/limit=\d+/, "limit=" + chartLimit);
   $.getJSON(url, function(data) {
     chartData = data;
@@ -77,15 +88,14 @@ $("#chartRow h4").click(function() {
   //else
   //  drawChart(chartName, chartOpt);
 });
-loadDataAndDrawChart();
 
-///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////
 
 var data = [];
-function loadRecentGames(game_type_cd) {
+function loadRecentGames() {
   var args = {};
-  if (game_type_cd)
-    args.game_type_cd = game_type_cd;
+  if (gametype != "overall")
+    args.game_type_cd = gametype;
   $.getJSON("/player/${player.player_id}/recent_games.json", args, function(data) {
     fillRecentGames(data);
   });
@@ -133,14 +143,7 @@ function dateStr(unixtimestamp) {
   }
 }
 
-loadRecentGames(null);
-
-$("#gbtab li a").click(function() {
-  var alt = $(this).attr("alt");
-  loadRecentGames(alt == "overall" ? null : alt);
-});
-
-//////////////////////////////
+///////////////////////////////
 
 function locatePlayer() {
   $.getJSON("${request.registry.settings.get('qlstat.feeder_webapi_url','')}api/player/${hashkey}/locate", function(data) {
@@ -151,7 +154,9 @@ function locatePlayer() {
 }
 
 locatePlayer();
+
 </script>
+
 <script src="https://login.persona.org/include.js" type="text/javascript"></script>
 <script type="text/javascript">${request.persona_js}</script>
 </%block>
@@ -182,7 +187,7 @@ Player Information
   <div class="col-xs-6 col-sm-8 col-md-9">
     <ul id="gbtab" class="nav nav-tabs" style="margin-top:20px">
       % for g in games_played:
-      <li class="tab-${g.game_type_cd}">
+      <li class="tab-${g.game_type_cd}" data-gametype="${g.game_type_cd}">
         <a href="#tab-${g.game_type_cd}" data-toggle="tab" alt="${g.game_type_cd}" title="${overall_stats[g.game_type_cd].game_type_descr}">
           <img src="/static/images/icons/24x24/${g.game_type_cd}.png" width="24" height="24"><br />
           ${g.game_type_cd} <br />
@@ -302,29 +307,28 @@ Player Information
   </div>
 </div>
 
-  ##### Charts ####
-  <div id="chartRow" class="row">
-    <div class="col-sm-12">
-      <h3 data-chart="accuracyChart" class="selected">Accuracy</h3>
-      <h3 data-chart="fragChart" data-arg="0">Frag #</h3>
-      <h3 data-chart="fragChart" data-arg="1">Frag %</h3>
-      <h3 data-chart="damageChart" data-arg="0">Damage #</h3>
-      <h3 data-chart="damageChart" data-arg="1">Damage %</h3>
-      <h4 class="selected">20</h4>
-      <h4>50</h4>
-      <h4>100</h4>
-      <noscript>
-        Sorry, but you've disabled JavaScript! It is required to draw the accuracy chart.
-      </noscript>
-      <div id="chartArea" style="height:300px">
-        <!--<svg id="....ChartSVG"></svg>-->
-      </div>
-    </div> <!-- end span12 -->
-  </div> <!-- end row -->
+##### Charts ####
+<div id="chartRow" class="row">
+  <div class="col-sm-12">
+    <h3 data-chart="accuracyChart" class="selected">Accuracy</h3>
+    <h3 data-chart="fragChart" data-arg="0">Frag #</h3>
+    <h3 data-chart="fragChart" data-arg="1">Frag %</h3>
+    <h3 data-chart="damageChart" data-arg="0">Damage #</h3>
+    <h3 data-chart="damageChart" data-arg="1">Damage %</h3>
+    <h4 class="selected">20</h4>
+    <h4>50</h4>
+    <h4>100</h4>
+    <noscript>
+      Sorry, but you've disabled JavaScript! It is required to draw the accuracy chart.
+    </noscript>
+    <div id="chartArea" style="height:300px">
+      <!--<svg id="....ChartSVG"></svg>-->
+    </div>
+  </div> <!-- end span12 -->
+</div> <!-- end row -->
 
 
 ##### RECENT GAMES (v2) ####
-
 <div class="row">
   <div class="col-sm-12" id="recentGames">
     <h3>Recent Games</h3>

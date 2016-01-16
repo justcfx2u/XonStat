@@ -157,8 +157,8 @@ def _rank_index_data(request):
     else:
         current_page = 1
 
-    game_type_cd = request.matchdict['game_type_cd']
-    region = request.matchdict['region'] if 'region' in request.matchdict else None
+    game_type_cd = request.matchdict.get('game_type_cd') or request.params.get("region") or request.cookies.get("region")
+    region = request.matchdict.get('region') or request.params.get("region") or request.cookies.get("region")
 
     ranks_q = DBSession.query(PlayerRank).\
             filter(PlayerRank.game_type_cd==game_type_cd).\
@@ -233,8 +233,8 @@ def game_finder_data(request):
         end_game_id = request.params['end_game_id']
         query['end_game_id'] = end_game_id
 
-    if request.params.has_key('type'):
-        game_type_cd = request.params['type']
+    game_type_cd = request.params.get('type') or request.cookies.get('gametype')
+    if game_type_cd:        
         query['type'] = game_type_cd
         try:
             game_type_descr = DBSession.query(GameType.descr).\

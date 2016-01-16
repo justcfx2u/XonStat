@@ -1,9 +1,11 @@
 <%inherit file="base.mako"/>
 <%namespace name="nav" file="nav.mako" />
 <%namespace file="navlinks.mako" import="navlinks" />
+<%namespace file="filter.mako" import="*" />
 
 <%block name="navigation">
 ${nav.nav('servers')}
+${filter_bar()}
 </%block>
 
 <%block name="title">
@@ -58,3 +60,14 @@ Active Servers Index
     ${navlinks("top_servers_by_players", top_servers.page, top_servers.last_page)}
   </div> <!-- /span4 -->
 </div> <!-- /row -->
+
+<%block name="js">
+${parent.js()}
+${filter_js()}
+
+<script>
+  $("#filterBar li").click(function() {
+    window.location = "${request.route_url('top_servers_by_players', _query={'page':1})}";
+  });
+</script>
+</%block>

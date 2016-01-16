@@ -505,7 +505,7 @@ def get_damage_stats(player_id, weapon_cd, games):
 
 def player_info_data(request):
     player_id = int(request.matchdict['id'])
-    game_type_cd = request.params.get("game_type_cd");
+    game_type_cd = request.params.get("game_type_cd") or request.cookies.get("gametype")
     if player_id <= 2:
         player_id = -1;
     
@@ -604,11 +604,9 @@ def player_game_index_data(request):
     except:
         player_id = -1
 
-    game_type_cd = None
+    game_type_cd = request.params.get("game_type_cd") or request.cookies.get("gametype")
     game_type_descr = None
-
-    if request.params.has_key('type'):
-        game_type_cd = request.params['type']
+    if game_type_cd:
         try:
             game_type_descr = DBSession.query(GameType.descr).\
                 filter(GameType.game_type_cd == game_type_cd).\

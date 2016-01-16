@@ -66,6 +66,12 @@ def main(global_config, **settings):
     config.add_route("main_index", "/")
     config.add_view(main_index, route_name="main_index", renderer="main_index.mako")
 
+    config.add_route("top_servers_json", "/topservers.json")
+    config.add_view(top_servers_json, route_name="top_servers_json", renderer="jsonp")
+
+    config.add_route("top_maps_json", "/topmaps.json")
+    config.add_view(top_maps_json, route_name="top_maps_json", renderer="jsonp")
+
     config.add_route("news_index", "/news")
     config.add_view(news_index, route_name="news_index", renderer="news_index.mako")
 

@@ -1,11 +1,13 @@
 <%inherit file="base.mako"/>
-
-<%block name="title">
-Leaderboard
-</%block>
+<%namespace file="filter.mako" import="*" />
 
 <%block name="css">
   ${parent.css()}
+</%block>
+
+<%block name="navigation">
+  ${parent.navigation()}
+  ${filter_bar()}
 </%block>
 
 <%block name="hero_unit">
@@ -55,64 +57,119 @@ Leaderboard
 
 <%block name="js">
   ${parent.js()}
-
+  ${filter_js()}
 <script>
-  var region=parseInt(getCookie("region")) || 1;
-  var gameType=getCookie("gametype") || "duel";
-  var dataCache={};
+  var region=parseInt(getCookie("region"));
+  var gameType=getCookie("gametype");
+  var rankingCache={}, serverCache={}, mapCache={};
 
   function fillRanking(region, gameType) {
     $("#moreRanking").attr("href", "/ranks/" + gameType + "/" + region);
 
-    if (dataCache.hasOwnProperty(gameType + region))
+    if (rankingCache.hasOwnProperty(gameType + region))
       fillTable();
     else {
-      dataCache[gameType + region] = null;
+      rankingCache[gameType + region] = null;
       $.getJSON("/ranks/" + gameType + "/" + region + ".json", { limit: 10 }, function(data) {
-        dataCache[gameType + region] = data;
+        rankingCache[gameType + region] = data;
         fillTable();
       })
       .fail(function(err) { console.log(err); });
     }
 
     function fillTable() {
-      var data = dataCache[gameType + region] || { players: []};
+      var data = rankingCache[gameType + region] || { players: []};
       for (var i=1, c=data.players.length; i<=10; i++) {
         var player=data.players[i-1];
         var $row = $($("#rankingTable tr")[i]);
         var $cells = $row.children();
-        $($cells[1]).html(i < c ? "<a href='/player/" + player.player_id + "'>" + player.html_name + "</a>" : "");
-        $($cells[2]).html(i < c ? player.rating : "").attr("title", i < c ? "\xb1 " + player.rd : "").css("cursor", "help");
+        $($cells[1]).html(i <= c ? "<a href='/player/" + player.player_id + "'>" + player.html_name + "</a>" : "");
+        $($cells[2]).html(i <= c ? player.rating : "").attr("title", i < c ? "\xb1 " + player.rd : "").css("cursor", "help");
       }
-      $("#ratingSelection a").removeClass("selected");
-      $("#ratingSelection a[data-region='" + region + "']").addClass("selected");
-      $("#ratingSelection a[data-gt='" + gameType + "']").addClass("selected");
+      $("#ranksNote").text(
+        $("#filterBar li[data-region='" + region + "']").text() + " / " + 
+        $("#filterBar li[data-gametype='" + gameType + "']").text()
+      );
     }
   }
 
-  $("#ratingSelection a").on("click", function() {
-    var r = $(this).data("region");
-    if (r) {
-      region = r;
-      setCookie("region", region);
-    }
+  function fillServers(region, gameType) {
+    if (serverCache.hasOwnProperty(gameType + region))
+      fillTable();
     else {
-      gameType = $(this).data("gt");
-      setCookie("gametype", gameType);
+      serverCache[gameType + region] = null;
+      $.getJSON("/topservers.json", { gametype: gameType, region: region, limit: 10 }, function(data) {
+        serverCache[gameType + region] = data;
+        fillTable();
+      })
+      .fail(function(err) { console.log(err); });
     }
-    fillRanking(region, gameType);
+
+    function fillTable() {
+      var data = serverCache[gameType + region] || { servers: []};
+      for (var i=1, c=data.servers.length; i<=10; i++) {
+        var server=data.servers[i-1];
+        var $row = $($("#serverTable tr")[i]);
+        var $cells = $row.children();
+        $($cells[1]).html(i <= c ? "<img src='/static/images/flags/" + server[3].toLowerCase() + ".png' class='flag'> " + server[3] : "");
+        $($cells[2]).html(i <= c ? "<a href='/server/" + server[0] + "'>" + escapeHtml(server[1]) + "</a>" : "");
+        $($cells[3]).html(i <= c ? server[2] : "");
+      }
+      $("#serversNote").text(
+        $("#filterBar li[data-region='" + (region || 0) + "']").text() + " / " + 
+        $("#filterBar li[data-gametype='" + (gameType || "overall") + "']").text()
+      );
+    }
+  }
+
+  function fillMaps(region, gameType) {
+    if (mapCache.hasOwnProperty(gameType + region))
+      fillTable();
+    else {
+      mapCache[gameType + region] = null;
+      $.getJSON("/topmaps.json", { gametype: gameType, region: region, limit: 10 }, function(data) {
+        mapCache[gameType + region] = data;
+        fillTable();
+      })
+      .fail(function(err) { console.log(err); });
+    }
+
+    function fillTable() {
+      var data = mapCache[gameType + region] || { maps: []};
+      for (var i=1, c=data.maps.length; i<=10; i++) {
+        var server=data.maps[i-1];
+        var $row = $($("#mapTable tr")[i]);
+        var $cells = $row.children();
+        $($cells[1]).html(i <= c ? "<a href='/map/" + server[0] + "'>" + escapeHtml(server[1]) + "</a>" : "");
+        $($cells[2]).html(i <= c ? server[2] : "");
+      }
+      $("#mapsNote").text(
+        $("#filterBar li[data-region='" + (region || 0) + "']").text() + " / " + 
+        $("#filterBar li[data-gametype='" + (gameType || "overall") + "']").text().substr(0,5)
+      );
+    }
+  }
+
+  $("#filterBar li").on("click", function() {
+    region = getCookie("region");
+    gameType = getCookie("gametype");
+    fillRanking(region || "1", gameType || "duel");
+    fillServers(region, gameType);
+  fillMaps(region, gameType);
   });
 
-  fillRanking(region, gameType);
+  fillRanking(region || "1", gameType || "duel");
+  fillServers(region, gameType);
+  fillMaps(region, gameType);
 
 /***************************/
 
-function setLinkToServerAdminPanel() {
-  var url = '${request.registry.settings.get("qlstat.feeder_webadmin_url", "")}' || "http://" + location.hostname + ":8081/";
-  if (url && url.toLowerCase().trim() != "false")
-    $("#btnAddServer").attr("href", url).css("display", "inline-block");
-}
-setLinkToServerAdminPanel();
+  function setLinkToServerAdminPanel() {
+    var url = '${request.registry.settings.get("qlstat.feeder_webadmin_url", "")}' || "http://" + location.hostname + ":8081/";
+    if (url && url.toLowerCase().trim() != "false")
+      $("#btnAddServer").attr("href", url).css("display", "inline-block");
+  }
+  setLinkToServerAdminPanel();
 
 </script>
 </%block>
@@ -121,53 +178,38 @@ setLinkToServerAdminPanel();
 
   ##### RANKS #####
   <div class="col-sm-6 col-md-3">
-    <div><h3 style="display:inline-block">Player Ranking</h3><img class="info" alt="information" title="updated daily at 12:00 CET&#x0a;requires a minimum of 10 matches&#x0a;offenders are excluded from rankings" /></div>
-    <div id="ratingSelection" style="float:left;width:50px">
-      <a data-region="1">EU</a><br>
-      <a data-region="5">NA</a><br>
-      <a data-region="6">SA</a><br>
-      <a data-region="4">AU</a><br>
-      <a data-region="3">AS</a><br>
-      <a data-region="2">AF</a><br>
-      <br>
-      <a data-gt="duel">Duel</a><br>
-      <a data-gt="ca">CA</a><br>
-      <a data-gt="ffa">FFA</a><br>
-      <a data-gt="ctf">CTF</a><br>
-      <a data-gt="tdm">TDM</a><br>
-      <a data-gt="ft">FT</a>
+    <div>
+      <h3 style="display:inline-block">Player Ranking</h3>
+      <img class="info" alt="information" title="updated daily at 12:00 CET&#x0a;requires a minimum of 10 matches&#x0a;offenders are excluded from rankings" />
+      <span id="ranksNote" class="note"></span>
     </div>
-    <div style="overflow:hidden">
-      <table id="rankingTable" class="table table-hover table-condensed" style="table-layout:fixed;width:100%">
-        <thead>
-          <tr>
-            <th style="width:25px">#</th>
-            <th>Player</th>
-            <th style="width:50px">Glicko</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% i = 1 %>
-          % while i <= 10:
-          <tr>
-            <td>${i}</td>
-            <td style="white-space:nowrap;overflow-x:hidden"></td>
-            <td></td>
-          </tr>
-          <% i = i+1 %>
-          % endwhile
-
-        </tbody>
-      </table>
-      <p class="note"><a id="moreRanking" href="" title="See more rankings">More...</a></p>
-    </div>
+    <table id="rankingTable" class="table table-hover table-condensed" style="table-layout:fixed;width:100%">
+      <thead>
+        <tr>
+          <th style="width:25px">#</th>
+          <th>Player</th>
+          <th style="width:50px">Glicko</th>
+        </tr>
+      </thead>
+      <tbody>
+        % for i in range(1,11):
+        <tr>
+          <td>${i}</td>
+          <td style="white-space:nowrap;overflow-x:hidden"></td>
+          <td></td>
+        </tr>
+        % endfor
+      </tbody>
+    </table>
+    <p class="note"><a id="moreRanking" href="" title="See more rankings">More...</a></p>
   </div> <!-- /span3 -->
 
   ##### ACTIVE MAPS #####
   <div class="col-sm-6 col-md-3 col-md-push-6">
-    <h3 style="display:inline-block">Most Active Maps</h3><img class="info" alt="information" title="updated every hour with data from the past 7 days" />
-    <table class="table table-hover table-condensed">
+    <h3 style="display:inline-block">Most Active Maps</h3>
+    <img class="info" alt="information" title="updated every hour with data from the past 7 days" />
+    <span id="mapsNote" class="note"></span>
+    <table id="mapTable" class="table table-hover table-condensed">
       <thead>
         <tr>
           <th style="width:40px;">#</th>
@@ -176,18 +218,12 @@ setLinkToServerAdminPanel();
         </tr>
       </thead>
       <tbody>
-        <% i = 1 %>
-        % for (map_id, name, count) in top_maps:
+        % for i in range(1,11):
         <tr>
           <td>${i}</td>
-          % if map_id != '-':
-          <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
-          % else:
-          <td class="nostretch" style="max-width:180px;">${name}</td>
-          % endif
-          <td>${count}</td>
+          <td class="nostretch" style="max-width:180px;"></td>
+          <td></td>
         </tr>
-        <% i = i+1 %>
         % endfor
       </tbody>
     </table>
@@ -196,9 +232,11 @@ setLinkToServerAdminPanel();
  
   ##### ACTIVE SERVERS #####
   <div class="col-sm-12 col-md-6 col-md-pull-3">
-    <h3 style="display:inline-block">Most Active Servers</h3><img class="info" alt="information" title="updated every hour with data from the past 7 days"/>
+    <h3 style="display:inline-block">Most Active Servers</h3>
+    <img class="info" alt="information" title="updated every hour with data from the past 7 days"/>
+    <span id="serversNote" class="note"></span>
     <p style="position:absolute;right:15px;top:20px"><a id="btnAddServer" class="btn btn-primary btn-small" style="display:none" href="">Add Server</a></p>
-    <table class="table table-hover table-condensed">
+    <table id="serverTable" class="table table-hover table-condensed">
       <thead>
         <tr>
           <th style="width:40px;">#</th>
@@ -208,23 +246,13 @@ setLinkToServerAdminPanel();
         </tr>
       </thead>
       <tbody>
-        <% i = 1 %>
-        % for (server_id, name, count, country_code, country_name) in top_servers:
+        % for i in range(1, 11):
         <tr>
           <td>${i}</td>
-          <td>
-            % if country_code is not None:
-            <img src="/static/images/flags/${country_code.lower()}.png" alt="${country_name}" class="flag"> ${country_code}
-            % endif
-          </td>
-          % if server_id != '-':
-          <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('server_info', id=server_id)}" title="Go to the server info page for ${name}">${name}</a></td>
-          % else:
-          <td class="nostretch" style="max-width:180px;">${name}</td>
-          % endif
-          <td>${count}</td>
+          <td></td>
+          <td class="nostretch" style="max-width:180px;"></td>
+          <td></td>
         </tr>
-        <% i = i+1 %>
         % endfor
       </tbody>
     </table>
