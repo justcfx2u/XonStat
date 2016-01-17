@@ -23,7 +23,6 @@ Server Information
 function loadLivePlayers() {
   var url = "${request.registry.settings.get('qlstat.feeder_webapi_url', '')}" || "http://" + location.hostname + ":8081";
   url = url.replace(/\/$/, "") + "/api/server/${server.ip_addr}:${server.port}/players";
-  //url = url.replace(/\/$/, "") + "/api/server/5.19.249.101:27961/players";
 
   $.getJSON(url, function(data) {
     if (!data.ok)
@@ -58,6 +57,10 @@ function loadLivePlayers() {
       $(cells[1]).html("&nbsp;");
       $(cells[2]).html("");
     }
+
+    $map = $("#mapname");
+    $map.text(data.serverinfo.map);
+    $map.attr("href", "/map/" + encodeURIComponent(data.serverinfo.map));
   });
 }
 
@@ -96,7 +99,10 @@ loadLivePlayers();
               unknown
             % endif
     </p>
-    <a class="btn btn-primary btn-small" style="vertical-align:top; margin-left: 30px" href="steam://connect/${server.ip_addr}:${server.port}" title="Connect to game server">Join Server</a>
+    <p style="display:inline-block;vertical-align:top;margin-left:30px">
+      Map: <a id="mapname" href=""></a>
+      <br /><a class="btn btn-primary btn-small" style="vertical-align:top; margin-top: 10px" href="steam://connect/${server.ip_addr}:${server.port}" title="Connect to game server">Join Server</a>
+    </p>
   </div>
 </div>
 

@@ -200,7 +200,7 @@ def main(global_config, **settings):
     config.add_route("map_index_json", "/maps.json")
     config.add_view(map_index_json, route_name="map_index_json", renderer="jsonp")
 
-    config.add_route("map_info",      "/map/{id:\d+}")
+    config.add_route("map_info",      "/map/{id}")
     config.add_view(map_info,      route_name="map_info",      renderer="map_info.mako")
 
     config.add_route("map_info_json", "/map/{id:\d+}.json")
