@@ -157,9 +157,9 @@ def top_servers_by_players_q(cutoff_days, region = None, game_type_cd = None):
         order_by(expr.desc(func.count(Game.game_id))).\
         group_by(Server.server_id).\
         group_by(Server.name)
-    if region:
+    if region and region != "" and region != "0":
       top_servers_q = top_servers_q.filter(Server.region == region)
-    if game_type_cd:
+    if game_type_cd and game_type_cd != "":
       top_servers_q = top_servers_q.filter(Game.game_type_cd == game_type_cd)
     return top_servers_q
 
@@ -196,9 +196,9 @@ def top_maps_by_times_played_q(cutoff_days, region = None, game_type_cd = None):
             group_by(Game.map_id).\
             group_by(Map.name)
 
-    if region:
+    if region and region != "" and region != "0":
       top_maps_q = top_maps_q.filter(Server.region==region).filter(Server.server_id==Game.server_id)
-    if game_type_cd:
+    if game_type_cd and game_type_cd != "":
       top_maps_q = top_maps_q.filter(Game.game_type_cd == game_type_cd)    
 
     return top_maps_q
