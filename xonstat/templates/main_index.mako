@@ -182,7 +182,7 @@
   }
 
   $("#filterBar li").on("click", function() {
-    region = getCookie("region");
+    region = parseInt(getCookie("region"));
     gameType = getCookie("gametype");
     fillRanking(region || "1", gameType || "duel");
     fillServers(region, gameType);
