@@ -61,7 +61,7 @@
 <script>
   var region=parseInt(getCookie("region"));
   var gameType=getCookie("gametype");
-  var rankingCache={}, serverCache={}, mapCache={};
+  var rankingCache={}, serverCache={}, mapCache={}, matchCache={};
 
   function fillRanking(region, gameType) {
     $("#moreRanking").attr("href", "/ranks/" + gameType + "/" + region);
@@ -150,17 +150,50 @@
     }
   }
 
+  function fillTopMatches(region, gameType) {
+    if (matchCache.hasOwnProperty(region))
+      fillTable();
+    else {
+      matchCache[region] = null;
+      var api = "${request.registry.settings.get('qlstat.feeder_webapi_url')}" || "http://" + location.hostname + ":8081/";
+      $.getJSON(api + "api/nowplaying", { gametype: gameType, region: region, limit: 10 }, function(data) {
+        matchCache[region] = data;
+        fillTable();
+      })
+      .fail(function(err) { console.log(err); });
+    }
+
+    function fillTable() {
+      var data = (matchCache[region] || {})[gameType] || [];
+      for (var i=1, c=data.length; i<=10; i++) {
+        var row=data[i-1] || {};
+        var $row = $($("#matchTable tr")[i]);
+        var $cells = $row.children();
+        var players = htmlColors(row.name);
+        if (row.opponent)
+          players += " vs " + htmlColors(row.opponent.name);
+        $($cells[1]).html(i <= c ? "<a href='/server/" + row.server + "'>" + players + "</a>" : "");
+      }
+      $("#matchNote").text(
+        $("#filterBar li[data-region='" + (region || 0) + "']").text() + " / " + 
+        $("#filterBar li[data-gametype='" + (gameType) + "']").text().substr(0,5)
+      );
+    }
+  }
+
   $("#filterBar li").on("click", function() {
     region = getCookie("region");
     gameType = getCookie("gametype");
     fillRanking(region || "1", gameType || "duel");
     fillServers(region, gameType);
-  fillMaps(region, gameType);
+    //fillMaps(region, gameType);
+    fillTopMatches(region, gameType || "duel");
   });
 
   fillRanking(region || "1", gameType || "duel");
   fillServers(region, gameType);
-  fillMaps(region, gameType);
+  //fillMaps(region, gameType);
+  fillTopMatches(region, gameType || "duel");
 
 /***************************/
 
@@ -204,8 +237,32 @@
     <p class="note"><a id="moreRanking" href="" title="See more rankings">More...</a></p>
   </div> <!-- /span3 -->
 
-  ##### ACTIVE MAPS #####
+  ##### TOP LIVE MATCHES #####
   <div class="col-sm-6 col-md-3 col-md-push-6">
+    <h3 style="display:inline-block">Now Playing</h3>
+    <span style="color:red;font-size:large">&#x25cf;</span>   
+    <span id="matchNote" class="note"></span>
+    <table id="matchTable" class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th style="width:25px;">#</th>
+          <th>Players</th>
+        </tr>
+      </thead>
+      <tbody>
+        % for i in range(1,11):
+        <tr>
+          <td>${i}</td>
+          <td></td>
+        </tr>
+        % endfor
+      </tbody>
+    </table>
+  </div> <!-- /span4 -->
+
+  ##### ACTIVE MAPS #####
+  <!--
+  <div class="col-sm-6 col-md-3 col-md-push-6" stype="display:none">
     <h3 style="display:inline-block">Most Active Maps</h3>
     <img class="info" alt="information" title="updated every hour with data from the past 7 days" />
     <span id="mapsNote" class="note"></span>
@@ -228,7 +285,8 @@
       </tbody>
     </table>
     <p class="note"><a href="${request.route_url('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
-  </div> <!-- /span4 -->
+  </div> 
+  -->
  
   ##### ACTIVE SERVERS #####
   <div class="col-sm-12 col-md-6 col-md-pull-3">

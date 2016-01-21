@@ -88,6 +88,11 @@
     <script>
       var entityMap = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': '&quot;', "'": '&#39;', "/": '&#x2F;' };
       function escapeHtml(string) { return String(string).replace(/[&<>"'\/]/g, function (s) { return entityMap[s]; }); }
+      function htmlColors(text) {
+        text = escapeHtml(text);
+        return "<span class='ql7'>" + text.replace(/\^[0-7]/g, function(match) { return "</span><span class='ql" + match[1] + "'>"; }) + "</span>";
+      }
+
     </script>
     </%block>
 

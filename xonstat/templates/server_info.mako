@@ -64,12 +64,6 @@ function loadLivePlayers() {
   });
 }
 
-function htmlColors(text) {
-  return "<span class='ql7'>" + text.replace(/\^[0-7]/g, function(match) {
-    return "</span><span class='ql" + match[1] + "'>";
-  }) + "</span>";
-}
-
 // set fixed height to 10 rows so scrollbar appears if necessary
 $("#livePlayersDiv").css("height", $("#topPlayersTable").height() + "px");
 
