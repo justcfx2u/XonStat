@@ -42,6 +42,7 @@ def search_q(nick=None, server_name=None, map_name=None, create_dt=None, gametyp
         if server_name:
             q = q.filter(func.upper(Server.name).\
                     like('%'+server_name.upper()+'%')).\
+                    filter(Server.active_ind == True).\
                     order_by(Server.server_id)
 
     # map-only searches
