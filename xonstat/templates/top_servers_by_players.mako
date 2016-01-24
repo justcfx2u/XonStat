@@ -36,7 +36,7 @@ Active Servers Index
           <td>${i}</td>
           <td>
             % if country_code is not None:
-            <img src="/static/images/flags/${country_code}.png" width="24" height="24" class="flag"> ${country_name}
+            <img src="/static/images/flags/${(country_code or "").lower()}.png" width="24" height="24" class="flag"> ${country_name}
             % endif
           </td>
           % if server_id != '-':
