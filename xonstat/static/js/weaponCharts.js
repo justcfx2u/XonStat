@@ -123,7 +123,8 @@ function accuracyValue(gameWeaponStats, weapon) {
     return null;
   }
   var ws = gameWeaponStats[weapon];
-  var pct = ws.fired < 10 ? Number.NaN : Math.round((ws.hit / ws.fired) * 100);
+  var minShots = "gl,rl,rg".indexOf(weapon) < 0 ? 10 : 4;
+  var pct = ws.fired < minShots ? Number.NaN : Math.round((ws.hit / ws.fired) * 100);
 
   return pct;
 }
