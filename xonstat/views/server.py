@@ -72,32 +72,31 @@ def _server_info_data(request):
                 group_by(Map.name).limit(leaderboard_count).all()
 
         # top players by score
-        top_scorers = DBSession.query(Player.player_id, Player.nick,
-                func.sum(PlayerGameStat.score)).\
-                filter(Player.player_id == PlayerGameStat.player_id).\
-                filter(Game.game_id == PlayerGameStat.game_id).\
-                filter(Game.server_id == server.server_id).\
-                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
-                filter(PlayerGameStat.player_id > 2).\
-                order_by(expr.desc(func.sum(PlayerGameStat.score))).\
-                group_by(Player.player_id).\
-                group_by(Player.nick).\
-                limit(leaderboard_count).all()
+        #top_scorers = DBSession.query(Player.player_id, Player.nick,
+                #func.sum(PlayerGameStat.score)).\
+                #filter(Player.player_id == PlayerGameStat.player_id).\
+                #filter(Game.game_id == PlayerGameStat.game_id).\
+                #filter(Game.server_id == server.server_id).\
+                #filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                #filter(PlayerGameStat.player_id > 2).\
+                #order_by(expr.desc(func.sum(PlayerGameStat.score))).\
+                #group_by(Player.player_id).\
+                #group_by(Player.nick).\
+                #limit(leaderboard_count).all()
 #                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
 
-        top_scorers = [(player_id, html_colors(nick), score) \
-                for (player_id, nick, score) in top_scorers]
+        #top_scorers = [(player_id, html_colors(nick), score) \
+        #        for (player_id, nick, score) in top_scorers]
 
         # top players by playing time
-        top_players = DBSession.query(Player.player_id, Player.nick,
-                func.sum(PlayerGameStat.alivetime)).\
-                filter(Player.player_id == PlayerGameStat.player_id).\
-                filter(Game.game_id == PlayerGameStat.game_id).\
+        top_players = DBSession.query(PlayerGameStat.player_id, Player.nick, func.sum(PlayerGameStat.alivetime)).\
                 filter(Game.server_id == server.server_id).\
                 filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(PlayerGameStat.game_id == Game.game_id).\
                 filter(PlayerGameStat.player_id > 2).\
+                filter(Player.player_id == PlayerGameStat.player_id).\
                 order_by(expr.desc(func.sum(PlayerGameStat.alivetime))).\
-                group_by(Player.player_id).\
+                group_by(PlayerGameStat.player_id).\
                 group_by(Player.nick).\
                 limit(leaderboard_count).all()
 #                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
@@ -117,7 +116,6 @@ def _server_info_data(request):
     return {'server':server,
             'recent_games':recent_games,
             'top_players': top_players,
-            'top_scorers': top_scorers,
             'top_maps': top_maps,
             }
 
@@ -132,14 +130,11 @@ def server_info(request):
     leaderboard_count = 10
     recent_games_count = 20
 
-    for i in range(leaderboard_count-len(serverinfo_data['top_maps'])):
-        serverinfo_data['top_maps'].append(('-', '-', '-'))
-
-    for i in range(leaderboard_count-len(serverinfo_data['top_scorers'])):
-        serverinfo_data['top_scorers'].append(('-', '-', '-'))
-
     for i in range(leaderboard_count-len(serverinfo_data['top_players'])):
-        serverinfo_data['top_players'].append(('-', '-', '-'))
+        serverinfo_data['top_players'].append(('', '', ''))
+
+    for i in range(leaderboard_count-len(serverinfo_data['top_maps'])):
+        serverinfo_data['top_maps'].append(('', '', ''))
 
     return serverinfo_data
 
@@ -162,7 +157,7 @@ def _server_game_index_data(request):
                 filter(Game.server_id == server_id).\
                 filter(Game.server_id == Server.server_id).\
                 filter(Game.map_id == Map.map_id).\
-                order_by(Game.game_id.desc())
+                order_by(Game.create_dt.desc())
 
         games = Page(games_q, current_page, url=page_url)
     except Exception as e:

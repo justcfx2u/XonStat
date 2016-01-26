@@ -103,122 +103,85 @@ loadLivePlayers();
 
 <div class="row">
 
-  <div class="col-md-6">
-    <div class="row">
-      <div class="col-sm-6">
-        <h3>Now Playing <span style="color:red;font-size:large">&#x25cf;</span></h3>
-        <div id="livePlayersDiv" style="overflow-y:auto">
-          <table class="table table-hover table-condensed" id="livePlayers" style="table-layout:fixed;margin-bottom:0">
-            <thead>
-              <tr>
-                <th style="width:50px;">Team</th>
-                <th>Nick</th>
-                <th style="width:55px;">Glicko</th>
-              </tr>
-            </thead>
-            <tbody>
-              % for i in range(0, 10):
-              <tr>
-                <td></td>
-                <td style="overflow-x:hidden;white-space:nowrap">&nbsp;</td>
-                <td></td>
-              </tr>
-              % endfor
-            </tbody>
-          </table>
-        </div>
-      </div> <!-- /span4 -->
-
-
-      <div class="col-sm-6">
-        <h3>Top Scoring Players</h3>
-        <table class="table table-hover table-condensed" id="topPlayersTable">
-          <thead>
-            <tr>
-              <th style="width:40px;">#</th>
-              <th style="width:150px;">Nick</th>
-              <th style="width:90px;">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% i = 1 %>
-            % for (score_player_id, score_nick, score_value) in top_scorers:
-            <tr>
-              <td>${i}</td>
-              % if score_player_id != '-':
-              <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=score_player_id)}" title="Go to the player info page for this player">${score_nick|n}</a></td>
-              % else:
-              <td class="nostretch" style="max-width:150px;">${score_nick}</td>
-              % endif
-              <td>${score_value}</td>
-            </tr>
-            <% i = i+1 %>
-            % endfor
-          </tbody>
-        </table>
-      </div> <!-- /span4 -->
+  <div class="col-sm-4">
+    <h3>Now Playing <span style="color:red;font-size:large">&#x25cf;</span></h3>
+    <div id="livePlayersDiv" style="overflow-y:auto">
+      <table class="table table-hover table-condensed" id="livePlayers" style="table-layout:fixed;margin-bottom:0">
+        <thead>
+          <tr>
+            <th style="width:50px;">Team</th>
+            <th>Nick</th>
+            <th style="width:55px;">Glicko</th>
+          </tr>
+        </thead>
+        <tbody>
+          % for i in range(0, 10):
+          <tr>
+            <td></td>
+            <td style="overflow-x:hidden;white-space:nowrap">&nbsp;</td>
+            <td></td>
+          </tr>
+          % endfor
+        </tbody>
+      </table>
     </div>
-  </div>
+  </div> <!-- /span4 -->
 
-  <div class="col-md-6">
-    <div class="row">
-      <div class="col-sm-6">
-        <h3>Most Active Players</h3>
-        <table class="table table-hover table-condensed">
-          <thead>
-            <tr>
-              <th style="width:40px;">#</th>
-              <th>Nick</th>
-              <th style="width:90px;">Play Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% i = 1 %>
-            % for (player_id, nick, alivetime) in top_players:
-            <tr>
-              <td>${i}</td>
-              % if player_id != '-':
-              <td><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
-              % else:
-              <td>${nick}</td>
-              % endif
-              <td>${None if not type(alivetime) is datetime.timedelta else round(alivetime.total_seconds()/3600,1)}h</td>
-            </tr>
-            <% i = i+1 %>
-            % endfor
-          </tbody>
-        </table>
-      </div> <!-- /span4 -->
+  <div class="col-sm-4">
+    <h3>Most Active Players</h3>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th>Nick</th>
+          <th style="width:90px;">Play Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% i = 1 %>
+        % for (player_id, nick, alivetime) in top_players:
+        <tr>
+          <td>${i}</td>
+          % if player_id != '-':
+          <td><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
+          % else:
+          <td>${nick}</td>
+          % endif
+          <td>${None if not type(alivetime) is datetime.timedelta else round(alivetime.total_seconds()/3600,1)}h</td>
+        </tr>
+        <% i = i+1 %>
+        % endfor
+      </tbody>
+    </table>
+  </div> <!-- /span4 -->
 
-      <div class="col-sm-6">
-        <h3>Most Active Maps</h3>
-        <table class="table table-hover table-condensed">
-          <thead>
-            <tr>
-              <th style="width:40px;">#</th>
-              <th>Map</th>
-              <th style="width:120px;"># Games</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% i = 1 %>
-            % for (map_id, name, count) in top_maps:
-            <tr>
-              <td>${i}</td>
-              % if map_id != '-':
-              <td><a href="${request.route_url('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
-              % else:
-              <td>${name}</td>
-              % endif
-              <td>${count}</td>
-            </tr>
-            <% i = i+1 %>
-            % endfor
-          </tbody>
-        </table>
-      </div> <!-- /span4 -->
-    </div> <!-- /row -->
-  </div>
+  <div class="col-sm-4">
+    <h3>Most Active Maps</h3>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th>Map</th>
+          <th style="width:120px;"># Games</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% i = 1 %>
+        % for (map_id, name, count) in top_maps:
+        <tr>
+          <td>${i}</td>
+          % if map_id != '-':
+          <td><a href="${request.route_url('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
+          % else:
+          <td>${name}</td>
+          % endif
+          <td>${count}</td>
+        </tr>
+        <% i = i+1 %>
+        % endfor
+      </tbody>
+    </table>
+  </div> <!-- /span4 -->
 
 </div>
 
