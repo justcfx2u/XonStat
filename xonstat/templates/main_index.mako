@@ -11,19 +11,6 @@
 </%block>
 
 <%block name="hero_unit">
-<div class="text-center shadowtext" style="margin-top: 40px">
-  <p id="statline">
-    % if stat_line is None:
-    Tracking Quake Live statistics since November 2015.
-    % else:
-    Tracking ${stat_line|n} since November 2015.
-    % endif
-
-    % if day_stat_line is not None:
-    <br />${day_stat_line|n} in the past 24 hours.
-    % endif
-  </p>
-</div>
 
 <div class="row newsitem" style="background-color:#822;display:none">
   <div class="col-sm-2">

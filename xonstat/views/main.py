@@ -15,6 +15,7 @@ from webhelpers.paginate import Page
 log = logging.getLogger(__name__)
 
 
+# these slow running queries are no longer used in qlstats
 @cache_region('hourly_term')
 def get_summary_stats(cutoff_days=None):
     """
@@ -26,6 +27,7 @@ def get_summary_stats(cutoff_days=None):
     This information is then summarized into a string which is passed
     directly to the template.
     """
+    return ""
     try:
         if cutoff_days is not None:
             # only games played during this range are considered
@@ -220,65 +222,21 @@ def get_recent_games(limit):
     return recent_games_q().limit(limit).all()
 
 
-def _main_index_data(request):
-    try:
-        leaderboard_lifetime = int(request.registry.settings['xonstat.leaderboard_lifetime'])
-    except:
-        leaderboard_lifetime = 30
 
-    leaderboard_count = 10
-    recent_games_count = 20
-
-    # summary statistics for the tagline
-    stat_line = get_summary_stats()
-    day_stat_line = get_summary_stats(1)
-
-
-    # the three top ranks tables
-    ranks = []
-
-    right_now = datetime.utcnow()
-    back_then = datetime.utcnow() - timedelta(days=leaderboard_lifetime)
-
-    # top players by playing time
-    #top_players = get_top_players_by_time(leaderboard_lifetime)
-    top_players = []
-
-    # top servers by number of total players played
-    top_servers = [] # get_top_servers_by_players(leaderboard_lifetime, region)
-
-    # top maps by total times played
-    top_maps = [] #get_top_maps_by_times_played(leaderboard_lifetime)
-
-    # recent games played in descending order
-    rgs = get_recent_games(recent_games_count)
-    recent_games = [RecentGame(row) for row in rgs]
-
-    return {'top_players':top_players,
-            'top_servers':top_servers,
-            'top_maps':top_maps,
-            'recent_games':recent_games,
-            'ranks':ranks,
-            'stat_line':stat_line,
-            'day_stat_line':day_stat_line
-            }    
 
 def main_index(request):
-    """
-    Display the main page information.
-    """
-    mainindex_data =  _main_index_data(request)
-    return mainindex_data
+    # recent games played in descending order
+    recent_games = [RecentGame(row) for row in get_recent_games(20)]
+    return {'recent_games':recent_games}
 
 
-def main_index_json(request):
-    """
-    JSON output of the main page information.
-    """
-    return [{'status':'not implemented'}]
-
+def recent_games_json(request):
+    recent_games = [RecentGame(row) for row in get_recent_games(20)]
+    return {'recent_games':recent_games}
+  
 
 def top_players_by_time(request):
+    return {'top_players': []}
     current_page = request.params.get('page', 1)
     cutoff_days = int(request.registry.settings.get('xonstat.leaderboard_lifetime', 30))
     top_players_q = top_players_by_time_q(cutoff_days)
@@ -308,6 +266,7 @@ def top_maps_json(request):
     region = request.params.get("region") or request.cookies.get("region")
     game_type_cd = request.params.get("gametype") or request.cookies.get("gametype")
     leaderboard_lifetime = int(request.registry.settings.get('xonstat.leaderboard_lifetime', 30))
+    return { "region": region, "gametype": game_type_cd, "maps": [] }
     top_maps = get_top_maps_by_times_played(leaderboard_lifetime, region, game_type_cd)
     return { "region": region, "gametype": game_type_cd, "maps": top_maps }
 
@@ -316,9 +275,10 @@ def top_maps_by_times_played(request):
     cutoff_days = int(request.registry.settings.get('xonstat.leaderboard_lifetime', 30))
     region = request.params.get("region") or request.cookies.get("region")
     game_type_cd = request.params.get("gametype") or request.cookies.get("gametype")
+    return { "region": region, "gametype": game_type_cd, 'top_maps':[]}
     top_maps_q = top_maps_by_times_played_q(cutoff_days, region, game_type_cd)
     top_maps = Page(top_maps_q, current_page, items_per_page=25, url=page_url)
-    return {'top_maps':top_maps}
+    return { "region": region, "gametype": game_type_cd, 'top_maps':top_maps}
 
 def news_index(request):
     return {}
