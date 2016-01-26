@@ -626,7 +626,6 @@ def player_game_index_data(request):
     try:
         player = DBSession.query(Player).\
                 filter_by(player_id=player_id).\
-                filter(Player.active_ind == True).\
                 one()
 
         rgs_q = recent_games_q(player_id=player.player_id,
