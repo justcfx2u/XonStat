@@ -66,8 +66,7 @@ def _server_info_data(request):
                 func.count()).\
                 filter(Map.map_id==Game.map_id).\
                 filter(Game.server_id==server.server_id).\
-                filter(Game.create_dt >
-                    (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
                 order_by(expr.desc(func.count())).\
                 group_by(Game.map_id).\
                 group_by(Map.name).limit(leaderboard_count).all()
@@ -79,8 +78,8 @@ def _server_info_data(request):
                 filter(Game.game_id == PlayerGameStat.game_id).\
                 filter(Game.server_id == server.server_id).\
                 filter(Player.player_id > 2).\
-                filter(PlayerGameStat.create_dt >
-                        (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
                 order_by(expr.desc(func.sum(PlayerGameStat.score))).\
                 group_by(Player.nick).\
                 group_by(Player.player_id).limit(leaderboard_count).all()
@@ -95,8 +94,8 @@ def _server_info_data(request):
                 filter(Game.game_id == PlayerGameStat.game_id).\
                 filter(Game.server_id == server.server_id).\
                 filter(Player.player_id > 2).\
-                filter(PlayerGameStat.create_dt >
-                        (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
                 order_by(expr.desc(func.sum(PlayerGameStat.alivetime))).\
                 group_by(Player.nick).\
                 group_by(Player.player_id).limit(leaderboard_count).all()
