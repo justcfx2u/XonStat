@@ -22,16 +22,7 @@
   </div>
 </div>
 
-<div class="row newsitem">
-  <div class="col-sm-2">
-    2016-01-14 14:45 CET
-  </div>
-  <div class="col-sm-10">
-    Players with VAC bans or offending nicknames are no longer included in the ranking (but still have a rating)
-  </div>
-</div>
-
-<div class="row newsitem">
+<div class="row newsitem" style="display:none">
   <div class="col-sm-2">
     2016-01-06 21:00 CET
   </div>

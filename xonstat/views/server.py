@@ -77,12 +77,13 @@ def _server_info_data(request):
                 filter(Player.player_id == PlayerGameStat.player_id).\
                 filter(Game.game_id == PlayerGameStat.game_id).\
                 filter(Game.server_id == server.server_id).\
-                filter(Player.player_id > 2).\
                 filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
-                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(PlayerGameStat.player_id > 2).\
                 order_by(expr.desc(func.sum(PlayerGameStat.score))).\
+                group_by(Player.player_id).\
                 group_by(Player.nick).\
-                group_by(Player.player_id).limit(leaderboard_count).all()
+                limit(leaderboard_count).all()
+#                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
 
         top_scorers = [(player_id, html_colors(nick), score) \
                 for (player_id, nick, score) in top_scorers]
@@ -93,12 +94,13 @@ def _server_info_data(request):
                 filter(Player.player_id == PlayerGameStat.player_id).\
                 filter(Game.game_id == PlayerGameStat.game_id).\
                 filter(Game.server_id == server.server_id).\
-                filter(Player.player_id > 2).\
                 filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
-                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(PlayerGameStat.player_id > 2).\
                 order_by(expr.desc(func.sum(PlayerGameStat.alivetime))).\
+                group_by(Player.player_id).\
                 group_by(Player.nick).\
-                group_by(Player.player_id).limit(leaderboard_count).all()
+                limit(leaderboard_count).all()
+#                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
 
         top_players = [(player_id, html_colors(nick), score) \
                 for (player_id, nick, score) in top_players]
