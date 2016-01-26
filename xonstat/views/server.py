@@ -89,20 +89,27 @@ def _server_info_data(request):
         #        for (player_id, nick, score) in top_scorers]
 
         # top players by playing time
-        top_players = DBSession.query(PlayerGameStat.player_id, Player.nick, func.sum(PlayerGameStat.alivetime)).\
+        top_players = DBSession.query(PlayerGameStat.player_id, func.sum(PlayerGameStat.alivetime)).\
                 filter(Game.server_id == server.server_id).\
                 filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
                 filter(PlayerGameStat.game_id == Game.game_id).\
                 filter(PlayerGameStat.player_id > 2).\
-                filter(Player.player_id == PlayerGameStat.player_id).\
                 order_by(expr.desc(func.sum(PlayerGameStat.alivetime))).\
                 group_by(PlayerGameStat.player_id).\
-                group_by(Player.nick).\
                 limit(leaderboard_count).all()
 #                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
 
-        top_players = [(player_id, html_colors(nick), score) \
-                for (player_id, nick, score) in top_players]
+        player_ids = []
+        player_total = {}
+        for (player_id, total) in top_players:
+                player_ids.append(player_id)
+                player_total[player_id] = total
+
+        top_players = []
+        players = DBSession.query(Player.player_id, Player.nick).filter(Player.player_id.in_(player_ids)).all()
+        for (player_id, nick) in players:
+                top_players.append( (player_id, nick, player_total[player_id]) )
+        top_players.sort(key=lambda tup: -tup[2])
 
         # recent games played in descending order
         rgs = recent_games_q(server_id=server_id).limit(recent_games_count).all()
