@@ -2,6 +2,7 @@
 import sqlalchemy.sql.functions as func
 import sqlalchemy.sql.expression as expr
 from datetime import datetime, timedelta
+from beaker.cache import cache_regions, cache_region
 from webhelpers.paginate import Page
 from xonstat.models import *
 from xonstat.util import page_url, html_colors
@@ -43,33 +44,23 @@ def server_index_json(request):
 
 
 def _server_info_data(request):
-    server_id = request.matchdict['id']
-
     try:
-        leaderboard_lifetime = int(
-                request.registry.settings['xonstat.leaderboard_lifetime'])
+        leaderboard_lifetime = int(request.registry.settings['xonstat.leaderboard_lifetime'])
     except:
         leaderboard_lifetime = 30
 
     leaderboard_count = 10
     recent_games_count = 20
 
+    server_id = request.matchdict['id']
+
     try:
+        # if a "." is in the id, lookup server table by ip address to get the real id
         if "." in server_id:
                 server = DBSession.query(Server).filter_by(hashkey=server_id).one()
                 server_id = server.server_id
         else:
                 server = DBSession.query(Server).filter_by(server_id=server_id).one()
-
-        # top maps by total times played
-        top_maps = DBSession.query(Game.map_id, Map.name,
-                func.count()).\
-                filter(Map.map_id==Game.map_id).\
-                filter(Game.server_id==server.server_id).\
-                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
-                order_by(expr.desc(func.count())).\
-                group_by(Game.map_id).\
-                group_by(Map.name).limit(leaderboard_count).all()
 
         # top players by score
         #top_scorers = DBSession.query(Player.player_id, Player.nick,
@@ -89,27 +80,10 @@ def _server_info_data(request):
         #        for (player_id, nick, score) in top_scorers]
 
         # top players by playing time
-        top_players = DBSession.query(PlayerGameStat.player_id, func.sum(PlayerGameStat.alivetime)).\
-                filter(Game.server_id == server.server_id).\
-                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
-                filter(PlayerGameStat.game_id == Game.game_id).\
-                filter(PlayerGameStat.player_id > 2).\
-                order_by(expr.desc(func.sum(PlayerGameStat.alivetime))).\
-                group_by(PlayerGameStat.player_id).\
-                limit(leaderboard_count).all()
-#                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+        top_players = get_top_players_by_time(server_id)
 
-        player_ids = []
-        player_total = {}
-        for (player_id, total) in top_players:
-                player_ids.append(player_id)
-                player_total[player_id] = total
-
-        top_players = []
-        players = DBSession.query(Player.player_id, Player.nick).filter(Player.player_id.in_(player_ids)).all()
-        for (player_id, nick) in players:
-                top_players.append( (player_id, nick, player_total[player_id]) )
-        top_players.sort(key=lambda tup: -tup[2])
+        # top maps by total times played
+        top_maps = get_top_maps(server_id)
 
         # recent games played in descending order
         rgs = recent_games_q(server_id=server_id).limit(recent_games_count).all()
@@ -125,6 +99,70 @@ def _server_info_data(request):
             'top_players': top_players,
             'top_maps': top_maps,
             }
+
+
+@cache_region('hourly_term')
+def get_top_players_by_time(server_id):
+    try:
+        leaderboard_lifetime = int(request.registry.settings['xonstat.leaderboard_lifetime'])
+    except:
+        leaderboard_lifetime = 30
+
+    leaderboard_count = 10
+    recent_games_count = 20
+
+    try:
+        top_players = DBSession.query(PlayerGameStat.player_id, func.sum(PlayerGameStat.alivetime)).\
+                filter(Game.server_id == server_id).\
+                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(PlayerGameStat.game_id == Game.game_id).\
+                filter(PlayerGameStat.player_id > 2).\
+                order_by(expr.desc(func.sum(PlayerGameStat.alivetime))).\
+                group_by(PlayerGameStat.player_id).\
+                limit(leaderboard_count).all()
+
+        player_ids = []
+        player_total = {}
+        for (player_id, total) in top_players:
+                player_ids.append(player_id)
+                player_total[player_id] = total
+
+        top_players = []
+        players = DBSession.query(Player.player_id, Player.nick).filter(Player.player_id.in_(player_ids)).all()
+        for (player_id, nick) in players:
+                top_players.append( (player_id, nick, player_total[player_id]) )
+        top_players.sort(key=lambda tup: -tup[2])
+
+    except Exception as e:
+        top_players = []
+        raise e
+    return top_players
+
+
+@cache_region('hourly_term')
+def get_top_maps(server_id):
+    try:
+        leaderboard_lifetime = int(request.registry.settings['xonstat.leaderboard_lifetime'])
+    except:
+        leaderboard_lifetime = 30
+
+    leaderboard_count = 10
+    recent_games_count = 20
+
+    try:
+        top_maps = DBSession.query(Game.map_id, Map.name,
+                func.count()).\
+                filter(Map.map_id==Game.map_id).\
+                filter(Game.server_id==server_id).\
+                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                order_by(expr.desc(func.count())).\
+                group_by(Game.map_id).\
+                group_by(Map.name).limit(leaderboard_count).all()
+
+    except Exception as e:
+        top_maps = []
+        raise e
+    return top_maps
 
 
 def server_info(request):
