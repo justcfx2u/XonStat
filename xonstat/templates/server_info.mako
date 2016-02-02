@@ -2,6 +2,7 @@
 <%namespace name="nav" file="nav.mako" />
 <%
 import datetime
+from xonstat.util import html_colors
 %>
 <%block name="navigation">
 ${nav.nav('servers')}
@@ -143,11 +144,11 @@ loadLivePlayers();
         <tr>
           <td>${i}</td>
           % if player_id != '-':
-          <td><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
+          <td><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${html_colors(nick)|n}</a></td>
           % else:
-          <td>${nick}</td>
+          <td>${html_colors(nick)|n}</td>
           % endif
-          <td>${None if not type(alivetime) is datetime.timedelta else round(alivetime.total_seconds()/3600,1)}h</td>
+          <td>${"" if not type(alivetime) is datetime.timedelta else str(round(alivetime.total_seconds()/3600,1))+"h"}</td>
         </tr>
         <% i = i+1 %>
         % endfor
