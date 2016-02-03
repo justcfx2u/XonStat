@@ -59,7 +59,7 @@ function loadDataAndDrawChart() {
   url = url.replace(/limit=\d+/, "limit=" + chartLimit);
   $.getJSON(url, function(data) {
     chartData = data;
-    drawChart(chartName);
+    drawChart(chartName, (typeof($("#chartRow h3.selected")).data("arg") == "undefined") ? null : $("#chartRow h3.selected").data("arg"));
   });
 }
 function drawChart(chart, opt) {
