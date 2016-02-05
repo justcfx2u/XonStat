@@ -58,7 +58,8 @@ def _server_info_data(request):
         # if a "." is in the id, lookup server table by ip address to get the real id
         if "." in server_id:
                 server = DBSession.query(Server).filter_by(hashkey=server_id).first()
-                server_id = server.server_id
+                if server:
+                        server_id = server.server_id
         else:
                 server = DBSession.query(Server).filter_by(server_id=server_id).first()
 

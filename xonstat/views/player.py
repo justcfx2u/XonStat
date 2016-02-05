@@ -516,9 +516,10 @@ def player_info_data(request):
                 first()
                 #filter(Player.active_ind == True)
 
-        if row is not None:
-                player_id = row.Player.player_id
-      
+        if row is None:
+                return {'player':None, 'hashkey':None, 'games_played':0,'overall_stats':None, 'fav_maps':[], 'elos':[], 'ranks':[], 'recent_games':[],'cake_day':None }
+
+        player_id = row.Player.player_id     
         games_played   = get_games_played(player_id)
         overall_stats  = get_overall_stats(player_id)
         fav_maps       = get_fav_maps(player_id)

@@ -5,7 +5,7 @@ import json
 %>
 
 <%block name="navigation">
-% if player.email_addr is not None:
+% if player and player.email_addr is not None:
 ${nav.nav('players', True)}
 % else:
 ${nav.nav('players', False)}
@@ -23,6 +23,9 @@ ${parent.css()}
 
 <%block name="js">
 ${parent.js()}
+
+%if player:
+
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/weaponCharts.min.js"></script>
 
@@ -159,11 +162,18 @@ locatePlayer();
 
 <script src="https://login.persona.org/include.js" type="text/javascript"></script>
 <script type="text/javascript">${request.persona_js}</script>
+
+%endif
+
 </%block>
 
 <%block name="title">
 Player Information
 </%block>
+
+%if not player:
+  <h2>Sorry, that player wasn't found!</h2>
+%else:
 
 <div class="row" style="min-height: 200px">
   <div class="col-xs-6 col-sm-4 col-md-3">
@@ -353,3 +363,4 @@ Player Information
     <p><a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="Game index for ${player.stripped_nick}">More...</a></p>
   </div>
 </div>
+%endif
