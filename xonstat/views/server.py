@@ -57,10 +57,13 @@ def _server_info_data(request):
     try:
         # if a "." is in the id, lookup server table by ip address to get the real id
         if "." in server_id:
-                server = DBSession.query(Server).filter_by(hashkey=server_id).one()
+                server = DBSession.query(Server).filter_by(hashkey=server_id).first()
                 server_id = server.server_id
         else:
-                server = DBSession.query(Server).filter_by(server_id=server_id).one()
+                server = DBSession.query(Server).filter_by(server_id=server_id).first()
+
+        if server == None:
+                return { 'server': None, 'recent_games': [], 'top_players': [], 'top_maps': [] }
 
         # top players by score
         #top_scorers = DBSession.query(Player.player_id, Player.nick,

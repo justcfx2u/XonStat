@@ -20,6 +20,8 @@ Server Information
 
 <%block name="js">
   ${parent.js()}
+
+%if server:
 <script>
 function loadLivePlayers() {
   var url = "${request.registry.settings.get('qlstat.feeder_webapi_url', '')}" || "http://" + location.hostname + ":8081";
@@ -67,9 +69,10 @@ function loadLivePlayers() {
 
 // set fixed height to 10 rows so scrollbar appears if necessary
 $("#livePlayersDiv").css("height", $("#topPlayersTable").height() + "px");
-
 loadLivePlayers();
+
 </script>
+%endif
 </%block>
 
 % if server is None:
