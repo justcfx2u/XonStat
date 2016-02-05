@@ -136,6 +136,8 @@ _dec_spans = [
  "<span class='ql4'>",
  "<span class='ql5'>",
  "<span class='ql6'>",
+ "<span class='ql7'>",
+ "<span class='ql7'>",
  "<span class='ql7'>"
 ]
 
