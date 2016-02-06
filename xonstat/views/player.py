@@ -1153,15 +1153,16 @@ def players_elo(request, b_rating = False):
       return None
     steamids = hashkeys.split("+");
 
-    q = DBSession.query(PlayerElo, Hashkey) \
+    q = DBSession.query(PlayerElo, Player, Hashkey) \
           .join(Hashkey, Hashkey.player_id == PlayerElo.player_id) \
+          .join(Player, Player.player_id == PlayerElo.player_id) \
           .filter(Hashkey.hashkey.in_(steamids))\
           .all()
 
     players = {}
     for row in q:
         if row.Hashkey.hashkey not in players:
-            players[row.Hashkey.hashkey] = { "steamid": row.Hashkey.hashkey }
+            players[row.Hashkey.hashkey] = { "steamid": row.Hashkey.hashkey, "active": row.Player.active_ind }
         #players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "elo": int(row.PlayerElo.elo*10), "games": row.PlayerElo.games }
         if b_rating:
           data = { "elo": int(round(row.PlayerElo.b_r,0)), "games": row.PlayerElo.b_games } if row.PlayerElo.b_r is not None else None
@@ -1183,15 +1184,16 @@ def players_glicko(request):
       return None
     steamids = hashkeys.split("+");
 
-    q = DBSession.query(PlayerElo, Hashkey) \
+    q = DBSession.query(PlayerElo, Player, Hashkey) \
           .join(Hashkey, Hashkey.player_id == PlayerElo.player_id) \
+          .join(Player, Player.player_id == PlayerElo.player_id) \
           .filter(Hashkey.hashkey.in_(steamids))\
           .all()
 
     players = {}
     for row in q:
         if row.Hashkey.hashkey not in players:
-            players[row.Hashkey.hashkey] = { "steamid": row.Hashkey.hashkey }
+            players[row.Hashkey.hashkey] = { "steamid": row.Hashkey.hashkey, "active": row.Player.active_ind }
         players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = { "r_rd": int(row.PlayerElo.g2_r - row.PlayerElo.g2_rd), "r": int(row.PlayerElo.g2_r), "rd": int(row.PlayerElo.g2_rd), "games": row.PlayerElo.g2_games }
 
     return {
