@@ -1216,6 +1216,7 @@ def players_aliases_json(request):
           .all()
 
     players = {}
+    deactivated = []
     for row in q:
         if row.Hashkey.hashkey not in players:
             players[row.Hashkey.hashkey] = { }
@@ -1230,7 +1231,10 @@ def players_aliases_json(request):
             snick = row.PlayerNick.nick
             if snick not in players[row.Hashkey.hashkey]:
                 players[row.Hashkey.hashkey][snick] = data
+        if not row.Player.active_ind and not row.Hashkey.hashkey in deactivated:
+            deactivated.append(row.Hashkey.hashkey)
 
+    players["deactivated"] = deactivated
     return players
 
 def players_aliases_text(request):
