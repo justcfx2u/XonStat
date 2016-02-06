@@ -187,9 +187,10 @@ Player Information
       <br>Player ID: ${player.player_id}
       <br>Steam ID: <a href="http://steamcommunity.com/profiles/${hashkey}/" target="_blank">${hashkey}</a>
       <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
+      <br>Status: ${ "active" if player.active_ind else "<span class='warntext'>deactivated</span>" | n}
       % if cake_day:
       <img src="/static/images/icons/24x24/cake.png" title="Happy cake day!" />
-      % endif
+      % endif     
     </p>
     <a id="btnNowPlaying" class="btn btn-primary btn-small" href="" style="display:none">Now Playing</a>
   </div>

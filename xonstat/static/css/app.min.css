@@ -377,6 +377,8 @@ img.info {
 #filterBar li:hover { border-bottom: #888 solid thick; }
 #filterBar li.selected { border-bottom: #ccc solid thick !important; }
 
+.warntext { color: #c00; }
+
 @media (max-width:935px){
   nav form {display:none}
 }
