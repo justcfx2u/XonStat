@@ -26,6 +26,7 @@ Aliases
 </div>
 %else:
 %for steamid in data:
+%if steamid != "deactivated":
 <div class="row">
   <div class="col-xs-12" style="text-align:center;margin-bottom:30px">
     Steam-ID: <a href="/player/${steamid}">${steamid}</a>
@@ -50,6 +51,7 @@ Aliases
     </table>
   </div>
 </div>
+%endif
 %endfor
 %endif
 
