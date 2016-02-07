@@ -51,7 +51,7 @@ Game Information
     <%
     statusMsg={
       0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 
-      5: "uneven playtime in teams", 6: "not enough players (who aren't deactivated)", 7: "missing data", 8: "B-rated (custom settings/factory)",
+      5: "uneven playtime in teams", 6: "not enough players with >50% match time, not AFK and not deactivated", 7: "missing data", 8: "B-rated (custom settings/factory)",
       9: "unsupported game type" 
       }
     msg= statusMsg[game.g2_status] if game.g2_status in (1,8) else "Not rated (" + statusMsg[game.g2_status] + ")"
