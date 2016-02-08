@@ -74,3 +74,7 @@ git pull --rebase
 git stash pop
 
 
+#====== database performance analysis tools
+# see https://pganalyze.com/docs/install/01_enabling_pg_stat_statements
+sudo apt-get install postgresql-contrib-9.4  # for extensions like pg_stat_statements
+sudo apt-get install curl
