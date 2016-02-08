@@ -1,4 +1,8 @@
 <%def name="scoreboard(game_type_cd, pgstats, show_elo=False, show_latency=False)">
+
+<%
+suppress_rating_change = {}
+%>
 <table  class="table table-hover table-condensed">
   ${scoreboard_header(game_type_cd, pgstats[0], show_elo)}
   <tbody>
@@ -39,8 +43,9 @@
         <td><i class="glyphicon glyphicon-minus"></i></td>
         % endif
 
-        % if pgstat.g2_delta_r is not None:
+        % if pgstat.g2_delta_r is not None and not suppress_rating_change.get(pgstat.player_id, False):
           <td>${int(round(pgstat.g2_delta_r,0))} / ${int(round(pgstat.g2_delta_rd, 0))}</td>
+          <% suppress_rating_change[pgstat.player_id] = True %>
         % else:
           <td><i class="glyphicon glyphicon-minus"></i></td>
         % endif
