@@ -62,7 +62,7 @@
         var $row = $($("#rankingTable tr")[i]);
         var $cells = $row.children();
         $($cells[1]).data("href", "/player/" + player.player_id)
-        $($cells[1]).html(i <= c ? player.html_name : "");
+        $($cells[1]).html(i <= c ? "<a href='/player/" + player.player_id + "'>" + player.html_name + "</a>" : "");
         $($cells[2]).html(i <= c ? player.rating : "").attr("title", i < c ? "\xb1 " + player.rd : "").css("cursor", "help");
       }
       $("#ranksNote").text(
