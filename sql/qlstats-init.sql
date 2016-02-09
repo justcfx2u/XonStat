@@ -250,14 +250,14 @@ alter table games
   add column player_id2 integer references players(player_id);
 
 update games g
-  set player_id1=pg1.player_id, score1=pg1.score, player_id2=pg2.player_id, score2=pg2.score
+  set player_id1=pg1.player_id, score1=(case when pg1.score<1000 then pg1.score else 999 end), player_id2=pg2.player_id, score2=(case when pg2.score<1000 then pg2.score else 999 end)
   from player_game_stats pg1, player_game_stats pg2
   where pg1.game_id=g.game_id and pg1.scoreboardpos=1
   and pg2.game_id=g.game_id and pg2.scoreboardpos<>1
   and g.game_type_cd='duel';
 
 update games g
-  set player_id1=pg1.player_id, score1=pg1.score, player_id2=pg2.player_id, score2=pg2.score
+  set player_id1=pg1.player_id, score1=(case when pg1.score<1000 then pg1.score else 999 end), player_id2=pg2.player_id, score2=(case when pg2.score<1000 then pg2.score else 999 end)
   from player_game_stats pg1, player_game_stats pg2
   where pg1.game_id=g.game_id and pg1.scoreboardpos=1
   and pg2.game_id=g.game_id and pg2.scoreboardpos=2
