@@ -61,7 +61,8 @@
         var player=data.players[i-1];
         var $row = $($("#rankingTable tr")[i]);
         var $cells = $row.children();
-        $($cells[1]).html(i <= c ? "<a href='/player/" + player.player_id + "'>" + player.html_name + "</a>" : "");
+        $($cells[1]).data("href", "/player/" + player.player_id)
+        $($cells[1]).html(i <= c ? player.html_name : "");
         $($cells[2]).html(i <= c ? player.rating : "").attr("title", i < c ? "\xb1 " + player.rd : "").css("cursor", "help");
       }
       $("#ranksNote").text(
@@ -168,6 +169,11 @@
     fillTopMatches(region, gameType || "duel");
   });
 
+  $("td.link").on("click", function() {
+    var url = $(this).data("href");
+    if (url)
+      location.href = url;
+  });
   fillRanking(region || "1", gameType || "duel");
   fillServers(region, gameType);
   //fillMaps(region, gameType);
@@ -206,7 +212,7 @@
         % for i in range(1,11):
         <tr>
           <td>${i}</td>
-          <td style="white-space:nowrap;overflow-x:hidden"></td>
+          <td class="link" style="white-space:nowrap;overflow-x:hidden"></td>
           <td></td>
         </tr>
         % endfor

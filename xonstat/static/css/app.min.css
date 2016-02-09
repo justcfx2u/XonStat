@@ -378,6 +378,7 @@ img.info {
 #filterBar li.selected { border-bottom: #ccc solid thick !important; }
 
 .warntext { color: #c00; }
+.link { cursor: pointer;}
 
 @media (max-width:935px){
   nav form {display:none}
