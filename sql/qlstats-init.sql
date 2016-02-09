@@ -241,3 +241,31 @@ alter table player_weapon_stats add foreign key (game_id) references games(game_
 alter table team_game_stats drop constraint team_game_stats_fk001;
 alter table team_game_stats add foreign key (game_id) references games(game_id);
 */
+
+
+-- 2016-02-09
+
+alter table games
+  add column player_id1 integer references players(player_id),
+  add column player_id2 integer references players(player_id);
+
+update games g
+  set player_id1=pg1.player_id, score1=pg1.score, player_id2=pg2.player_id, score2=pg2.score
+  from player_game_stats pg1, player_game_stats pg2
+  where pg1.game_id=g.game_id and pg1.scoreboardpos=1
+  and pg2.game_id=g.game_id and pg2.scoreboardpos<>1
+  and g.game_type_cd='duel';
+
+update games g
+  set player_id1=pg1.player_id, score1=pg1.score, player_id2=pg2.player_id, score2=pg2.score
+  from player_game_stats pg1, player_game_stats pg2
+  where pg1.game_id=g.game_id and pg1.scoreboardpos=1
+  and pg2.game_id=g.game_id and pg2.scoreboardpos=2
+  and g.game_type_cd in ('ffa', 'race', 'rr');
+
+update games g
+  set player_id1=(select player_id from player_game_stats pg where pg.game_id=g.game_id and team=1 and scoreboardpos>=0 order by scoreboardpos limit 1)
+  where g.game_type_cd not in ('duel', 'ffa', 'race', 'rr');
+update games g
+  set player_id2=(select player_id from player_game_stats pg where pg.game_id=g.game_id and team=2 and scoreboardpos>=0 order by scoreboardpos limit 1)
+  where g.game_type_cd not in ('duel', 'ffa', 'race', 'rr');

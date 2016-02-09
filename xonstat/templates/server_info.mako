@@ -199,16 +199,15 @@ loadLivePlayers();
 % if len(recent_games) > 0:
 <div class="row">
   <div class="col-sm-12">
-    <h3>
-      Most Recent Games</h2>
+    <h3>Most Recent Games</h3>
       <table class="table table-hover table-condensed">
         <thead>
           <tr>
             <th></th>
+            <th>Time</th>
             <th>Type</th>
             <th>Map</th>
-            <th>Time</th>
-            <th>Winner</th>
+            <th>Player</th>
             <th>Score</td>
           </tr>
         </thead>
@@ -216,14 +215,23 @@ loadLivePlayers();
           % for rg in recent_games:
           <tr>
             <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">View</a></td>
+            <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
             <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"> ${rg.game_type_cd}</td>
             <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
-            <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
             <td class="nostretch">
-              % if rg.player_id > 2:
-              <a href="${request.route_url('player_info', id=rg.player_id)}" title="Go to the player info page for this player">${rg.nick_html_colors|n}</a>
+              % if rg.pg1_player_id > 2:
+              <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
               % else:
-              ${rg.nick_html_colors|n}
+              ${html_colors(rg.pg1_nick)|n}
+              % endif
+
+              % if rg.pg2_player_id > 2:
+
+              &nbsp; vs &nbsp;
+
+              <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+              % else:
+              ${html_colors(rg.pg2_nick)|n}
               % endif
             </td>
             <td>

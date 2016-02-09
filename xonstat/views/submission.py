@@ -413,7 +413,7 @@ def get_or_create_map(session=None, name=None):
 
 
 def create_game(session, start_dt, game_type_cd, server_id, map_id,
-        match_id, duration, mod, winner=None, score1=None, score2=None, rounds=None):
+        match_id, duration, mod, winner=None, score1=None, score2=None, rounds=None, player_id1=None, player_id2=None):
     """
     Creates a game. Parameters:
 
@@ -432,6 +432,8 @@ def create_game(session, start_dt, game_type_cd, server_id, map_id,
                 server_id=server_id, map_id=map_id, winner=winner, score1=score1, score2=score2, rounds=rounds)
     game.match_id = match_id
     game.mod = mod[:64]
+    game.player_id1 = player_id1;
+    game.player_id2 = player_id2;
 
     try:
         game.duration = datetime.timedelta(seconds=int(round(float(duration))))
@@ -834,14 +836,33 @@ def submit_stats(request):
         
         score1 = None
         score2 = None
+        player1_steamid = None
+        player1_rank = 1000;
+        player2_steamid = None
+        player2_rank = 1000;
         rounds = game_meta.get('2', None)
         if len(raw_teams) > 0:
             score1 = max(raw_teams[0].get("scoreboard-score", 0), raw_teams[0].get("scoreboard-rounds", 0), raw_teams[0].get("scoreboard-caps", 0))
             score2 = max(raw_teams[1].get("scoreboard-score", 0), raw_teams[1].get("scoreboard-rounds", 0), raw_teams[1].get("scoreboard-caps", 0))
+            player1_steamid = find_best_player(raw_players, 1)
+            player2_steamid = find_best_player(raw_players, 2)
         elif game_type_cd in ['ffa','duel']:
             for events in raw_players:
-                if events["rank"] == "1": score1 = events["scoreboard-score"]
-                if events["rank"] == "2": score2 = events["scoreboard-score"]
+                rank = int(events["rank"])
+                if rank < 0: 
+                    rank = 999                
+                if rank < player1_rank:
+                    player2_steamid = player1_steamid
+                    player2_rank = player1_rank
+                    score2 = score1
+                    player1_steamid = events["P"]
+                    player1_rank = rank
+                    score1 = events["scoreboard-score"] if rank < 999 else None
+                elif rank < player2_rank:
+                    player2_steamid = events["P"]
+                    player2_rank = rank
+                    score2 = events["scoreboard-score"] if rank < 999 else None
+                   
 
         now = datetime.datetime.utcnow()
         game = create_game(
@@ -868,13 +889,17 @@ def submit_stats(request):
             pgstat = create_game_stat(session, game_meta, game, server, gmap, player, events)
 
             if player.player_id > 1:
-                anticheats = create_anticheats(session, pgstat, game, player,
-                    events)
+                anticheats = create_anticheats(session, pgstat, game, player, events)
                 player_ids.append(player.player_id)
 
+
+            if events["P"] == player1_steamid:
+                game.player_id1 = player.player_id
+            if events["P"] == player2_steamid:
+                game.player_id2 = player.player_id
+
             if should_do_weapon_stats(game_type_cd) and player.player_id > 1:
-                pwstats = create_weapon_stats(session, game_meta, game, player,
-                        pgstat, events)
+                pwstats = create_weapon_stats(session, game_meta, game, player, pgstat, events)
 
         # store them on games for easy access
         game.players = player_ids
@@ -899,3 +924,17 @@ def submit_stats(request):
         if session:
             session.rollback()
         raise
+
+def find_best_player(raw_players, team):
+    min_rank = 1000
+    min_steamid = None
+    for events in raw_players:
+        if int(events.get("t", 0)) != team:
+            continue
+        rank = int(events["rank"])
+        if rank < 0:
+            rank = 999
+        if rank < min_rank:
+            min_rank = rank
+            min_steamid = events["P"]
+    return min_steamid

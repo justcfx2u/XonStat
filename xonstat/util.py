@@ -142,9 +142,8 @@ _dec_spans = [
 ]
 
 # Color code patterns
-_all_colors = re.compile(r'\^(\d|x[\dA-Fa-f]{3})')
 _dec_colors = re.compile(r'\^(\d)')
-_hex_colors = re.compile(r'\^x([\dA-Fa-f])([\dA-Fa-f])([\dA-Fa-f])')
+_all_colors = _dec_colors
 
 # On a light scale of 0 (black) to 1.0 (white)
 _contrast_threshold = 0.5
@@ -196,13 +195,17 @@ def hex_repl(match):
 
 
 def html_colors(qstr='', limit=None):
-    if len(qstr) > 0 and qstr[0] != '^': 
+    if not qstr or qstr=="":
+      return "";
+    if len(qstr) > 0: 
       qstr = "^7" + qstr
-    qstr = html_escape(qfont_decode(qstr, glyph_translation=True))
-    qstr = qstr.replace('^^', '^')
+    qstr = qfont_decode(qstr, glyph_translation=True)
+    # qstr = qstr.replace('^^', '^')
 
     if limit is not None and limit > 0:
         qstr = limit_printable_characters(qstr, limit)
+
+    qstr = html_escape(qstr)
 
     html = _dec_colors.sub(lambda match: _dec_spans[int(match.group(1))], qstr)
     #html = _hex_colors.sub(hex_repl, html)

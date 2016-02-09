@@ -1,6 +1,6 @@
 <%inherit file="base.mako"/>
 <%namespace file="filter.mako" import="*" />
-
+<% from xonstat.util import html_colors %>
 <%block name="css">
   ${parent.css()}
 </%block>
@@ -312,12 +312,12 @@
       <thead>
         <tr>
           <th></th>
+          <th>Time</th>
           <th>Type</th>
           <th>Loc</th>
           <th>Server</th>
           <th>Map</th>
-          <th>Time</th>
-          <th>Winner</th>
+          <th>Players</th>
           <th>Score</th>
           <th>Rated</th>
         </tr>
@@ -326,6 +326,7 @@
         % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
+          <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%H:%M:%S')}</span></td>
           <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" alt="${rg.game_type_cd}" width="24" height="24"> ${rg.game_type_cd}</td>
           <td>
             % if rg.country is not None:
@@ -334,12 +335,19 @@
           </td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
           <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
-          <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%Y-%m-%d   %H:%M:%S')}</span></td>
           <td class="nostretch">
-            % if rg.player_id > 2:
-            <a href="${request.route_url('player_info', id=rg.player_id)}" title="Go to the player info page for this player">${rg.nick_html_colors|n}</a>
+            % if rg.pg1_player_id > 2:
+            <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
             % else:
-            ${rg.nick_html_colors|n}
+            ${html_colors(rg.pg1_nick)|n}
+            % endif
+
+            &nbsp;vs&nbsp;
+
+            % if rg.pg2_player_id > 2:
+            <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+            % else:
+            ${html_colors(rg.pg2_nick)|n}
             % endif
           </td>
           <td>

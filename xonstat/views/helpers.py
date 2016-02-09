@@ -40,40 +40,35 @@ class RecentGame(object):
         self.server_name = row.server_name
         self.map_id = row.map_id
         self.map_name = row.map_name
-        self.player_id = row.player_id
-        self.nick = row.nick
-        self.nick_html_colors = html_colors(row.nick)
-        self.rank = row.rank
-        self.team = row.team
         self.g2_status = row.g2_status
-        self.g2_old_r = row.g2_old_r
-        self.g2_old_rd = row.g2_old_rd
-
-        try:
-            self.elo_delta = row.elo_delta
-        except:
-            self.elo_delta = None
-
-        try:
-            self.g2_delta_r = row.g2_delta_r
-            self.g2_delta_rd = row.g2_delta_rd
-        except:
-            self.g2_delta_r = None
-            self.g2_delta_rd = None
-
-        try:
-            self.score1 = row.score1
-            self.score2 = row.score2
-        except:
-            self.score1 = None
-            self.score2 = None
-
-        try:
-            self.country = row.country;
-            self.location = row.location;
-        except:
-            self.country = None
-            self.location = None
+        self.score1 = row.score1
+        self.score2 = row.score2
+        self.country = row.country;
+        self.location = row.location;
+        self.pg1_player_id = row.pg1_player_id
+        self.pg1_nick = row.pg1_nick
+        self.pg1_rank = row.pg1_rank
+        self.pg1_team = row.pg1_team
+        self.pg1_old_r = row.pg1_old_r
+        self.pg1_old_rd = row.pg1_old_rd
+        self.pg1_delta_r = row.pg1_delta_r
+        self.pg1_delta_rd = row.pg1_delta_rd
+        self.pg2_player_id = row.pg2_player_id
+        self.pg2_nick = row.pg2_nick
+        self.pg2_rank = row.pg2_rank
+        self.pg2_team = row.pg2_team
+        self.pg2_old_r = row.pg2_old_r
+        self.pg2_old_rd = row.pg2_old_rd
+        self.pg2_delta_r = row.pg2_delta_r
+        self.pg2_delta_rd = row.pg2_delta_rd
+        self.pg3_player_id = row.pg3_player_id
+        self.pg3_nick = row.pg3_nick
+        self.pg3_rank = row.pg3_rank
+        self.pg3_team = row.pg3_team
+        self.pg3_old_r = row.pg3_old_r
+        self.pg3_old_rd = row.pg3_old_rd
+        self.pg3_delta_r = row.pg3_delta_r
+        self.pg3_delta_rd = row.pg3_delta_rd
 
     def __json__(self, request):
         return self._asdict()
@@ -91,16 +86,33 @@ class RecentGame(object):
             "server_name": self.server_name,
             "map_id": self.map_id,
             "map_name": self.map_name,
-            "player_id": self.player_id,
-            "nick": self.nick,
-            "nick_html_colors": self.nick_html_colors,
-            "rank": self.rank,
-            "team": self.team,
-            "g2_delta_r": int(round(self.g2_delta_r,0)) if self.g2_delta_r else None,
-            "g2_delta_rd": int(round(self.g2_delta_rd, 0)) if self.g2_delta_rd else None,
+            "score1": self.score1,
+            "score2": self.score2,
             "g2_status": self.g2_status,
-            "g2_old_r":int(round(self.g2_old_r, 0)) if self.g2_old_r else None,
-            "g2_old_rd":int(round(self.g2_old_rd, 0)) if self.g2_old_rd else None
+            "pg1_player_id": self.pg1_player_id,
+            "pg1_nick": self.pg1_nick,
+            "pg1_rank": self.pg1_rank,
+            "pg1_team": self.pg1_team,
+            "pg1_delta_r": int(round(self.pg1_delta_r,0)) if self.pg1_delta_r else None,
+            "pg1_delta_rd": int(round(self.pg1_delta_rd, 0)) if self.pg1_delta_rd else None,
+            "pg1_old_r":int(round(self.pg1_old_r, 0)) if self.pg1_old_r else None,
+            "pg1_old_rd":int(round(self.pg1_old_rd, 0)) if self.pg1_old_rd else None,
+            "pg2_player_id": self.pg2_player_id,
+            "pg2_nick": self.pg2_nick,
+            "pg2_rank": self.pg2_rank,
+            "pg2_team": self.pg2_team,
+            "pg2_delta_r": int(round(self.pg2_delta_r,0)) if self.pg2_delta_r else None,
+            "pg2_delta_rd": int(round(self.pg2_delta_rd, 0)) if self.pg2_delta_rd else None,
+            "pg2_old_r":int(round(self.pg2_old_r, 0)) if self.pg2_old_r else None,
+            "pg2_old_rd":int(round(self.pg2_old_rd, 0)) if self.pg2_old_rd else None,
+            "pg3_player_id": self.pg3_player_id,
+            "pg3_nick": self.pg3_nick,
+            "pg3_rank": self.pg3_rank,
+            "pg3_team": self.pg3_team,
+            "pg3_delta_r": int(round(self.pg3_delta_r,0)) if self.pg3_delta_r else None,
+            "pg3_delta_rd": int(round(self.pg3_delta_rd, 0)) if self.pg3_delta_rd else None,
+            "pg3_old_r":int(round(self.pg3_old_r, 0)) if self.pg3_old_r else None,
+            "pg3_old_rd":int(round(self.pg3_old_rd, 0)) if self.pg3_old_rd else None
             }
 
     def __repr__(self):
@@ -125,51 +137,43 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
     look when querying. Only games that happened on or after the
     cutoff (which is a datetime object) will be returned.
     '''
-    pgstat_alias = aliased(PlayerGameStat, name='pgstat_alias')
+    pgstat1 = aliased(PlayerGameStat, name='pgstat1')
+    pgstat2 = aliased(PlayerGameStat, name='pgstat2')
+    pgstat3 = aliased(PlayerGameStat, name='pgstat3')
 
     recent_games_q = DBSession.query(Game.game_id, GameType.game_type_cd,
             Game.winner, Game.start_dt, GameType.descr.label('game_type_descr'),
             Game.score1, Game.score2, Game.g2_status,
             Server.server_id, Server.name.label('server_name'), Server.country, Server.location,
             Map.map_id, Map.name.label('map_name'), 
-            PlayerGameStat.player_id, PlayerGameStat.nick, PlayerGameStat.rank, PlayerGameStat.team,           
-            PlayerGameStat.g2_old_r, PlayerGameStat.g2_old_rd, PlayerGameStat.g2_delta_r, PlayerGameStat.g2_delta_rd).\
-            filter(Game.server_id==Server.server_id).\
-            filter(Game.map_id==Map.map_id).\
-            filter(Game.game_id==PlayerGameStat.game_id).\
-            filter(Game.game_type_cd==GameType.game_type_cd).\
+            pgstat1.player_id.label("pg1_player_id"), pgstat1.nick.label("pg1_nick"), pgstat1.rank.label("pg1_rank"), pgstat1.team.label("pg1_team"), pgstat1.g2_old_r.label("pg1_old_r"), pgstat1.g2_old_rd.label("pg1_old_rd"), pgstat1.g2_delta_r.label("pg1_delta_r"), pgstat1.g2_delta_rd.label("pg1_delta_rd"),
+            pgstat2.player_id.label("pg2_player_id"), pgstat2.nick.label("pg2_nick"), pgstat2.rank.label("pg2_rank"), pgstat2.team.label("pg2_team"), pgstat2.g2_old_r.label("pg2_old_r"), pgstat2.g2_old_rd.label("pg2_old_rd"), pgstat2.g2_delta_r.label("pg2_delta_r"), pgstat2.g2_delta_rd.label("pg2_delta_rd"),
+            pgstat3.player_id.label("pg3_player_id"), pgstat3.nick.label("pg3_nick"), pgstat3.rank.label("pg3_rank"), pgstat3.team.label("pg3_team"), pgstat3.g2_old_r.label("pg3_old_r"), pgstat3.g2_old_rd.label("pg3_old_rd"), pgstat3.g2_delta_r.label("pg3_delta_r"), pgstat3.g2_delta_rd.label("pg3_delta_rd")
+            ).\
+            outerjoin(pgstat1, (pgstat1.game_id == Game.game_id) & (pgstat1.player_id == Game.player_id1)).\
+            outerjoin(pgstat2, (pgstat2.game_id == Game.game_id) & (pgstat2.player_id == Game.player_id2)).\
+            filter(Server.server_id == Game.server_id).\
+            filter(Map.map_id == Game.map_id).\
+            filter(GameType.game_type_cd == Game.game_type_cd).\
             order_by(expr.desc(Game.create_dt))
+
+    if player_id is not None and force_player_id:
+        recent_games_q = recent_games_q.outerjoin(pgstat3, (pgstat3.game_id == Game.game_id) & (pgstat3.player_id == player_id))
+    else:
+        recent_games_q = recent_games_q.outerjoin(pgstat3, pgstat3.game_id == 0)
 
     # the various filters provided get tacked on to the query
     if server_id is not None:
-        recent_games_q = recent_games_q.\
-            filter(Server.server_id==server_id)
+        recent_games_q = recent_games_q.filter(Server.server_id==server_id)
 
     if map_id is not None:
-        recent_games_q = recent_games_q.\
-            filter(Map.map_id==map_id)
+        recent_games_q = recent_games_q.filter(Map.map_id==map_id)
 
-    # Note: force_player_id makes the pgstat row returned be from the
-    # specified player_id. Otherwise it will just look for a game
-    # *having* that player_id, but returning the #1 player's pgstat row
     if player_id is not None:
-        if force_player_id:
-            recent_games_q = recent_games_q.\
-                filter(PlayerGameStat.player_id==player_id).\
-                filter(Game.players.contains([player_id]))
-        else:
-            recent_games_q = recent_games_q.\
-                filter(PlayerGameStat.scoreboardpos==1).\
-                filter(Game.game_id==pgstat_alias.game_id).\
-                filter(Game.players.contains([player_id])).\
-                filter(pgstat_alias.player_id==player_id)
-    else:
-        recent_games_q = recent_games_q.\
-            filter(PlayerGameStat.scoreboardpos==1)
+        recent_games_q = recent_games_q.filter(Game.players.contains([player_id]))
 
     if game_type_cd is not None:
-        recent_games_q = recent_games_q.\
-            filter(Game.game_type_cd==game_type_cd.lower())
+        recent_games_q = recent_games_q.filter(Game.game_type_cd==game_type_cd.lower())
 
     if cutoff is not None:
         right_now = datetime.utcnow()

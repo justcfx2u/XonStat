@@ -1,6 +1,7 @@
 <%inherit file="base.mako"/>
 <%namespace name="nav" file="nav.mako" />
 <%namespace file="navlinks.mako" import="navlinks" />
+<%from xonstat.util import html_colors %>
 
 <%block name="navigation">
 ${nav.nav('maps')}
@@ -163,26 +164,37 @@ ${parent.title()}
       <thead>
         <tr>
           <th></th>
+          <th>Time</th>
           <th>Type</th>
           <th>Server</th>
-          <th>Time</th>
-          <th>Winner</th>
+          <th>Players</th>
+          <th>Result</th>
         </tr>
       </thead>
       <tbody>
         % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">View</a></td>
+          <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
           <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"></span></td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
-          <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
           <td class="nostretch">
-            % if rg.player_id > 2:
-            <a href="${request.route_url('player_info', id=rg.player_id)}" title="Go to the player info page for this player">${rg.nick_html_colors|n}</a>
+            % if rg.pg1_player_id > 2:
+            <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
             % else:
-            ${rg.nick_html_colors|n}
+            ${html_colors(rg.pg1_nick)|n}
+            % endif
+
+            % if rg.pg2_player_id > 2:
+
+            &nbsp; vs &nbsp;
+
+            <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+            % else:
+            ${html_colors(rg.pg2_nick)|n}
             % endif
           </td>
+          <td>${rg.score1}:${rg.score2}</td>
         </tr>
         % endfor
       </tbody>

@@ -112,18 +112,26 @@ function fillRecentGames(data) {
     var rg = data[i];
     html.push('<td>' + (i+1) + '</td>');
     html.push('<td class="tdcenter"><a class="btn btn-primary btn-small" href="/game/' + rg.game_id + '" title="View detailed information about this game">view</a></td>');
+    html.push('<td>' + dateStr(rg.epoch) + '</td>');
     html.push('<td><img src="/static/images/icons/24x24/' + rg.game_type_cd + '.png" width="24" height="24" alt="' + rg.game_type_cd + '" title="' + rg.game_type_descr + '"> ' + rg.game_type_cd + '</td>');
     html.push('<td><a href="/server/' + rg.server_id + '" title="Go to the detail page for this server">' + rg.server_name + '</a></td>');
     html.push('<td><a href="/map/' + rg.map_id + '" title="Go to the detail page for this map">' + rg.map_name + '</a></td>');
-    html.push('<td>' + (rg.team ? (rg.team == rg.winner ? "Win" : "Loss") : rg.rank == 1 ? "Win" : "Loss (#" + rg.rank + ")") + "</td>");
-    html.push('<td>' + dateStr(rg.epoch) + '</td>');
-    html.push('<td>' + (rg.g2_old_r ? rg.g2_old_r + " &plusmn; " + rg.g2_old_rd : "") + '</td>')
+    html.push('<td class='  + ((rg.pg3_team ? rg.pg3_team == rg.winner : rg.pg3_rank == 1) ? "eloup" : "elodown") + '>' + rg.score1 + ":" + rg.score2 + (rg.game_type_cd != "duel" ? " (#" + rg.pg3_rank + ")" : "") + "</td>");
+    if (rg.pg3_player_id == rg.pg1_player_id) {
+      html.push('<td><a href="/player/' + rg.pg2_player_id + '">' + htmlColors(rg.pg2_nick) + '</a></td>');
+      html.push('<td>' + (rg.pg2_old_r ? rg.pg2_old_r + " &plusmn; " + rg.pg2_old_rd : "") + '</td>')
+    }
+    else {
+      html.push('<td><a href="/player/' + rg.pg1_player_id + '">' + htmlColors(rg.pg1_nick) + '</a></td>');
+      html.push('<td>' + (rg.pg2_old_r ? rg.pg1_old_r + " &plusmn; " + rg.pg1_old_rd : "") + '</td>')
+    }
+    html.push('<td>' + (rg.pg3_old_r ? rg.pg3_old_r + " &plusmn; " + rg.pg3_old_rd : "") + '</td>')
     html.push('<td class="tdcenter">');
     html.push('<a href="/game/' + rg.game_id + '" title="View detailed information about this game">');  
-    var delta =  rg.g2_delta_r + " / " + (rg.g2_delta_rd || 0);
-    if ((rg.g2_status != 1 && rg.g2_status != 8) || typeof(rg.g2_delta_r) !== "number")
+    var delta =  rg.pg3_delta_r + " / " + (rg.pg3_delta_rd || 0);
+    if ((rg.g2_status != 1 && rg.g2_status != 8) || typeof(rg.pg3_delta_r) !== "number")
       html.push('<span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>');
-    else if (rg.g2_delta_r > 0)
+    else if (rg.pg3_delta_r > 0)
       html.push('<span class="eloup">+' + delta + '</span>');
     else
       html.push('<span class="elodown">' + delta + '</span>');
@@ -348,11 +356,13 @@ Player Information
         <tr>
           <th>#</th>
           <th></th>
+          <th>Played</th>
           <th>Type</th>
           <th>Server</th>
           <th>Map</th>
           <th>Result</th>
-          <th>Played</th>
+          <th>Opponent</th>
+          <th>Rating</th>
           <th title="Rating &plusmn; Uncertainty">Old Glicko</th>
           <th title="Rating / Uncertainty">Glicko Change</th>
         </tr>
