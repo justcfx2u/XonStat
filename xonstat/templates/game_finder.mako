@@ -1,6 +1,7 @@
 <%inherit file="base.mako"/>
 <%namespace name="nav" file="nav.mako" />
 <%namespace file="navlinks.mako" import="navlinks" />
+<%from xonstat.util import html_colors %>
 
 <%block name="navigation">
 ${nav.nav('games')}
@@ -67,10 +68,19 @@ Game Index
           <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
           <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%Y-%m-%d   %H:%M:%S')}</span></td>
           <td>
-            % if rg.player_id > 2:
-            <a href="${request.route_url('player_info', id=rg.player_id)}" title="Go to the player info page for this player">${rg.nick_html_colors|n}</a></td>
+            % if rg.pg1_player_id > 2:
+            <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
             % else:
-            ${rg.nick_html_colors|n}</td>
+            ${html_colors(rg.pg1_nick)|n}
+            % endif
+
+            % if rg.pg2_player_id > 2:
+
+            &nbsp;vs&nbsp;
+
+            <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+            % else:
+            ${html_colors(rg.pg2_nick)|n}
             % endif
           <td>
             % if rg.score1 is not None:
