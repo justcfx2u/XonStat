@@ -67,11 +67,11 @@ Recent Games
       <thead>
         <tr>
           <th></th>
+          <th>Played</th>
           <th>Type</th>
           <th>Server</th>
           <th>Map</th>
           <th>Result</th>
-          <th>Played</th>
           <th title="Rating &plusmn; Uncertainty">Old Glicko</th>
           <th title="Rating / Uncertainty">Glicko Change</th>
         </tr>
@@ -80,34 +80,34 @@ Recent Games
       % for rg in games.items:
       <tr>
         <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
+        <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
         <td><img title="${rg.game_type_cd}" src="/static/images/icons/24x24/${rg.game_type_cd}.png" alt="${rg.game_type_cd}" /> ${rg.game_type_cd}</td>
         <td><a href="${request.route_url("server_info", id=rg.server_id)}" name="Server info page for ${rg.server_name}">${rg.server_name}</a></td>
         <td><a href="${request.route_url("map_info", id=rg.map_id)}" name="Map info page for ${rg.map_name}">${rg.map_name}</a></td>
         <td>
-          % if rg.team != None:
-          % if rg.team == rg.winner:
+          % if rg.pg3_team != None:
+          % if rg.pg3_team == rg.winner:
           Win
           % else:
           Loss
           % endif
           % else:
-          % if rg.rank == 1:
+          % if rg.pg3_rank == 1:
           Win
           % else:
-          Loss (#${rg.rank})
+          Loss (#${rg.pg3_rank})
           % endif
           % endif
         </td>
-        <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
-        <td>${str(int(round(rg.g2_old_r,0))) + " &plusmn; " + str(int(round(rg.g2_old_rd,0))) if rg.g2_old_r else ""|n}</td>
+        <td>${str(int(round(rg.pg3_old_r,0))) + " &plusmn; " + str(int(round(rg.pg3_old_rd,0))) if rg.pg3_old_r else ""|n}</td>
         <td>
           <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">           
-            % if rg.g2_delta_r is None or rg.g2_delta_r==0:
+            % if rg.pg3_delta_r is None or rg.pg3_delta_r==0:
             <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
-            % elif rg.g2_delta_r > 0:
-            <span class="eloup">+${int(round(rg.g2_delta_r,0))} / ${int(round(rg.g2_delta_rd, 0))}</span>
+            % elif rg.pg3_delta_r > 0:
+            <span class="eloup">+${int(round(rg.pg3_delta_r,0))} / ${int(round(rg.pg3_delta_rd, 0))}</span>
             %else:
-            <span class="elodown">${int(round(rg.g2_delta_r,0))} / ${int(round(rg.g2_delta_rd, 0))}</span>
+            <span class="elodown">${int(round(rg.pg3_delta_r,0))} / ${int(round(rg.pg3_delta_rd, 0))}</span>
             % endif
           </a>
           %if rg.g2_status == 8:
