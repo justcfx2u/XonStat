@@ -44,11 +44,11 @@ Game Index
       <thead>
         <tr>
           <th></th>
+          <th>Time</th>
           <th>Type</th>
           <th>Loc</th>
           <th>Server</th>
           <th>Map</th>
-          <th>Time</th>
           <th>Winner</th>
           <th>Score</th>
           <th>Rated</th>
@@ -58,6 +58,7 @@ Game Index
       % for rg in recent_games:
         <tr>
           <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
+          <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%Y-%m-%d   %H:%M:%S')}</span></td>
           <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt = "${rg.game_type_cd}" title="${rg.game_type_descr}"> ${rg.game_type_cd}</td>
           <td>
             % if rg.country is not None:
@@ -66,7 +67,6 @@ Game Index
           </td>
           <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
           <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
-          <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%Y-%m-%d   %H:%M:%S')}</span></td>
           <td>
             % if rg.pg1_player_id > 2:
             <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
