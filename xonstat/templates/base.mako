@@ -106,7 +106,7 @@
         var dt = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).toString().substr(-2) + "-" + ("0" + d.getDate()).substr(-2);
         var tm = ("0" + d.getHours()).toString().substr(-2) + ":" + ("0" + d.getMinutes()).toString().substr(-2) + ":" + ("0" + d.getSeconds()).toString().substr(-2);
         $e.attr("title", $e.text());
-        $e.text(dt + "   " + tm);
+        $e.text(Date.now()/1000 - parseInt(epoch) < 24*60*60 ? tm : dt + "   " + tm);
       });
     </script>
 
