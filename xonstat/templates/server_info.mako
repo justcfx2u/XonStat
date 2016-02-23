@@ -96,6 +96,7 @@ loadLivePlayers();
             % else:
               unknown
             % endif
+      <br/>Rating status: ${ "active" if server.pure_ind else "unrated" }
     </p>
     <p style="display:inline-block;vertical-align:top;margin-left:30px">
       Map: <a id="mapname" href=""></a>

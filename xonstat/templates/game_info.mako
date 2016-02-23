@@ -52,7 +52,7 @@ Game Information
     statusMsg={
       0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 
       5: "uneven playtime in teams", 6: "not enough players with >50% match time, not AFK and not deactivated", 7: "missing data", 8: "B-rated (custom settings/factory)",
-      9: "unsupported game type" 
+      9: "unsupported game type", 10: "server is exluded from ratings"
       }
     msg= statusMsg[game.g2_status] if game.g2_status in (1,8) else "Not rated (" + statusMsg[game.g2_status] + ")"
     %>
@@ -62,6 +62,8 @@ Game Information
     <span class="clear"></span>
   </div>
 </div>
+
+<% suppress_rating_change = {} %>
 
 % if len(tgstats) == len(stats_by_team):
 ## if we have teamscores in the db
@@ -83,7 +85,7 @@ Game Information
     </div>
   </div>
   <div class="col-sm-11 game">
-    ${scoreboard(game.game_type_cd, stats_by_team[tgstat.team], show_elo, show_latency)}
+    ${scoreboard(game.game_type_cd, stats_by_team[tgstat.team], show_elo, show_latency, suppress_rating_change)}
   </div>
 </div>
 % endfor
@@ -91,7 +93,7 @@ Game Information
 % for team in stats_by_team.keys():
 <div class="row">
   <div class="col-sm-12 game">
-    ${scoreboard(game.game_type_cd, stats_by_team[team], show_elo, show_latency)}
+    ${scoreboard(game.game_type_cd, stats_by_team[team], show_elo, show_latency, suppress_rating_change)}
   </div>
 </div>
 % endfor

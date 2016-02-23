@@ -1,8 +1,4 @@
-<%def name="scoreboard(game_type_cd, pgstats, show_elo=False, show_latency=False)">
-
-<%
-suppress_rating_change = {}
-%>
+<%def name="scoreboard(game_type_cd, pgstats, show_elo=False, show_latency=False, suppress_rating_change = {})">
 <table  class="table table-hover table-condensed">
   ${scoreboard_header(game_type_cd, pgstats[0], show_elo)}
   <tbody>
