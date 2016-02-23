@@ -340,7 +340,7 @@ Player Information
     <noscript>
       Sorry, but you've disabled JavaScript! It is required to draw the accuracy chart.
     </noscript>
-    <div id="chartArea" style="height:300px">
+    <div id="chartArea" style="height:500px">
       <!--<svg id="....ChartSVG"></svg>-->
     </div>
   </div> <!-- end span12 -->
