@@ -14,5 +14,5 @@
     where p.player_id = pe.player_id
     and p.active_ind = True
     and pe.active_ind = True
-    and pe.g2_games >= 10;
+    and pe.g2_games >= 50;
 end;
