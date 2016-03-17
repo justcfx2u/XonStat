@@ -1,5 +1,4 @@
 #!/bin/sh
-scriptdir=$( cd $(dirname $0) ; pwd -P )
 cd ~xonstat/xonstat/feeder
 list=$1
 if test -z "$list"; then
@@ -14,5 +13,5 @@ do
     kill $pid
     sleep 1
   fi
-  $scriptdir/autorestart.sh nohup node feeder.node.js -c cfg$inst.json >>feeder$inst.log 2>&1 &
+  ~xonstat/xonstat/cronjobs/autorestart.sh nohup node feeder.node.js -c cfg$inst.json >>feeder$inst.log 2>&1 &
 done
