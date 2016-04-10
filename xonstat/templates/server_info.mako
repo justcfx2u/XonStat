@@ -64,6 +64,9 @@ function loadLivePlayers() {
     $map = $("#mapname");
     $map.text(data.serverinfo.map);
     $map.attr("href", "/map/" + encodeURIComponent(data.serverinfo.map));
+    $("#mapstarted").text(dateToString(data.serverinfo.mapstart));
+    $("#mapscore").html(data.serverinfo.scoreRed !== undefined ? 
+      "<br/>Score: <span style='color:red'>" + data.serverinfo.scoreRed + "</span> : <span style='color:#37f'>" + data.serverinfo.scoreBlue + "</span>" : "");
   });
 }
 
@@ -100,6 +103,8 @@ loadLivePlayers();
     </p>
     <p style="display:inline-block;vertical-align:top;margin-left:30px">
       Map: <a id="mapname" href=""></a>
+      <br>Started: <span id="mapstarted"></span>
+      <span id="mapscore"></span>
       <br /><a class="btn btn-primary btn-small" style="vertical-align:top; margin-top: 10px" href="steam://connect/${server.ip_addr}:${server.port}" title="Connect to game server">Join Server</a>
     </p>
   </div>

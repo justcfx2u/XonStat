@@ -101,13 +101,17 @@
       $('.abstime').each(function(i,e){
         var $e = $(e);
         var epoch = $e.attr('data-epoch');
+        $e.attr("title", $e.text());
+        $e.text(dateToString(epoch));
+      });
+
+      function dateToString(epoch) {
         var d = new Date(0);
         d.setUTCSeconds(epoch);
         var dt = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).toString().substr(-2) + "-" + ("0" + d.getDate()).substr(-2);
         var tm = ("0" + d.getHours()).toString().substr(-2) + ":" + ("0" + d.getMinutes()).toString().substr(-2) + ":" + ("0" + d.getSeconds()).toString().substr(-2);
-        $e.attr("title", $e.text());
-        $e.text(Date.now()/1000 - parseInt(epoch) < 24*60*60 ? tm : dt + "   " + tm);
-      });
+        return Date.now()/1000 - parseInt(epoch) < 24*60*60 ? tm : dt + "   " + tm
+      }
     </script>
 
   </body>
