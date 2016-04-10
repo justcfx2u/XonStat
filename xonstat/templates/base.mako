@@ -106,6 +106,8 @@
       });
 
       function dateToString(epoch) {
+        if (!epoch)
+          return "";
         var d = new Date(0);
         d.setUTCSeconds(epoch);
         var dt = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).toString().substr(-2) + "-" + ("0" + d.getDate()).substr(-2);
