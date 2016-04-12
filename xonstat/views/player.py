@@ -704,7 +704,7 @@ def player_accuracy_data(request):
 
     return {
             'player_id':player_id,
-            'player_url':request.route_url('player_info', id=player_id),
+            'player_url':request.route_path('player_info', id=player_id),
             'weapon':weapon_cd,
             'games':games,
             'avg':avg,
@@ -761,7 +761,7 @@ def player_damage_data(request):
 
     return {
             'player_id':player_id,
-            'player_url':request.route_url('player_info', id=player_id),
+            'player_url':request.route_path('player_info', id=player_id),
             'weapon':weapon_cd,
             'games':games,
             'avg':avg,
@@ -1062,7 +1062,7 @@ def player_captimes_data(request):
             'player_id':player_id,
             'player':player,
             'captimes':player_captimes,
-            #'player_url':request.route_url('player_info', id=player_id),
+            #'player_url':request.route_path('player_info', id=player_id),
         }
 
 

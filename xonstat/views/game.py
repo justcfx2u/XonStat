@@ -266,7 +266,7 @@ def game_finder_data(request):
     gameList.insert(0, 'overall');
     for gt in gameList:
         gt_query['type'] = gt
-        url = request.route_url("game_index", _query=gt_query)
+        url = request.route_path("game_index", _query=gt_query)
         game_type_links.append((gt, url))
 
     return {

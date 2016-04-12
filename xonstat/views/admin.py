@@ -1,4 +1,4 @@
-from pyramid.response import Response
+﻿from pyramid.response import Response
 from pyramid.httpexceptions import HTTPForbidden, HTTPFound
 from pyramid.security import remember, forget
 from pyramid.session import check_csrf_token
@@ -26,7 +26,7 @@ def login(request):
         # Add the headers required to remember the user to the response
         request.response.headers.extend(remember(request, persona_email))
     else:
-        url = request.route_url("forbidden")
+        url = request.route_path("forbidden")
         return HTTPFound(location=url)
 
     # Return a json message containing the address or path to redirect to.
