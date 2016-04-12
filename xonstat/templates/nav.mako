@@ -57,7 +57,7 @@
       </ul>
       % endif
 
-      <form class="navbar-form navbar-right" role="search" action="${request.route_url('search')}" method="get">
+      <form class="navbar-form navbar-right" role="search" action="${request.route_path('search')}" method="get">
         <input type="hidden" name="fs" />
         <input type="search" class="input-small search" placeholder="search" name="sval" />
         <select class="search" name="stype">
