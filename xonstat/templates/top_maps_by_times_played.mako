@@ -34,7 +34,7 @@ Active Maps Index
         <tr>
           <td>${i}</td>
           % if map_id != '-':
-          <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
+          <td class="nostretch" style="max-width:180px;"><a href="${request.route_path('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
           % else:
           <td class="nostretch" style="max-width:180px;">${name}</td>
           % endif

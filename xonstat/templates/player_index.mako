@@ -16,7 +16,7 @@ Player Index
 % else:
 <div class="row">
   <div class="col-sm-12 col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3">
-    <form class="indexform" method="get" action="${request.route_url('search')}">
+    <form class="indexform" method="get" action="${request.route_path('search')}">
       <input type="hidden" name="fs" />
       <input class="indexbox" type="text" name="nick" />
       <input type="submit" value="search" />
@@ -34,10 +34,10 @@ Player Index
         % for player in players:
         <tr>
           <td>${player.player_id}</td>
-          <td><a href="${request.route_url("player_info", id=player.player_id)}" title="Go to this player's info page">${player.nick_html_colors()|n}</a></td>
+          <td><a href="${request.route_path("player_info", id=player.player_id)}" title="Go to this player's info page">${player.nick_html_colors()|n}</a></td>
           <td><span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${player.joined_pretty_date()}</span></td>
           <td class="tdcenter">
-            <a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="View recent games by this player">
+            <a href="${request.route_path("player_game_index", player_id=player.player_id, page=1)}" title="View recent games by this player">
               <i class="glyphicon glyphicon-list"></i>
             </a>
           </td>

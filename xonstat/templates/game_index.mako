@@ -40,9 +40,9 @@ Game Index
       % for gt in ('overall','duel','ctf','dm','tdm'):
       <li>
       % if gt == 'overall':
-      <a href="${request.route_url("game_index")}" alt="${gt}" title="" data-toggle="none">
+      <a href="${request.route_path("game_index")}" alt="${gt}" title="" data-toggle="none">
       % else:
-      <a href="${request.route_url("game_index", _query={'game_type_cd':gt})}" alt="${gt}" title="" data-toggle="none">
+      <a href="${request.route_path("game_index", _query={'game_type_cd':gt})}" alt="${gt}" title="" data-toggle="none">
       % endif
         <img src="/static/images/icons/24x24/${gt}.png" width="24" height="24"><br />
         ${gt} <br />
@@ -58,7 +58,7 @@ Game Index
           <ul class="dropdown-menu nav-tabs">
             % for gt in ('ca','kh','ft','lms','as','dom','nb','cts','rc'):
             <li>
-            <a href="${request.route_url("game_index", game_type_cd=gt)}" alt="${gt}" title="" data-toggle="none">
+            <a href="${request.route_path("game_index", game_type_cd=gt)}" alt="${gt}" title="" data-toggle="none">
               <img src="/static/images/icons/24x24/${gt}.png" width="24" height="24"><br/>
               ${gt}
             </a>
@@ -73,7 +73,7 @@ Game Index
     % for rg in games.items:
     <div class="game">
       <img src="/static/images/icons/48x48/${rg.game_type_cd}.png" width="30" height="30" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"/>
-      <h4><a href="${request.route_url("map_info", id=rg.map_id)}" name="Map info page for ${rg.map_name}">${rg.map_name}</a> on <a href="${request.route_url("server_info", id=rg.server_id)}" name="Server info page for ${rg.server_name}">${rg.server_name}</a> <span class="permalink">(<a href="${request.route_url('game_info', id=rg.game_id)}" name="Permalink for game #${rg.game_id}">permalink</a>)</span></h4>
+      <h4><a href="${request.route_path("map_info", id=rg.map_id)}" name="Map info page for ${rg.map_name}">${rg.map_name}</a> on <a href="${request.route_path("server_info", id=rg.server_id)}" name="Server info page for ${rg.server_name}">${rg.server_name}</a> <span class="permalink">(<a href="${request.route_path('game_info', id=rg.game_id)}" name="Permalink for game #${rg.game_id}">permalink</a>)</span></h4>
       <span class="clear"></span>
       ${scoreboard(rg.game_type_cd, pgstats[rg.game_id])}
     </div>

@@ -44,7 +44,7 @@ ${parent.title()}
         <tr>
           <td>${i}</td>
           % if score_player_id != '-':
-          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=score_player_id)}" title="Go to the player info page for this player">${score_nick|n}</a></td>
+          <td class="nostretch" style="max-width:150px;"><a href="${request.route_path('player_info', id=score_player_id)}" title="Go to the player info page for this player">${score_nick|n}</a></td>
           % else:
           <td class="nostretch" style="max-width:150px;">${score_nick}</td>
           % endif
@@ -73,7 +73,7 @@ ${parent.title()}
         <tr>
           <td>${i}</td>
           % if player_id != '-':
-          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
+          <td class="nostretch" style="max-width:150px;"><a href="${request.route_path('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
           % else:
           <td class="nostretch" style="max-width:150px;">${nick}</td>
           % endif
@@ -101,7 +101,7 @@ ${parent.title()}
         % for (server_id, name, times_played) in top_servers:
         <tr>
           <td>${i}</td>
-          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('server_info', id=server_id)}" title="Go to the server info page for this server">${name}</a></td>
+          <td class="nostretch" style="max-width:150px;"><a href="${request.route_path('server_info', id=server_id)}" title="Go to the server info page for this server">${name}</a></td>
           <td>${times_played}</td>
         </tr>
         <% i = i+1 %>
@@ -133,7 +133,7 @@ ${parent.title()}
         <tr>
           <td>
             % if c.player_id > 2:
-            <a href="${request.route_url(" player_info", id=c.player_id)}"
+            <a href="${request.route_path(" player_info", id=c.player_id)}"
                title="Go to the info page for this player">
               <span class="nick">${c.nick_html_colors|n}</span>
             </a>
@@ -142,7 +142,7 @@ ${parent.title()}
             % endif
           </td>
           <td>
-            <a href="${request.route_url(" game_info", id=c.game_id)}"
+            <a href="${request.route_path(" game_info", id=c.game_id)}"
                title="View the game in which this cap was made">
               ${round(float(c.fastest_cap.seconds) + (c.fastest_cap.microseconds/1000000.0), 2)}
             </a>
@@ -174,13 +174,13 @@ ${parent.title()}
       <tbody>
         % for rg in recent_games:
         <tr>
-          <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">View</a></td>
+          <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_path('game_info', id=rg.game_id)}" title="View detailed information about this game">View</a></td>
           <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
           <td class="tdcenter"><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"></span></td>
-          <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
+          <td><a href="${request.route_path('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
           <td class="nostretch">
             % if rg.pg1_player_id > 2:
-            <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
+            <a href="${request.route_path('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
             % else:
             ${html_colors(rg.pg1_nick)|n}
             % endif
@@ -189,7 +189,7 @@ ${parent.title()}
 
             &nbsp; vs &nbsp;
 
-            <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+            <a href="${request.route_path('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
             % else:
             ${html_colors(rg.pg2_nick)|n}
             % endif
@@ -199,7 +199,7 @@ ${parent.title()}
         % endfor
       </tbody>
     </table>
-    <p><a href="${request.route_url('game_index', _query={'map_id':gmap.map_id})}">More...</a></p>
+    <p><a href="${request.route_path('game_index', _query={'map_id':gmap.map_id})}">More...</a></p>
   </div>
 </div>
 % endif

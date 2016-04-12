@@ -20,7 +20,7 @@ Recent Games
     ${game_type_descr.lower()}
     % endif
   games yet for 
-  <a href="${request.route_url('player_info', id=player.player_id)}">${player.nick_html_colors()|n}</a>. Get playing!
+  <a href="${request.route_path('player_info', id=player.player_id)}">${player.nick_html_colors()|n}</a>. Get playing!
 </h2>
 <p><a href="${player_url}">Back to player info page</a></p>
 
@@ -32,7 +32,7 @@ Recent Games
       ${game_type_descr}
       % endif
       Games by 
-      <a href="${request.route_url('player_info', id=player.player_id)}">
+      <a href="${request.route_path('player_info', id=player.player_id)}">
         ${player.nick_html_colors()|n}
       </a>
     </h3>
@@ -50,9 +50,9 @@ Recent Games
       % endif
       >
       % if game.game_type_cd == 'overall':
-      <a href="${request.route_url("player_game_index", player_id=player.player_id)}" alt="${game.game_type_cd}" title="" data-toggle="none">
+      <a href="${request.route_path("player_game_index", player_id=player.player_id)}" alt="${game.game_type_cd}" title="" data-toggle="none">
       % else:
-      <a href="${request.route_url("player_game_index", player_id=player.player_id, _query={'type':game.game_type_cd})}" alt="${game.game_type_cd}" title="" data-toggle="none">
+      <a href="${request.route_path("player_game_index", player_id=player.player_id, _query={'type':game.game_type_cd})}" alt="${game.game_type_cd}" title="" data-toggle="none">
       % endif
         <img src="/static/images/icons/24x24/${game.game_type_cd}.png" width="24" height="24"><br />
         ${game.game_type_cd} <br />
@@ -79,11 +79,11 @@ Recent Games
       <tbody>
       % for rg in games.items:
       <tr>
-        <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
+        <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_path('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
         <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
         <td><img title="${rg.game_type_cd}" src="/static/images/icons/24x24/${rg.game_type_cd}.png" alt="${rg.game_type_cd}" /> ${rg.game_type_cd}</td>
-        <td><a href="${request.route_url("server_info", id=rg.server_id)}" name="Server info page for ${rg.server_name}">${rg.server_name}</a></td>
-        <td><a href="${request.route_url("map_info", id=rg.map_id)}" name="Map info page for ${rg.map_name}">${rg.map_name}</a></td>
+        <td><a href="${request.route_path("server_info", id=rg.server_id)}" name="Server info page for ${rg.server_name}">${rg.server_name}</a></td>
+        <td><a href="${request.route_path("map_info", id=rg.map_id)}" name="Map info page for ${rg.map_name}">${rg.map_name}</a></td>
         <td>
           % if rg.pg3_team != None:
           % if rg.pg3_team == rg.winner:
@@ -101,7 +101,7 @@ Recent Games
         </td>
         <td>${str(int(round(rg.pg3_old_r,0))) + " &plusmn; " + str(int(round(rg.pg3_old_rd,0))) if rg.pg3_old_r else ""|n}</td>
         <td>
-          <a href="${request.route_url('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">           
+          <a href="${request.route_path('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">           
             % if rg.pg3_delta_r is None or rg.pg3_delta_r==0:
             <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
             % elif rg.pg3_delta_r > 0:

@@ -52,7 +52,7 @@ $(document).ready(function() {
 
 ///////////////////////////////
   
-var jsonUrl = "${request.route_url('player_weaponstats_data_json', id=player.player_id, _query={'limit':20})}";
+var jsonUrl = "${request.route_path('player_weaponstats_data_json', id=player.player_id, _query={'limit':20})}";
   
 // weapon accuracy and damage charts
 var chartData, chartName = "accuracyChart", chartOpt = null, chartLimit=20;
@@ -264,7 +264,7 @@ Player Information
           % if g.game_type_cd == 'overall':
           Best Rank:
           <small>
-            <a href="${request.route_url('rank_index', game_type_cd=ranks[g.game_type_cd].game_type_cd, region=player.region, _query={'page':(ranks[g.game_type_cd].rank-1)/20+1})}" title="Player rank page for this player">
+            <a href="${request.route_path('rank_index', game_type_cd=ranks[g.game_type_cd].game_type_cd, region=player.region, _query={'page':(ranks[g.game_type_cd].rank-1)/20+1})}" title="Player rank page for this player">
               ${ranks[g.game_type_cd].rank} of ${ranks[g.game_type_cd].max_rank}
             </a>
             (${ranks[g.game_type_cd].game_type_cd}, top ${round(100-ranks[g.game_type_cd].percentile,2)}%)
@@ -272,7 +272,7 @@ Player Information
           % else:
           Rank:
           <small>
-            <a href="${request.route_url('rank_index', game_type_cd=g.game_type_cd, region=player.region, _query={'page':(ranks[g.game_type_cd].rank-1)/20+1})}" title="Player rank page for this player">
+            <a href="${request.route_path('rank_index', game_type_cd=g.game_type_cd, region=player.region, _query={'page':(ranks[g.game_type_cd].rank-1)/20+1})}" title="Player rank page for this player">
               ${ranks[g.game_type_cd].rank} of ${ranks[g.game_type_cd].max_rank}
             </a>
             (top ${round(100-ranks[g.game_type_cd].percentile,2)}%)
@@ -294,15 +294,15 @@ Player Information
 
           Games Played: 
           % if g.game_type_cd == 'overall':
-          <small><a href="${request.route_url("player_game_index", player_id=player.player_id)}" title="View recent games">${g.games}</a></small>
+          <small><a href="${request.route_path("player_game_index", player_id=player.player_id)}" title="View recent games">${g.games}</a></small>
           % else:
-          <small><a href="${request.route_url("player_game_index", player_id=player.player_id, _query={'type':g.game_type_cd})}" title="View recent ${overall_stats[g.game_type_cd].game_type_descr} games">${g.games}</a></small>
+          <small><a href="${request.route_path("player_game_index", player_id=player.player_id, _query={'type':g.game_type_cd})}" title="View recent ${overall_stats[g.game_type_cd].game_type_descr} games">${g.games}</a></small>
           % endif
           <br />
 
           Favorite Map:
           % if g.game_type_cd in fav_maps:
-          <small><a href="${request.route_url("map_info", id=fav_maps[g.game_type_cd].map_id)}" title="Go to the detail page for this map">${fav_maps[g.game_type_cd].map_name}</a></small>
+          <small><a href="${request.route_path("map_info", id=fav_maps[g.game_type_cd].map_id)}" title="Go to the detail page for this map">${fav_maps[g.game_type_cd].map_name}</a></small>
           % else:
           <small>-</small>
           % endif
@@ -311,7 +311,7 @@ Player Information
           <!--
           % if g.game_type_cd == 'ctf':
           % if overall_stats[g.game_type_cd].total_captures is not None:
-          <small><a href="${request.route_url("player_captimes", player_id=player.player_id)}">Fastest flag captures...</a> <br /></small>
+          <small><a href="${request.route_path("player_captimes", player_id=player.player_id)}">Fastest flag captures...</a> <br /></small>
           % else:
           <small><br /></small>
           % endif
@@ -371,7 +371,7 @@ Player Information
 
       </tbody>
     </table>
-    <p><a href="${request.route_url("player_game_index", player_id=player.player_id, page=1)}" title="Game index for ${player.stripped_nick}">More...</a></p>
+    <p><a href="${request.route_path("player_game_index", player_id=player.player_id, page=1)}" title="Game index for ${player.stripped_nick}">More...</a></p>
   </div>
 </div>
 %endif

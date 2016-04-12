@@ -40,7 +40,7 @@ Active Servers Index
             % endif
           </td>
           % if server_id != '-':
-          <td class="nostretch" style="max-width:180px;"><a href="${request.route_url('server_info', id=server_id)}" title="Go to the server info page for ${name}">${name}</a></td>
+          <td class="nostretch" style="max-width:180px;"><a href="${request.route_path('server_info', id=server_id)}" title="Go to the server info page for ${name}">${name}</a></td>
           % else:
           <td class="nostretch" style="max-width:180px;">${name}</td>
           % endif
@@ -67,7 +67,7 @@ ${filter_js()}
 
 <script>
   $("#filterBar li").click(function() {
-    window.location = "${request.route_url('top_servers_by_players', _query={'page':1})}";
+    window.location = "${request.route_path('top_servers_by_players', _query={'page':1})}";
   });
 </script>
 </%block>

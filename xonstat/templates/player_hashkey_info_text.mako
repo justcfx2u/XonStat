@@ -1,7 +1,7 @@
 V 1
 R XonStat/1.0
 T ${now}
-S ${request.route_url('player_info', id=player.player_id)}
+S ${request.route_path('player_info', id=player.player_id)}
 P ${hashkey}
 n ${player.nick}
 i ${player.player_id}

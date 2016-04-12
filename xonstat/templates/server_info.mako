@@ -153,7 +153,7 @@ loadLivePlayers();
         <tr>
           <td>${i}</td>
           % if player_id != '-':
-          <td><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${html_colors(nick)|n}</a></td>
+          <td><a href="${request.route_path('player_info', id=player_id)}" title="Go to the player info page for this player">${html_colors(nick)|n}</a></td>
           % else:
           <td>${html_colors(nick)|n}</td>
           % endif
@@ -181,7 +181,7 @@ loadLivePlayers();
         <tr>
           <td>${i}</td>
           % if map_id != '-':
-          <td><a href="${request.route_url('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
+          <td><a href="${request.route_path('map_info', id=map_id)}" title="Go to the map info page for ${name}">${name}</a></td>
           % else:
           <td>${name}</td>
           % endif
@@ -220,13 +220,13 @@ loadLivePlayers();
         <tbody>
           % for rg in recent_games:
           <tr>
-            <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">View</a></td>
+            <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_path('game_info', id=rg.game_id)}" title="View detailed information about this game">View</a></td>
             <td><span class="abstime" data-epoch="${rg.epoch}" title="${rg.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${rg.fuzzy_date}</span></td>
             <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt="${rg.game_type_cd}" title="${rg.game_type_descr}"> ${rg.game_type_cd}</td>
-            <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
+            <td><a href="${request.route_path('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
             <td class="nostretch">
               % if rg.pg1_player_id > 2:
-              <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
+              <a href="${request.route_path('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
               % else:
               ${html_colors(rg.pg1_nick)|n}
               % endif
@@ -235,7 +235,7 @@ loadLivePlayers();
 
               &nbsp; vs &nbsp;
 
-              <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+              <a href="${request.route_path('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
               % else:
               ${html_colors(rg.pg2_nick)|n}
               % endif
@@ -249,7 +249,7 @@ loadLivePlayers();
           % endfor
         </tbody>
       </table>
-      <p><a href="${request.route_url('game_index', _query={'server_id':server.server_id})}">More...</a></p>
+      <p><a href="${request.route_path('game_index', _query={'server_id':server.server_id})}">More...</a></p>
   </div>
 </div>
 % endif

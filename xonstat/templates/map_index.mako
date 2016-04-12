@@ -16,7 +16,7 @@ Map Index
 % else:
 <div class="row">
   <div class="col-sm-8 col-sm-offset-2">
-    <form class="indexform" method="get" action="${request.route_url('search')}">
+    <form class="indexform" method="get" action="${request.route_path('search')}">
       <input type="hidden" name="fs" />
       <input class="indexbox" type="text" name="map_name" />
       <input type="submit" value="search" />
@@ -34,10 +34,10 @@ Map Index
         % for map in maps:
         <tr>
           <td>${map.map_id}</td>
-          <td><a href="${request.route_url("map_info", id=map.map_id)}" title="Go to this map's info page">${map.name}</a></td>
+          <td><a href="${request.route_path("map_info", id=map.map_id)}" title="Go to this map's info page">${map.name}</a></td>
           <td><span class="abstime" data-epoch="${map.epoch()}" title="${map.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${map.fuzzy_date()}</span></td>
            <td class="tdcenter">
-            <a href="${request.route_url("game_index", _query={'map_id':map.map_id})}" title="View recent games on this map">
+            <a href="${request.route_path("game_index", _query={'map_id':map.map_id})}" title="View recent games on this map">
               <i class="glyphicon glyphicon-list"></i>
             </a>
           </td>

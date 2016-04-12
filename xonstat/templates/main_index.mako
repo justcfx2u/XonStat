@@ -268,7 +268,7 @@
         % endfor
       </tbody>
     </table>
-    <p class="note"><a href="${request.route_url('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
+    <p class="note"><a href="${request.route_path('top_maps_by_times_played', page=1)}" title="See more map activity">More...</a></p>
   </div> 
   -->
  
@@ -298,7 +298,7 @@
         % endfor
       </tbody>
     </table>
-    <p class="note"><a href="${request.route_url('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>
+    <p class="note"><a href="${request.route_path('top_servers_by_players', page=1)}" title="See more server activity">More...</a></p>
   </div> <!-- /span4 -->
 
 </div> <!-- /row -->
@@ -325,7 +325,7 @@
       <tbody>
         % for rg in recent_games:
         <tr>
-          <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
+          <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_path('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
           <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%H:%M:%S')}</span></td>
           <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" alt="${rg.game_type_cd}" width="24" height="24"> ${rg.game_type_cd}</td>
           <td>
@@ -333,11 +333,11 @@
             <img src="/static/images/flags/${rg.country.lower()}.png" alt="${rg.country}" width="24" height="24" class="flag"> ${rg.country}
             % endif
           </td>
-          <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
-          <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
+          <td><a href="${request.route_path('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
+          <td><a href="${request.route_path('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
           <td class="nostretch">
             % if rg.pg1_player_id > 2:
-            <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
+            <a href="${request.route_path('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
             % else:
             ${html_colors(rg.pg1_nick)|n}
             % endif
@@ -346,7 +346,7 @@
 
             &nbsp;vs&nbsp;
 
-            <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+            <a href="${request.route_path('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
             % else:
             ${html_colors(rg.pg2_nick)|n}
             % endif
@@ -371,7 +371,7 @@
         % endfor
       </tbody>
     </table>
-    <p><a href="${request.route_url('game_index')}">More...</a></p>
+    <p><a href="${request.route_path('game_index')}">More...</a></p>
   </div> <!-- /span12 -->
 </div> <!-- /row -->
 % endif

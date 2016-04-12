@@ -120,10 +120,10 @@ Advanced Search
         % for (player_id, nick, stripped_nick, create_dt, is_alias) in results:
         <tr>
           <td>${player_id}</td>
-          <td class="player-nick"><a href="${request.route_url("player_info", id=player_id)}" title="Go to this player's info page">${html_colors(nick)|n}</a></td>
+          <td class="player-nick"><a href="${request.route_path("player_info", id=player_id)}" title="Go to this player's info page">${html_colors(nick)|n}</a></td>
           <td><span class="abstime" data-epoch="${int((create_dt - datetime.datetime(1970,1,1)).total_seconds())}">${create_dt.strftime('%Y-%m-%d')}</span></td>
           <td class="tdcenter">
-            <a href="${request.route_url("player_game_index", player_id=player_id, page=1)}" title="View recent games by this player">
+            <a href="${request.route_path("player_game_index", player_id=player_id, page=1)}" title="View recent games by this player">
               <i class="glyphicon glyphicon-list"></i>
             </a>
           </td>
@@ -149,10 +149,10 @@ Advanced Search
       % for server in results:
       <tr>
         <td>${server.server_id}</td>
-        <td><a href="${request.route_url("server_info", id=server.server_id)}" title="Go to this server's info page">${server.name}</a></th>
+        <td><a href="${request.route_path("server_info", id=server.server_id)}" title="Go to this server's info page">${server.name}</a></th>
         <td><span class="abstime" data-epoch="${server.epoch()}" title="${server.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${server.fuzzy_date()}</span></td>
         <td class="tdcenter">
-          <a href="${request.route_url("game_index", _query={'server_id':server.server_id})}" title="View recent games on this server">
+          <a href="${request.route_path("game_index", _query={'server_id':server.server_id})}" title="View recent games on this server">
             <i class="glyphicon glyphicon-list"></i>
           </a>
         </td>
@@ -177,10 +177,10 @@ Advanced Search
       % for map in results:
       <tr>
         <td>${map.map_id}</td>
-        <td><a href="${request.route_url("map_info", id=map.map_id)}" title="Go to this map's info page">${map.name}</a></th>
+        <td><a href="${request.route_path("map_info", id=map.map_id)}" title="Go to this map's info page">${map.name}</a></th>
         <td><span class="abstime" data-epoch="${map.epoch()}" title="${map.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${map.fuzzy_date()}</span></td>
           <td class="tdcenter">
-          <a href="${request.route_url("game_index", _query={'map_id':map.map_id})}" title="View recent games on this map">
+          <a href="${request.route_path("game_index", _query={'map_id':map.map_id})}" title="View recent games on this map">
             <i class="glyphicon glyphicon-list"></i>
           </a>
         </td>
@@ -204,9 +204,9 @@ Advanced Search
       </tr>
       % for (game, server, gmap) in results:
       <tr>
-        <td><a class="btn btn-primary btn-small" href="${request.route_url("game_info", id=game.game_id)}" name="Game info page for game #${game.game_id}">View</a></td>
-        <td><a href="${request.route_url("map_info", id=gmap.map_id)}" name="Map info page for map #${gmap.map_id}">${gmap.name}</a></td>
-        <td><a href="${request.route_url("server_info", id=server.server_id)}" name="Server info page for server #${server.server_id}">${server.name}</a></td>
+        <td><a class="btn btn-primary btn-small" href="${request.route_path("game_info", id=game.game_id)}" name="Game info page for game #${game.game_id}">View</a></td>
+        <td><a href="${request.route_path("map_info", id=gmap.map_id)}" name="Map info page for map #${gmap.map_id}">${gmap.name}</a></td>
+        <td><a href="${request.route_path("server_info", id=server.server_id)}" name="Server info page for server #${server.server_id}">${server.name}</a></td>
         <td><span class="abstime" data-epoch="${game.epoch()}" title="${game.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${game.fuzzy_date()}</span></td>
       </tr>
       % endfor

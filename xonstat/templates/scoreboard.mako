@@ -14,7 +14,7 @@
 
       <td class="player-nick">
         % if pgstat.player_id > 2:
-          <a href="${request.route_url("player_info", id=pgstat.player_id)}"
+          <a href="${request.route_path("player_info", id=pgstat.player_id)}"
             title="Go to the info page for this player">
             <span class="nick">${pgstat.nick_html_colors()|n}</span>
           </a>

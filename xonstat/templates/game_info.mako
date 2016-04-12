@@ -42,8 +42,8 @@ Game Information
     <p style="display:inline-block">
     Played: <span class="abstime" data-epoch="${game.epoch()}" title="${game.start_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${game.fuzzy_date()}</span><br />
     Game Type: ${gametype.descr} (${game.mod})<br />
-    Server: <a href="${request.route_url("server_info", id=server.server_id)}" name="Server info page for ${server.name}">${server.name}</a><br />
-    Map: <a href="${request.route_url("map_info", id=map.map_id)}" name="Map info page for ${map.name}">${map.name}</a><br />
+    Server: <a href="${request.route_path("server_info", id=server.server_id)}" name="Server info page for ${server.name}">${server.name}</a><br />
+    Map: <a href="${request.route_path("map_info", id=map.map_id)}" name="Map info page for ${map.name}">${map.name}</a><br />
     % if game.duration is not None:
     Duration: ${"%s:%02d" % (game.duration.seconds/60, game.duration.seconds%60)}
     % endif
@@ -115,7 +115,7 @@ Game Information
       <tr>
         <td>
           % if pgs.player_id > 2:
-          <a href="${request.route_url("player_info", id=pgs.player_id)}"
+          <a href="${request.route_path("player_info", id=pgs.player_id)}"
             title="Go to the info page for this player">
             <span class="nick">${pgs.nick_html_colors()|n}</span>
           </a>

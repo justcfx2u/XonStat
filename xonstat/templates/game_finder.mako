@@ -57,7 +57,7 @@ Game Index
       <tbody>
       % for rg in recent_games:
         <tr>
-          <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_url('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
+          <td class="tdcenter"><a class="btn btn-primary btn-small" href="${request.route_path('game_info', id=rg.game_id)}" title="View detailed information about this game">view</a></td>
           <td><span class="abstime" data-epoch="${rg.epoch}">${rg.start_dt.strftime('%Y-%m-%d   %H:%M:%S')}</span></td>
           <td><img src="/static/images/icons/24x24/${rg.game_type_cd}.png" width="24" height="24" alt = "${rg.game_type_cd}" title="${rg.game_type_descr}"> ${rg.game_type_cd}</td>
           <td>
@@ -65,11 +65,11 @@ Game Index
             <img src="/static/images/flags/${rg.country.lower()}.png" width="24" height="24" class="flag"> ${rg.country}
             % endif
           </td>
-          <td><a href="${request.route_url('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
-          <td><a href="${request.route_url('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
+          <td><a href="${request.route_path('server_info', id=rg.server_id)}" title="Go to the detail page for this server">${rg.server_name}</a></td>
+          <td><a href="${request.route_path('map_info', id=rg.map_id)}" title="Go to the map detail page for this map">${rg.map_name}</a></td>
           <td>
             % if rg.pg1_player_id > 2:
-            <a href="${request.route_url('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
+            <a href="${request.route_path('player_info', id=rg.pg1_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg1_nick)|n}</a>
             % else:
             ${html_colors(rg.pg1_nick)|n}
             % endif
@@ -78,7 +78,7 @@ Game Index
 
             &nbsp;vs&nbsp;
 
-            <a href="${request.route_url('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
+            <a href="${request.route_path('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
             % else:
             ${html_colors(rg.pg2_nick)|n}
             % endif
@@ -113,7 +113,7 @@ Game Index
   <div class="col-sm-12 text-center">
     <ul class="pagination">
       <li>
-        <a  href="${request.route_url('game_index', _query=query)}" name="Next Page">Next <i class="glyphicon glyphicon-arrow-right"></i></a>
+        <a  href="${request.route_path('game_index', _query=query)}" name="Next Page">Next <i class="glyphicon glyphicon-arrow-right"></i></a>
       </li>
     </ul>
   </div>

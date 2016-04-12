@@ -56,7 +56,7 @@ ${filter_js()}
         % for rank in ranks:
         <tr>
           <td>${rank.rank}</td>
-          <td class="nostretch" style="max-width:420px;"><a href="${request.route_url("player_info", id=rank.player_id)}" title="Go to this player's info page">${rank.nick_html_colors()|n}</a></td>
+          <td class="nostretch" style="max-width:420px;"><a href="${request.route_path("player_info", id=rank.player_id)}" title="Go to this player's info page">${rank.nick_html_colors()|n}</a></td>
           <td>${int(round(rank.g2_r))} &plusmn; ${int(round(rank.g2_rd))}</td>
           <td>${rank.g2_games}</td>
         </tr>

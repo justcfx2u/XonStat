@@ -32,7 +32,7 @@ Active Players Index
         <tr>
           <td>${i}</td>
           % if player_id != '-':
-          <td class="nostretch" style="max-width:150px;"><a href="${request.route_url('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
+          <td class="nostretch" style="max-width:150px;"><a href="${request.route_path('player_info', id=player_id)}" title="Go to the player info page for this player">${nick|n}</a></td>
           % else:
           <td class="nostretch" style="max-width:150px;">${nick|n}</td>
           % endif
