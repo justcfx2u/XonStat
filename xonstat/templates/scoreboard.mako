@@ -59,7 +59,7 @@
 <%
 metric_text_dict = {
   "ffa": "kills\n[adjusted by time played]",
-  "ca": "damage_dealt/100 + kill/4s\n[adjusted by time played]",
+  "ca": "scoreboard_score - 0.75*kills\n[adjusted by rounds played]",
   "duel": "1=win, 0=loss, -1=forfeit/quit",
   "ctf": "clamp(damage_dealt/damage_taken, 0.5, 2.0) * (score + damage_dealt/20)\n[adjusted by time played]",
   "tdm": "5*net_kills + 4*net_damage/100 + 3*damage_dealt/100\n[adjusted by time played]",
