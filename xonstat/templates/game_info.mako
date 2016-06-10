@@ -52,7 +52,7 @@ Game Information
     statusMsg={
       0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 
       5: "uneven playtime in teams", 6: "not enough qualifying players", 7: "missing data", 8: "B-rated (custom settings/factory)",
-      9: "unsupported game type", 10: "server is exluded from ratings"
+      9: "unsupported game type", 10: "server is excluded from ratings", 11: "game was voted unranked"
       }
     msg= statusMsg[game.g2_status] if game.g2_status in (1,8) else "Not rated (" + statusMsg[game.g2_status] + ")"
     %>
