@@ -250,7 +250,7 @@ def game_finder_data(request):
     recent_games = [RecentGame(row) for row in rgs_q.limit(20).all()]
     
     if len(recent_games) > 0:
-        query['start_game_id'] = recent_games[-1].game_id + 1
+        query['start_game_id'] = recent_games[-1].game_id - 1
 
     # build the list of links for the stripe across the top
     game_type_links = []
