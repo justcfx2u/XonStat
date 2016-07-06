@@ -6,7 +6,7 @@ import time
 from pyramid.response import Response
 from sqlalchemy import desc
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
-from sqlalchemy.sql.expression import *
+from sqlalchemy.sql.expression import literal_column, case
 from sqlalchemy import func
 from xonstat.models import *
 from xonstat.util import strip_colors, qfont_decode
