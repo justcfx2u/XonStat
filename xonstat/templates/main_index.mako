@@ -90,7 +90,7 @@
         var server=data.servers[i-1];
         var $row = $($("#serverTable tr")[i]);
         var $cells = $row.children();
-        $($cells[1]).html(i <= c ? "<img src='/static/images/flags/" + server[3].toLowerCase() + ".png' class='flag'> " + server[3] : "");
+        $($cells[1]).html(i <= c && server[3] != null ? "<img src='/static/images/flags/" + server[3].toLowerCase() + ".png' class='flag'> " + server[3] : "");
         $($cells[2]).html(i <= c ? "<a href='/server/" + server[0] + "'>" + escapeHtml(server[1]) + "</a>" : "");
         $($cells[3]).html(i <= c ? server[2] : "");
       }
