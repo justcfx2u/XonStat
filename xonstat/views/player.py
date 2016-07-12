@@ -1178,8 +1178,10 @@ def players_elo(request, b_rating = False):
           data = { "elo": int(round(row.PlayerElo.b_r,0)), "games": row.PlayerElo.b_games } if row.PlayerElo.b_r is not None else defaultRating
         else:
           data = { "elo": int(round(row.PlayerElo.g2_r,0)), "games": row.PlayerElo.g2_games } if row.PlayerElo.g2_r is not None else defaultRating
+        if data.games == 0:
+          data.elo = defaultRating.elo
         if data is not None:
-          players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = data;
+          players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = data
 
     return { "players": players.values(), "deactivated": deactivated.keys() }
 
