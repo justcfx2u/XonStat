@@ -104,7 +104,13 @@ def _game_info_data(request):
                     if weapon.weapon_cd not in pwstats[pgstat.player_id]["weapons"]:
                         pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd] = []
 
-                    pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd] = [pwstat.frags, pwstat.max, pwstat.hit, pwstat.fired]
+                    if len(pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd]) != 0:
+                        pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd][0] += pwstat.frags;
+                        pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd][1] += pwstat.max;
+                        pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd][2] += pwstat.hit;
+                        pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd][3] += pwstat.fired;
+                    else:
+                        pwstats[pgstat.player_id]["weapons"][weapon.weapon_cd] = [pwstat.frags, pwstat.max, pwstat.hit, pwstat.fired]
 
     except Exception as inst:
         game = None
