@@ -23,7 +23,7 @@
     </%block>
 
     <script>
-      <!--
+      /*
       Google Analytics disabled as long as there is to EU compliant cookie policy opt-in procedure
 
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -32,7 +32,7 @@
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       ga('create', 'UA-71098578-1', 'auto');
       ga('send', 'pageview');
-      -->
+      */
 
       function setCookie(name, value) {
         if (value === null || value === undefined)
@@ -51,9 +51,9 @@
         setCookie("weapons", "mg,lg,rg,hmg");
 
       // remove Google Analytics cookies
-      document.cookie = "_ga=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      document.cookie = "_gat=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      document.cookie = "session=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      document.cookie = "_ga=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      document.cookie = "_gat=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
     </script>
   </head>
 
