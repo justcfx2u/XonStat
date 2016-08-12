@@ -23,17 +23,21 @@
     </%block>
 
     <script>
+      <!--
+      Google Analytics disabled as long as there is to EU compliant cookie policy opt-in procedure
+
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
       ga('create', 'UA-71098578-1', 'auto');
       ga('send', 'pageview');
+      -->
 
       function setCookie(name, value) {
         if (value === null || value === undefined)
           value = "";
-        document.cookie = name + "=" + value + "; expires=Tue, 1 Jan 2030 12:00:00 UTC; path=/";
+        document.cookie = name + "=" + value + "; path=/"; // removed expiration date due to lack of cookie opt-in: expires=Tue, 1 Jan 2030 12:00:00 UTC;
       }
       function getCookie(name) {
         var match = document.cookie.match(new RegExp(name + "=([^;]*)"));
@@ -45,6 +49,11 @@
         setCookie("gametype", "");
       if (!document.cookie.match(/weapons=[a-z]*/))
         setCookie("weapons", "mg,lg,rg,hmg");
+
+      // remove Google Analytics cookies
+      setCookie("_ga", null);
+      setCookie("_gat", null);
+      setCookie("session", null);
     </script>
   </head>
 
@@ -68,12 +77,13 @@
       <div class="row shadowtext" id="pageFooter">
         <div class="col-sm-10 col-sm-offset-1">
           <p class="text-center">
-            QLStats was created by PredatH0r as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
+            QLStats was created and is operated by <a href="http://qlstats.net/contact">PredatH0r</a> as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
             the <a href="http://www.xonotic.org" target="_blank">Xonotic</a> stats tracking system created by Antibody.
 
             <br>Both are licensed under GPLv2 and available on Github: <a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats</a>,
             <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat</a>
             <br>Geo-IP information provided by <a href="http://www.freegeoip.net">freegeoip.net</a> | Flag images provided by <a href="http://www.icondrawer.com/flag-icons.php">icondrawer.com</a>
+            <br>This site uses UI customization cookies, which are <a href="http://ec.europa.eu/justice/data-protection/article-29/documentation/opinion-recommendation/files/2012/wp194_en.pdf">exempt from consent</a>
           </p>
         </div>
       </div>
