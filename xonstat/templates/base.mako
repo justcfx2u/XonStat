@@ -51,9 +51,9 @@
         setCookie("weapons", "mg,lg,rg,hmg");
 
       // remove Google Analytics cookies
-      setCookie("_ga", null);
-      setCookie("_gat", null);
-      setCookie("session", null);
+      document.cookie = "_ga=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      document.cookie = "_gat=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      document.cookie = "session=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT";
     </script>
   </head>
 
