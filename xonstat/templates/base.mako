@@ -23,6 +23,18 @@
     </%block>
 
     <script>
+      // remove old persistent cookies
+      if (document.cookie.match(/region=\d/))
+        document.cookie = "region=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      if (document.cookie.match(/gametype=[a-z]*/))
+        document.cookie = "gametype=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      if (document.cookie.match(/weapons=[a-z]*/))
+        document.cookie = "weapons=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      if (document.cookie.match(/_ga=/))
+        document.cookie = "_ga=; path=/; domain=.qlstats.net; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      if (document.cookie.match(/_gat=/))
+        document.cookie = "_gat=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+
       /*
       Google Analytics disabled as long as there is to EU compliant cookie policy opt-in procedure
 
@@ -49,11 +61,6 @@
         setCookie("gametype", "");
       if (!document.cookie.match(/weapons=[a-z]*/))
         setCookie("weapons", "mg,lg,rg,hmg");
-
-      // remove Google Analytics cookies
-      document.cookie = "_ga=; path=/; domain=.qlstats.net; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      document.cookie = "_gat=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
     </script>
   </head>
 
