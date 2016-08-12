@@ -51,7 +51,7 @@
         setCookie("weapons", "mg,lg,rg,hmg");
 
       // remove Google Analytics cookies
-      document.cookie = "_ga=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+      document.cookie = "_ga=; path=/; domain=.qlstats.net; expires=Thu, 01 Jan 1970 00:00:01 GMT";
       document.cookie = "_gat=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
       document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
     </script>
@@ -77,13 +77,13 @@
       <div class="row shadowtext" id="pageFooter">
         <div class="col-sm-10 col-sm-offset-1">
           <p class="text-center">
-            QLStats was created and is operated by <a href="http://qlstats.net/contact">PredatH0r</a> as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
+            QLStats was created by PredatH0r as a Quake Live modification of <a href="http://stats.xonotic.org" target="_blank">XonStat</a>,
             the <a href="http://www.xonotic.org" target="_blank">Xonotic</a> stats tracking system created by Antibody.
 
             <br>Both are licensed under GPLv2 and available on Github: <a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats</a>,
             <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat</a>
             <br>Geo-IP information provided by <a href="http://www.freegeoip.net">freegeoip.net</a> | Flag images provided by <a href="http://www.icondrawer.com/flag-icons.php">icondrawer.com</a>
-            <br>This site uses UI customization cookies, which are <a href="http://ec.europa.eu/justice/data-protection/article-29/documentation/opinion-recommendation/files/2012/wp194_en.pdf">exempt from consent</a>
+            <br><a href="http://qlstats.net/static/contact.html">Legal information</a> (contact, cookie policy, data privacy, disclaimer)
           </p>
         </div>
       </div>
