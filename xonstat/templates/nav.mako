@@ -47,6 +47,12 @@
           class="active"
           % endif
           ><a href="${request.route_path('map_index')}" title="Map Index">Maps</a></li>
+
+        %if request.registry.settings.get('qlstat.feeder_login_url'):
+        <li>
+          <a href="${request.registry.settings.get('qlstat.feeder_login_url')}">Account</a>
+        </li>
+        %endif
       </ul>
 
 

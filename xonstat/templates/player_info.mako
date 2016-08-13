@@ -24,8 +24,7 @@ ${parent.css()}
 <%block name="js">
 ${parent.js()}
 
-%if player:
-
+%if player and player.privacy_match_hist != 1:
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/weaponCharts.min.js"></script>
 
@@ -181,6 +180,7 @@ Player Information
 
 %if not player:
   <h2>Sorry, that player wasn't found!</h2>
+
 %else:
 
 <div class="row" style="min-height: 200px">
@@ -191,17 +191,29 @@ Player Information
       regions = [ "not set", "Europe", "Africa", "Asia", "Australia", "North America", "South America"]
       region = "unknown" if player.region is None or player.region > len(regions) else regions[player.region]
       %>
+%if player.privacy_match_hist != 1:
       Region: ${region}
+%endif
       <br>Player ID: ${player.player_id}
       <br>Steam ID: <a href="http://steamcommunity.com/profiles/${hashkey}/" target="_blank">${hashkey}</a>
+%if player.privacy_match_hist != 1:
       <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
+%endif
       <br>Status: ${ "active" if player.active_ind else "<span class='warntext'>deactivated</span>" | n}
       % if cake_day:
       <img src="/static/images/icons/24x24/cake.png" title="Happy cake day!" />
       % endif     
     </p>
+%if player.privacy_match_hist != 1:
     <a id="btnNowPlaying" class="btn btn-primary btn-small" href="" style="display:none">Now Playing</a>
+%endif
   </div>
+
+%if player.privacy_match_hist == 1:
+  <div class="col-xs-6 xol-sm-8 col-md-9" style="padding: 50pt 0 0 60pt; font-size: 16pt">
+    This profile is private
+  </div>
+%else:
 
   <div class="col-xs-6 col-sm-8 col-md-9">
     <ul id="gbtab" class="nav nav-tabs" style="margin-top:20px">
@@ -374,4 +386,5 @@ Player Information
     <p><a href="${request.route_path("player_game_index", player_id=player.player_id, page=1)}" title="Game index for ${player.stripped_nick}">More...</a></p>
   </div>
 </div>
+%endif
 %endif

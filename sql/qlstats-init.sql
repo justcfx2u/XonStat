@@ -269,3 +269,8 @@ update games g
 update games g
   set player_id2=(select player_id from player_game_stats pg where pg.game_id=g.game_id and team=2 and scoreboardpos>=0 order by scoreboardpos limit 1)
   where g.game_type_cd not in ('duel', 'ffa', 'race', 'rr');
+
+
+-- 2016-08-13
+
+alter table players add privacy_match_hist smallint not null default 0;
