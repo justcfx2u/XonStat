@@ -35,6 +35,10 @@
         }
         cookie += "; path=/";
         document.cookie = cookie;
+
+        // Edge by default blocks all persistent cookies, so we retry with transient cookies
+        if (getCookie(name) != value)
+          document.cookie = name + "=" + value + "; path=/";
       }
       function getCookie(name) {
         var match = document.cookie.match(new RegExp(name + "=([^;]*)"));
