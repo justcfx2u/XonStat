@@ -31,7 +31,7 @@
           persistent = document.cookie.match(/allowCookies=true/);
         if (persistent) {
           var exp = new Date(Date.now() + 30*24*60*60*1000);
-          cookie += "; expires=" + exp.toString() + ";"; //Tue, 1 Jan 2030 12:00:00 UTC;"
+          cookie += "; expires=" + exp.toUTCString() + ";";
         }
         document.cookie = cookie;
       }
