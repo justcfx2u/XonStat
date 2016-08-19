@@ -4,6 +4,7 @@
 ${parent.css()}
 <style>
   #blocked { display: none; }
+  h2 { color: orange; }
 </style>
 </%block>
 
@@ -22,8 +23,8 @@ qlstats.net relies on the use of cookies to work properly.
 </div>
 
 <div id="blocked">
-  Your browser is blocking cookies.
-  <p>If you wish to use qlstats, you need to enable cookies and reload this page.
+  <h2>Your browser is blocking cookies</h2>
+  <p>If you wish to use qlstats, you need to enable cookies in your browser and reload this page.
 </div>
 
 
