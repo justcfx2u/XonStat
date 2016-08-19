@@ -24,21 +24,20 @@
 
     <script>
       function setCookie(name, value, persistent) {
-        if (value === null || value === undefined)
-          value = "";
+        if (value === null || value === undefined) {
+          document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/"
+          return;
+        }
+        
         var cookie = name + "=" + value;
         if (persistent === undefined)
           persistent = document.cookie.match(/allowCookies=true/);
         if (persistent) {
           var exp = new Date(Date.now() + 30*24*60*60*1000);
-          cookie += "; expires=" + exp.toUTCString().replace("GMT", "UTC");
+          cookie += "; expires=" + exp.toUTCString();
         }
         cookie += "; path=/";
         document.cookie = cookie;
-
-        // Edge by default blocks all persistent cookies, so we retry with transient cookies
-        if (getCookie(name) != value)
-          document.cookie = name + "=" + value + "; path=/";
       }
       function getCookie(name) {
         var match = document.cookie.match(new RegExp(name + "=([^;]*)"));
