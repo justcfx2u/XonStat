@@ -167,9 +167,6 @@ locatePlayer();
 
 </script>
 
-<script src="https://login.persona.org/include.js" type="text/javascript"></script>
-<script type="text/javascript">${request.persona_js}</script>
-
 %endif
 
 </%block>

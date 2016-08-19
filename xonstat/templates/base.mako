@@ -23,44 +23,59 @@
     </%block>
 
     <script>
-      // remove old persistent cookies
-      if (document.cookie.match(/region=\d/))
-        document.cookie = "region=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      if (document.cookie.match(/gametype=[a-z]*/))
-        document.cookie = "gametype=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      if (document.cookie.match(/weapons=[a-z]*/))
-        document.cookie = "weapons=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      if (document.cookie.match(/_ga=/))
-        document.cookie = "_ga=; path=/; domain=.qlstats.net; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-      if (document.cookie.match(/_gat=/))
-        document.cookie = "_gat=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-
-      /*
-      Google Analytics disabled as long as there is to EU compliant cookie policy opt-in procedure
-
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-71098578-1', 'auto');
-      ga('send', 'pageview');
-      */
-
-      function setCookie(name, value) {
+      function setCookie(name, value, persistent) {
         if (value === null || value === undefined)
           value = "";
-        document.cookie = name + "=" + value + "; path=/"; // removed expiration date due to lack of cookie opt-in: expires=Tue, 1 Jan 2030 12:00:00 UTC;
+        var cookie = name + "=" + value + "; path=/";
+        if (persistent === undefined)
+          persistent = document.cookie.match(/allowCookies=true/);
+        if (persistent) {
+          var exp = new Date(Date.now() + 30*24*60*60*1000);
+          cookie += "; expires=" + exp.toString() + ";"; //Tue, 1 Jan 2030 12:00:00 UTC;"
+        }
+        document.cookie = cookie;
       }
       function getCookie(name) {
         var match = document.cookie.match(new RegExp(name + "=([^;]*)"));
         return match ? match[1] : null;
       }
-      if (!document.cookie.match(/region=\d/))
-        setCookie("region", "0");
-      if (!document.cookie.match(/gametype=[a-z]*/))
-        setCookie("gametype", "");
-      if (!document.cookie.match(/weapons=[a-z]*/))
-        setCookie("weapons", "mg,lg,rg,hmg");
+
+      (function() {
+        if (!document.cookie.match(/allowCookies=true/))
+        {
+          // remove old persistent cookies
+          if (document.cookie.match(/region=\d/))
+            document.cookie = "region=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+          if (document.cookie.match(/gametype=[a-z]*/))
+            document.cookie = "gametype=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+          if (document.cookie.match(/weapons=[a-z]*/))
+            document.cookie = "weapons=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+          if (document.cookie.match(/_ga=/))
+            document.cookie = "_ga=; path=/; domain=.qlstats.net; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+          if (document.cookie.match(/_gat=/))
+            document.cookie = "_gat=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+
+          if (!location.href.match(/\/cookie/)) {
+            location.href="/cookies?referer=" + encodeURIComponent(location.href);
+          }
+          return;
+        }
+
+        if (!document.cookie.match(/region=\d/))
+          setCookie("region", "0");
+        if (!document.cookie.match(/gametype=[a-z]*/))
+          setCookie("gametype", "");
+        if (!document.cookie.match(/weapons=[a-z]*/))
+          setCookie("weapons", "mg,lg,rg,hmg");
+
+        // Google Analytics
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-71098578-1', 'auto');
+        ga('send', 'pageview');
+      })();
     </script>
   </head>
 
@@ -90,7 +105,7 @@
             <br>Both are licensed under GPLv2 and available on Github: <a href="https://github.com/PredatH0r/xonstat" title="Go to the project page" target="_blank">QLStats</a>,
             <a href="https://github.com/antzucaro/XonStat" title="Go to the project page" target="_blank">XonStat</a>
             <br>Geo-IP information provided by <a href="http://www.freegeoip.net">freegeoip.net</a> | Flag images provided by <a href="http://www.icondrawer.com/flag-icons.php">icondrawer.com</a>
-            <br><a href="http://qlstats.net/static/contact.html">Legal information</a> (contact, cookie policy, data privacy, disclaimer)
+            <br><a href="/static/legal.html">Legal information</a> (contact, cookie policy, data privacy, disclaimer)
           </p>
         </div>
       </div>

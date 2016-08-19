@@ -230,6 +230,9 @@ def main_index(request):
     return {'recent_games':recent_games}
 
 
+def cookie_policy(request):
+    return { }
+
 def recent_games_json(request):
     recent_games = [RecentGame(row) for row in get_recent_games(20)]
     return {'recent_games':recent_games}

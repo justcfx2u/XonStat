@@ -66,6 +66,9 @@ def main(global_config, **settings):
     config.add_route("main_index", "/")
     config.add_view(main_index, route_name="main_index", renderer="main_index.mako")
 
+    config.add_route("cookies", "/cookies");
+    config.add_view(cookie_policy, route_name="cookies", renderer="cookies.mako");
+
     config.add_route("recent_games_json", "/recentgames.json")
     config.add_view(recent_games_json, route_name="recent_games_json", renderer="jsonp")
 
