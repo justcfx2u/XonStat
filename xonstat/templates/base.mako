@@ -26,13 +26,14 @@
       function setCookie(name, value, persistent) {
         if (value === null || value === undefined)
           value = "";
-        var cookie = name + "=" + value + "; path=/";
+        var cookie = name + "=" + value;
         if (persistent === undefined)
           persistent = document.cookie.match(/allowCookies=true/);
         if (persistent) {
           var exp = new Date(Date.now() + 30*24*60*60*1000);
           cookie += "; expires=" + exp.toUTCString() + ";";
         }
+        cookie += "; path=/";
         document.cookie = cookie;
       }
       function getCookie(name) {
