@@ -86,8 +86,8 @@ def _game_info_data(request):
         for (pwstat, pgstat, weapon) in DBSession.query(PlayerWeaponStat, PlayerGameStat, Weapon).\
                 filter(PlayerWeaponStat.game_id == game_id).\
                 filter(PlayerWeaponStat.weapon_cd == Weapon.weapon_cd).\
-                filter(PlayerWeaponStat.player_game_stat_id == \
-                    PlayerGameStat.player_game_stat_id).\
+                filter(PlayerWeaponStat.player_game_stat_id == PlayerGameStat.player_game_stat_id).\
+                filter(PlayerWeaponStat.player_id == PlayerGameStat.player_id).\
                 order_by(PlayerGameStat.score.desc()).\
                 order_by(PlayerGameStat.kills.desc()).\
                 order_by(PlayerGameStat.deaths).\
