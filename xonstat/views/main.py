@@ -219,7 +219,7 @@ def get_top_maps_by_times_played(cutoff_days, region = None, game_type_cd = None
 
 @cache_region('seconds_term')
 def get_recent_games(limit):
-    return recent_games_q().limit(limit).all()
+    return recent_games_q(limit=limit).all()
 
 
 

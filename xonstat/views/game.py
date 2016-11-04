@@ -251,9 +251,9 @@ def game_finder_data(request):
 
     rgs_q = recent_games_q(server_id=server_id, map_id=map_id,
             player_id=player_id, game_type_cd=game_type_cd,
-            start_game_id=start_game_id, end_game_id=end_game_id)
+            start_game_id=start_game_id, end_game_id=end_game_id, limit=20)
 
-    recent_games = [RecentGame(row) for row in rgs_q.limit(20).all()]
+    recent_games = [RecentGame(row) for row in rgs_q.all()]
     
     if len(recent_games) > 0:
         query['start_game_id'] = recent_games[-1].game_id - 1

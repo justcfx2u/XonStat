@@ -72,7 +72,7 @@ def _map_info_data(request):
                 map_id = gmap.map_id
 
         # recent games played in descending order
-        rgs = recent_games_q(map_id=map_id).limit(recent_games_count).all()
+        rgs = recent_games_q(map_id=map_id, limit=recent_games_count).all()
         recent_games = [RecentGame(row) for row in rgs]
 
         # top players by score

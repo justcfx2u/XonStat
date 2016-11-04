@@ -127,7 +127,7 @@ def games_q():
 
 def recent_games_q(server_id=None, map_id=None, player_id=None,
         game_type_cd=None, cutoff=None, force_player_id=False,
-        start_game_id=None, end_game_id=None):
+        start_game_id=None, end_game_id=None, limit=-1):
     '''
     Returns a SQLA query of recent game data. Parameters filter
     the results returned if they are provided. If not, it is
@@ -141,50 +141,62 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
     pgstat2 = aliased(PlayerGameStat, name='pgstat2')
     pgstat3 = aliased(PlayerGameStat, name='pgstat3')
 
-    recent_games_q = DBSession.query(Game.game_id, GameType.game_type_cd,
-            Game.winner, Game.start_dt, GameType.descr.label('game_type_descr'),
-            Game.score1, Game.score2, Game.g2_status,
-            Server.server_id, Server.name.label('server_name'), Server.country, Server.location,
-            Map.map_id, Map.name.label('map_name'), 
-            pgstat1.player_id.label("pg1_player_id"), pgstat1.nick.label("pg1_nick"), pgstat1.rank.label("pg1_rank"), pgstat1.team.label("pg1_team"), pgstat1.g2_old_r.label("pg1_old_r"), pgstat1.g2_old_rd.label("pg1_old_rd"), pgstat1.g2_delta_r.label("pg1_delta_r"), pgstat1.g2_delta_rd.label("pg1_delta_rd"),
-            pgstat2.player_id.label("pg2_player_id"), pgstat2.nick.label("pg2_nick"), pgstat2.rank.label("pg2_rank"), pgstat2.team.label("pg2_team"), pgstat2.g2_old_r.label("pg2_old_r"), pgstat2.g2_old_rd.label("pg2_old_rd"), pgstat2.g2_delta_r.label("pg2_delta_r"), pgstat2.g2_delta_rd.label("pg2_delta_rd"),
-            pgstat3.player_id.label("pg3_player_id"), pgstat3.nick.label("pg3_nick"), pgstat3.rank.label("pg3_rank"), pgstat3.team.label("pg3_team"), pgstat3.g2_old_r.label("pg3_old_r"), pgstat3.g2_old_rd.label("pg3_old_rd"), pgstat3.g2_delta_r.label("pg3_delta_r"), pgstat3.g2_delta_rd.label("pg3_delta_rd")
-            ).\
-            outerjoin(pgstat1, (pgstat1.game_id == Game.game_id) & (pgstat1.player_id == Game.player_id1)).\
-            outerjoin(pgstat2, (pgstat2.game_id == Game.game_id) & (pgstat2.player_id == Game.player_id2)).\
-            filter(Server.server_id == Game.server_id).\
-            filter(Map.map_id == Game.map_id).\
-            filter(GameType.game_type_cd == Game.game_type_cd).\
-            order_by(expr.desc(Game.create_dt))
-
-    if player_id is not None and force_player_id:
-        recent_games_q = recent_games_q.outerjoin(pgstat3, (pgstat3.game_id == Game.game_id) & (pgstat3.player_id == player_id))
-    else:
-        recent_games_q = recent_games_q.outerjoin(pgstat3, pgstat3.game_id == 0)
+    recent_games_q = DBSession.query(Game.game_id, Game.server_id, Game.map_id, 
+            Game.game_type_cd, Game.winner, Game.start_dt, 
+            Game.score1, Game.score2, Game.g2_status, Game.player_id1, Game.player_id2, Game.create_dt).\
+        order_by(expr.desc(Game.create_dt))
 
     # the various filters provided get tacked on to the query
     if server_id is not None:
-        recent_games_q = recent_games_q.filter(Server.server_id==server_id)
+        recent_games_q = recent_games_q.filter(Game.server_id==server_id)
 
     if map_id is not None:
-        recent_games_q = recent_games_q.filter(Map.map_id==map_id)
+        recent_games_q = recent_games_q.filter(Game.map_id==map_id)
 
     if player_id is not None:
         recent_games_q = recent_games_q.filter(Game.players.contains([player_id]))
 
-    if game_type_cd is not None:
+    if game_type_cd is not None and game_type_cd != '':
         recent_games_q = recent_games_q.filter(Game.game_type_cd==game_type_cd.lower())
 
     if cutoff is not None:
         right_now = datetime.utcnow()
         recent_games_q = recent_games_q.\
-            filter(expr.between(Game.create_dt, cutoff, right_now)).\
-            filter(expr.between(PlayerGameState.create_dt, cutoff, right_now))
+            filter(expr.between(Game.create_dt, cutoff, right_now))
+            ## filter(expr.between(PlayerGameState.create_dt, cutoff, right_now))
 
     if start_game_id is not None:
         recent_games_q = recent_games_q.filter(Game.game_id <= start_game_id)
 
     if end_game_id is not None:
         recent_games_q = recent_games_q.filter(Game.game_id >= end_game_id)
+
+    if limit >= 0:
+            recent_games_q = recent_games_q.limit(limit)
+
+    GameQ = recent_games_q.subquery()
+
+    recent_games_q = DBSession.query(
+            GameQ.c.game_id, GameQ.c.game_type_cd, GameQ.c.server_id, GameQ.c.map_id, GameQ.c.winner, GameQ.c.start_dt, GameQ.c.score1, GameQ.c.score2, GameQ.c.g2_status, GameQ.c.player_id1, GameQ.c.player_id2, GameQ.c.create_dt,
+            Server.name.label('server_name'), Server.country, Server.location,
+            Map.map_id, Map.name.label('map_name'), 
+            GameType.descr.label('game_type_descr'),
+            pgstat1.player_id.label("pg1_player_id"), pgstat1.nick.label("pg1_nick"), pgstat1.rank.label("pg1_rank"), pgstat1.team.label("pg1_team"), pgstat1.g2_old_r.label("pg1_old_r"), pgstat1.g2_old_rd.label("pg1_old_rd"), pgstat1.g2_delta_r.label("pg1_delta_r"), pgstat1.g2_delta_rd.label("pg1_delta_rd"),
+            pgstat2.player_id.label("pg2_player_id"), pgstat2.nick.label("pg2_nick"), pgstat2.rank.label("pg2_rank"), pgstat2.team.label("pg2_team"), pgstat2.g2_old_r.label("pg2_old_r"), pgstat2.g2_old_rd.label("pg2_old_rd"), pgstat2.g2_delta_r.label("pg2_delta_r"), pgstat2.g2_delta_rd.label("pg2_delta_rd"),
+            pgstat3.player_id.label("pg3_player_id"), pgstat3.nick.label("pg3_nick"), pgstat3.rank.label("pg3_rank"), pgstat3.team.label("pg3_team"), pgstat3.g2_old_r.label("pg3_old_r"), pgstat3.g2_old_rd.label("pg3_old_rd"), pgstat3.g2_delta_r.label("pg3_delta_r"), pgstat3.g2_delta_rd.label("pg3_delta_rd")
+            ).\
+            outerjoin(pgstat1, (pgstat1.game_id == GameQ.c.game_id) & (pgstat1.player_id == GameQ.c.player_id1)).\
+            outerjoin(pgstat2, (pgstat2.game_id == GameQ.c.game_id) & (pgstat2.player_id == GameQ.c.player_id2)).\
+            filter(Server.server_id == GameQ.c.server_id).\
+            filter(Map.map_id == GameQ.c.map_id).\
+            filter(GameType.game_type_cd == GameQ.c.game_type_cd).\
+            order_by(expr.desc(GameQ.c.create_dt))
+            
+
+    if player_id is not None and force_player_id:
+        recent_games_q = recent_games_q.outerjoin(pgstat3, (pgstat3.game_id == GameQ.c.game_id) & (pgstat3.player_id == player_id))
+    else:
+        recent_games_q = recent_games_q.outerjoin(pgstat3, pgstat3.game_id == 0)
+
 
     return recent_games_q

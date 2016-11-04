@@ -90,7 +90,7 @@ def _server_info_data(request):
         top_maps = get_top_maps(server_id)
 
         # recent games played in descending order
-        rgs = recent_games_q(server_id=server_id).limit(recent_games_count).all()
+        rgs = recent_games_q(server_id=server_id, limit=recent_games_count).all()
         recent_games = [RecentGame(row) for row in rgs]
 
     except Exception as e:

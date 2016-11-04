@@ -407,10 +407,8 @@ def get_recent_games(player_id, limit=20, game_type_cd=None):
     Provides a list of recent games for a player. Uses the recent_games_q helper.
     """
     # recent games played in descending order
-    q = recent_games_q(player_id=player_id, force_player_id=True)
-    if game_type_cd is not None:
-      q = q.filter(Game.game_type_cd == game_type_cd)
-    rgs = q.limit(limit).all()
+    q = recent_games_q(player_id=player_id, force_player_id=True, game_type_cd=game_type_cd, limit=limit)
+    rgs = q.all()
     recent_games = [RecentGame(row) for row in rgs]
 
     return recent_games
