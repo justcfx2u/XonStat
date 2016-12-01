@@ -167,14 +167,14 @@ def main(global_config, **settings):
     config.add_route("game_info_json", "/game/{id:\d+}.json")
     config.add_view(game_info_json, route_name="game_info_json", renderer="jsonp")
 
-    config.add_route("rank_index0",      "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race}")
+    config.add_route("rank_index0",      "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race|rr}")
     config.add_view(rank_index,      route_name="rank_index0",      renderer="rank_index.mako")
-    config.add_route("rank_index",     "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race}/{region:\d+}")
+    config.add_route("rank_index",     "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race|rr}/{region:\d+}")
     config.add_view(rank_index,      route_name="rank_index",      renderer="rank_index.mako")
 
-    config.add_route("rank_index_json0", "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race}.json")
+    config.add_route("rank_index_json0", "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race|rr}.json")
     config.add_view(rank_index_json, route_name="rank_index_json0", renderer="jsonp")
-    config.add_route("rank_index_json", "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race}/{region:\d+}.json")
+    config.add_route("rank_index_json", "/ranks/{game_type_cd:ctf|ffa|tdm|duel|ca|ft|race|rr}/{region:\d+}.json")
     config.add_view(rank_index_json, route_name="rank_index_json", renderer="jsonp")
 
     config.add_route("game_index", "/games")

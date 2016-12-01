@@ -68,7 +68,7 @@ metric_text_dict = {
 metric_text = metric_text_dict.get(game_type_cd, "score/time_played")
 metric_text = "Performance metric for Glicko rating:\n" + metric_text
 %>
-% if game_type_cd in 'ca' 'ffa' 'duel' 'tdm':
+% if game_type_cd in 'ca' 'ffa' 'duel' 'tdm' 'rr':
 <thead>
   <tr>
     % if show_latency:
@@ -165,7 +165,7 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
   <td>${pgstat.collects}</td>
 % endif
 
-% if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
+% if game_type_cd in 'ca' 'ffa' 'duel' 'tdm' 'rr':
   <td>${pgstat.alivetime}</td>
 %if game_type_cd in 'ca' 'ft':
 <td>${pgstat.lives or ""}</td>

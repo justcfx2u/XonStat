@@ -522,7 +522,7 @@ def create_default_game_stat(session, game_type_cd):
     if game_type_cd == 'as':
         pgstat.kills = pgstat.deaths = pgstat.suicides = pgstat.collects = 0
 
-    if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
+    if game_type_cd in 'ca' 'ffa' 'duel' 'tdm' 'rr':
         pgstat.kills = pgstat.deaths = pgstat.suicides = 0
 
     if game_type_cd == 'cq':
@@ -846,7 +846,7 @@ def submit_stats(request):
             score2 = max(raw_teams[1].get("scoreboard-score", 0), raw_teams[1].get("scoreboard-rounds", 0), raw_teams[1].get("scoreboard-caps", 0))
             player1_steamid = find_best_player(raw_players, 1)
             player2_steamid = find_best_player(raw_players, 2)
-        elif game_type_cd in ['ffa','duel']:
+        elif game_type_cd in ['ffa','duel','rr']:
             for events in raw_players:
                 rank = int(events["rank"])
                 if rank < 0: 
