@@ -249,7 +249,7 @@ def should_do_weapon_stats(game_type_cd):
 
 def should_do_elos(game_type_cd):
     """True of the game type should process Elos. False otherwise."""
-    elo_game_types = ('duel', 'ffa', 'ctf', 'tdm', 'ca', 'ft')
+    elo_game_types = ('duel', 'ffa', 'ctf', 'tdm', 'ca', 'ft', 'ad')
 
     #return game_type_cd in elo_game_types
     return False
@@ -522,7 +522,7 @@ def create_default_game_stat(session, game_type_cd):
     if game_type_cd == 'as':
         pgstat.kills = pgstat.deaths = pgstat.suicides = pgstat.collects = 0
 
-    if game_type_cd in 'ca' 'ffa' 'duel' 'rune' 'tdm':
+    if game_type_cd in 'ad' 'ca' 'ffa' 'duel' 'rune' 'tdm':
         pgstat.kills = pgstat.deaths = pgstat.suicides = 0
 
     if game_type_cd == 'cq':
