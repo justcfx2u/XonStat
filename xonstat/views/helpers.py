@@ -1,6 +1,7 @@
 ﻿import logging
 import sqlalchemy.sql.expression as expr
 from datetime import datetime
+from sqlalchemy import or_
 from sqlalchemy.orm import aliased
 from xonstat.models import *
 from xonstat.util import *
@@ -185,8 +186,8 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
             pgstat2.player_id.label("pg2_player_id"), pgstat2.nick.label("pg2_nick"), pgstat2.rank.label("pg2_rank"), pgstat2.team.label("pg2_team"), pgstat2.g2_old_r.label("pg2_old_r"), pgstat2.g2_old_rd.label("pg2_old_rd"), pgstat2.g2_delta_r.label("pg2_delta_r"), pgstat2.g2_delta_rd.label("pg2_delta_rd"),
             pgstat3.player_id.label("pg3_player_id"), pgstat3.nick.label("pg3_nick"), pgstat3.rank.label("pg3_rank"), pgstat3.team.label("pg3_team"), pgstat3.g2_old_r.label("pg3_old_r"), pgstat3.g2_old_rd.label("pg3_old_rd"), pgstat3.g2_delta_r.label("pg3_delta_r"), pgstat3.g2_delta_rd.label("pg3_delta_rd")
             ).\
-            outerjoin(pgstat1, (pgstat1.game_id == GameQ.c.game_id) & (pgstat1.player_id == GameQ.c.player_id1)).\
-            outerjoin(pgstat2, (pgstat2.game_id == GameQ.c.game_id) & (pgstat2.player_id == GameQ.c.player_id2)).\
+            outerjoin(pgstat1, (pgstat1.game_id == GameQ.c.game_id) & (pgstat1.player_id == GameQ.c.player_id1) & or_(pgstat1.team == None, pgstat1.team == 1)).\
+            outerjoin(pgstat2, (pgstat2.game_id == GameQ.c.game_id) & (pgstat2.player_id == GameQ.c.player_id2) & or_(pgstat2.team == None, pgstat2.team == 2)).\
             filter(Server.server_id == GameQ.c.server_id).\
             filter(Map.map_id == GameQ.c.map_id).\
             filter(GameType.game_type_cd == GameQ.c.game_type_cd).\
