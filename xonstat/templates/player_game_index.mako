@@ -1,6 +1,7 @@
 <%inherit file="base.mako"/>
 <%namespace name="nav" file="nav.mako" />
 <%namespace file="navlinks.mako" import="navlinks" />
+<% from xonstat.util import html_colors %>
 
 <%block name="css">
 ${parent.css()}
@@ -72,6 +73,8 @@ Recent Games
           <th>Server</th>
           <th>Map</th>
           <th>Result</th>
+          <th>Opponent</th>
+          <th>Rating</th>
           <th title="Rating &plusmn; Uncertainty">Old Glicko</th>
           <th title="Rating / Uncertainty">Glicko Change</th>
         </tr>
@@ -84,23 +87,35 @@ Recent Games
         <td><img title="${rg.game_type_cd}" src="/static/images/icons/24x24/${rg.game_type_cd}.png" alt="${rg.game_type_cd}" /> ${rg.game_type_cd}</td>
         <td><a href="${request.route_path("server_info", id=rg.server_id)}" name="Server info page for ${rg.server_name}">${rg.server_name}</a></td>
         <td><a href="${request.route_path("map_info", id=rg.map_id)}" name="Map info page for ${rg.map_name}">${rg.map_name}</a></td>
-        <td>
-          % if rg.pg3_team != None:
-          % if rg.pg3_team == rg.winner:
-          Win
-          % else:
-          Loss
-          % endif
-          % else:
-          % if rg.pg3_rank == 1:
-          Win
-          % else:
-          Loss (#${rg.pg3_rank})
-          % endif
-          % endif
+        <td class="
+                    % if (rg.pg3_team != None and rg.pg3_team == rg.winner) or rg.pg3_rank == 1:
+                        eloup
+                    % else:
+                        elodown
+                    % endif
+                    ">
+            ${rg.score1}:${rg.score2}
+                % if rg.game_type_cd != "duel":
+                    (#${rg.pg3_rank})
+                % endif
         </td>
+        % if rg.pg3_player_id == rg.pg1_player_id:
+            <td><a href="/player/${rg.pg2_player_id}">${html_colors(rg.pg2_nick)|n}</a></td>
+            <td>
+                %if rg.pg2_old_r:
+                    ${int(round(rg.pg2_old_r))} &plusmn; ${int(round(rg.pg2_old_rd))}
+                %endif
+            </td>
+        % else:
+            <td><a href="/player/${rg.pg1_player_id}">${html_colors(rg.pg1_nick)|n}</a></td>
+            <td>
+                % if rg.pg2_old_r:
+                    ${int(round(rg.pg1_old_r))} &plusmn; ${int(round(rg.pg1_old_rd))}
+                % endif
+            </td>
+        % endif
         <td>${str(int(round(rg.pg3_old_r,0))) + " &plusmn; " + str(int(round(rg.pg3_old_rd,0))) if rg.pg3_old_r else ""|n}</td>
-        <td>
+        <td class="tdcenter">
           <a href="${request.route_path('game_info', id=rg.game_id, _query={'show_elo':1})}" title="View detailed information about this game">           
             % if rg.pg3_delta_r is None or rg.pg3_delta_r==0:
             <span class="eloneutral"><i class="glyphicon glyphicon-minus"></i></span>
