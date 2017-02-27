@@ -224,7 +224,7 @@
   ##### TOP LIVE MATCHES #####
   <div class="col-sm-6 col-md-3 col-md-push-6">
     <h3 style="display:inline-block">Now Playing</h3>
-    <span style="color:red;font-size:large">&#x25cf;</span>   
+    <span style="color:green;font-size:large">&#x25cf;</span>   
     <span id="matchNote" class="note"></span>
     <table id="matchTable" class="table table-hover table-condensed">
       <thead>
