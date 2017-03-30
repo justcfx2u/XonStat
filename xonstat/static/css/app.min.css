@@ -335,6 +335,11 @@ table td {
     .navbar-form {
         float: right;
     }
+
+    .navbar-nav > li > a {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }
 
 img.flag { margin-top: -3px; margin-bottom: -3px }
