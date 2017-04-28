@@ -23,6 +23,9 @@ ${parent.title()}
 <h2>Sorry, that map wasn't found!</h2>
 
 % else:
+% if gmap.image != "":
+    <div style="background-image: url(${gmap.image});" id="map-preview"></div>
+% endif
 <h2>${gmap.name}</h2>
 <p>
   Added <span class="abstime" data-epoch="${gmap.epoch()}" title="${gmap.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">${gmap.fuzzy_date()}</span>

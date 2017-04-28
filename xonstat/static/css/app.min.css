@@ -31,6 +31,8 @@ h1 small {
 h2 {
   font-size: 24px;
   line-height: 36px;
+  color: #fff;
+  position: relative;
 }
 h2 small {
   font-size: 18px;
@@ -38,6 +40,7 @@ h2 small {
 h3 {
   line-height: 27px;
   font-size: 18px;
+  color: #fff;
 }
 h3 small {
   font-size: 14px;
@@ -108,12 +111,13 @@ table td {
     padding: 20px;
 }
 #title {
-    color: #0088CC;
+    color: #0AF;
     font-size: 30px;
     margin-bottom: 15px;
     position: relative;
     text-align: center;
     text-shadow: 2px 2px 3px #333;
+    z-index: 10;
 }
 .indexform {
     margin: 20px 0px 20px 0px;
@@ -428,4 +432,15 @@ button, input, optgroup, select, textarea {
 .table>thead>tr>th {
     vertical-align: bottom;
     border-bottom: 2px solid #888;
+}
+
+#map-preview {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0.2;
+    border-radius: 15px;
+    background-attachment: fixed;
 }
