@@ -2,6 +2,7 @@
 import re
 import sqlalchemy.sql.functions as func
 import sqlalchemy.sql.expression as expr
+import os
 from collections import namedtuple
 from datetime import datetime, timedelta
 from webhelpers.paginate import Page
@@ -70,6 +71,12 @@ def _map_info_data(request):
         else:
                 gmap = DBSession.query(Map).filter_by(name=map_id).one()
                 map_id = gmap.map_id
+
+        here = os.path.dirname(__file__)
+        if os.path.exists(here + "/../static/images/levelshots/" + gmap.name + ".jpg"):
+            gmap.image = "/static/images/levelshots/" + gmap.name + ".jpg"
+        else:
+            gmap.image = ""
 
         # recent games played in descending order
         rgs = recent_games_q(map_id=map_id, limit=recent_games_count).all()
