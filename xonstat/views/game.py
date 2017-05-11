@@ -2,6 +2,7 @@
 import logging
 import re
 import time
+import os
 from collections import OrderedDict
 from pyramid.response import Response
 from sqlalchemy import desc, func, over
@@ -40,6 +41,13 @@ def _game_info_data(request):
         
         (game, server, map, gametype) = q.one()
         game_id = game.game_id
+
+        here = os.path.dirname(__file__)
+        if os.path.exists(here + "/../static/images/levelshots/" + map.name + ".jpg"):
+            map.image = "/static/images/levelshots/" + map.name + ".jpg"
+        else:
+            map.image = ""
+
 
         pgstats = DBSession.query(PlayerGameStat).\
                 filter(PlayerGameStat.game_id == game_id).\
