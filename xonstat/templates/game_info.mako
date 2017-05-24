@@ -29,6 +29,9 @@ Game Information
 <h2>Sorry, that game wasn't found!</h2>
 
 % else:
+% if map.image != "":
+    <div style="background-image: url(${map.image});" id="map-preview"></div>
+% endif
 <div class="row">
   <div class="col-sm-12 game-detail">
     <h2>Game Detail
