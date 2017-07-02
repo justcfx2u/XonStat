@@ -93,7 +93,7 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
 </thead>
 % endif
 
-% if game_type_cd == 'ctf':
+% if game_type_cd in 'ctf' '1fctf' 'harvester' 'dom':
 <thead class="ctf ${pgstat.team_html_color()}">
   <tr>
     % if show_latency:
@@ -194,7 +194,7 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
   <td>${pgstat.deaths}</td>
 % endif
 
-% if game_type_cd == 'ctf':
+% if game_type_cd in 'ctf' '1fctf' 'harvester' 'dom':
   <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.captures}</td>
@@ -202,14 +202,6 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
   <td>${pgstat.drops}</td>
   <td>${pgstat.pushes}</td>
   <td>${pgstat.destroys}</td>
-% endif
-
-% if game_type_cd == 'dom':
-  <td>${pgstat.alivetime}</td>
-  <td>${pgstat.kills}</td>
-  <td>${pgstat.deaths}</td>
-  <td>${pgstat.pickups}</td>
-  <td>${pgstat.drops}</td>
 % endif
 
 % if game_type_cd in 'ft' 'freezetag':
