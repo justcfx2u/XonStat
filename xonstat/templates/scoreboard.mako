@@ -59,7 +59,7 @@
 <%
 metric_text_dict = {
   "ffa": "kills\n[adjusted by time played]",
-  "ca": "scoreboard_score - 0.75*kills\n[adjusted by rounds played]",
+  "ca": "scoreboard_score - 0.75*kills +20% for winner team\n[adjusted by rounds played]",
   "duel": "1=win, 0=loss, -1=forfeit/quit",
   "ctf": "clamp(damage_dealt/damage_taken, 0.5, 2.0) * (score + damage_dealt/20)\n[adjusted by time played]",
   "tdm": "5*net_kills + 4*net_damage/100 + 3*damage_dealt/100\n[adjusted by time played]",
@@ -93,7 +93,7 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
 </thead>
 % endif
 
-% if game_type_cd == 'ctf':
+% if game_type_cd in 'ctf' '1fctf' 'harvester' 'dom':
 <thead class="ctf ${pgstat.team_html_color()}">
   <tr>
     % if show_latency:
@@ -194,7 +194,7 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
   <td>${pgstat.deaths}</td>
 % endif
 
-% if game_type_cd == 'ctf':
+% if game_type_cd in 'ctf' '1fctf' 'harvester' 'dom':
   <td>${pgstat.alivetime}</td>
   <td>${pgstat.kills}</td>
   <td>${pgstat.captures}</td>
@@ -202,14 +202,6 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
   <td>${pgstat.drops}</td>
   <td>${pgstat.pushes}</td>
   <td>${pgstat.destroys}</td>
-% endif
-
-% if game_type_cd == 'dom':
-  <td>${pgstat.alivetime}</td>
-  <td>${pgstat.kills}</td>
-  <td>${pgstat.deaths}</td>
-  <td>${pgstat.pickups}</td>
-  <td>${pgstat.drops}</td>
 % endif
 
 % if game_type_cd in 'ft' 'freezetag':
@@ -268,9 +260,9 @@ metric_text = "Performance metric for Glicko rating:\n" + metric_text
 </%def>
 
 <%def name="scoreboard_glickochange(pgstat)">
-        % if int(round(pgstat.g2_delta_r,0)) > 0:
-            <span class="eloup">+${int(round(pgstat.g2_delta_r,0))} / ${int(round(pgstat.g2_delta_rd, 0))}</span>
-        % else:
-            <span class="elodown">${int(round(pgstat.g2_delta_r,0))} / ${int(round(pgstat.g2_delta_rd, 0))}</span>
-        % endif
+  % if int(round(pgstat.g2_delta_r,0)) > 0:
+    <span class="eloup">+${int(round(pgstat.g2_delta_r,0))} / ${int(round(pgstat.g2_delta_rd, 0))}</span>
+  % else:
+    <span class="elodown">${int(round(pgstat.g2_delta_r,0))} / ${int(round(pgstat.g2_delta_rd, 0))}</span>
+  % endif
 </%def>

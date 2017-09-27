@@ -143,7 +143,10 @@ function reloadConfig() {
       return false;
     }
 
-    var config = JSON.parse(fs.readFileSync(__dirname + "/" + _configFileName));
+    var json = fs.readFileSync(__dirname + "/" + _configFileName, { encoding: 'utf8' });
+    if (json.substr(-2) == "}}") // hack: sometimes writing the JSON config back to the file generates a double }} at the end of the file
+      json = json.substr(0, json.length - 1);
+    var config = JSON.parse(json);
     if (!(config.feeder.saveDownloadedJson || config.feeder.importDownloadedJson)) {
       _logger.error("At least one of feeder.saveDownloadedJson or feeder.importDownloadedJson must be set in " + _configFileName);
       return false;
@@ -359,10 +362,10 @@ function connectToServerList(servers) {
     return false;
   }
 
-  // libzmq has a limit of max 1024 handles in a select() call. 1024 / 3 (sockets/connection) => 341 max
+  // libzmq has a limit of max 1024 handles in a select() call and uses 3 socets/connection => max 341 conns.
   // Linux also often has a file handle limit of 1024 (ulimit -n), which is reached even before that (~ 255).
-  if (servers.length > 300) {
-    _logger.error("Too many servers, maximum allowed is 300 (to stay below the hardcoded libzmq limit).");
+  if (servers.length > 340) {
+    _logger.error("Too many servers, maximum allowed is 340 (to stay below the hardcoded libzmq limit).");
     return false;
   }
 
@@ -437,6 +440,20 @@ function connectToServerList(servers) {
         });
     });
   }
+
+  // HACK: sometimes no connections can be established after the config was reloaded.
+  // In this case terminate the process after some delay and have the wrapper shell script restart it again
+  setTimeout(function () {
+    var connectedCount = 0;
+    for (var key in _statsConnections) {
+      if (_statsConnections.hasOwnProperty(key) && _statsConnections[key].connected)
+        ++connectedCount;
+    }
+    if (connectedCount === 0) {
+      _logger.error("No connections could be established within 5 sec. Terminating...");
+      process.exit(1);
+    }
+  }, 5000);
 
   return ret
     .then(function (gamePorts) {
@@ -846,6 +863,10 @@ function processGameData(game) {
 
   function aggregatePlayerStats() {
     var partialPlayTimes = game.playerStats.reduce(function (aggregate, data) {
+      // ignoring player stats from different match
+      if (game.matchStats.MATCH_GUID != data.MATCH_GUID)
+        return aggregate;
+
       var key = data.STEAM_ID + "_" + data.TEAM;
       var p = aggregate[key];
       if (!p)

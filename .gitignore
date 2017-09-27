@@ -3,6 +3,9 @@
 *.tmp
 *.old
 *.pyc
+*.log
+bin/
+lib/
 /xonstat/batch/badges/output/*.png
 /xonstat/batch/badges/output/*/*.png
 feeder/node_modules/

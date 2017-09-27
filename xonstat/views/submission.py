@@ -5,6 +5,7 @@ import pyramid.httpexceptions
 import re
 import time
 import sqlalchemy.sql.expression as expr
+import threading
 from pyramid.response import Response
 from sqlalchemy import Sequence
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
@@ -14,7 +15,7 @@ from xonstat.util import strip_colors, qfont_decode, verify_request, weapon_map
 
 
 log = logging.getLogger(__name__)
-
+submit_stats_lock = threading.Lock()
 
 def parse_stats_submission(body):
     """
@@ -790,6 +791,10 @@ def create_elos(session, game):
 
 
 def submit_stats(request):
+    with submit_stats_lock:
+        return _submit_stats(request)
+
+def _submit_stats(request):
     """
     Entry handler for POST stats submissions.
     """
