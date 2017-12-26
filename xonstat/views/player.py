@@ -1157,7 +1157,7 @@ def players_elo(request, b_rating = False):
           .filter(Hashkey.hashkey.in_(steamids))\
           .all()
 
-    defaultRating = { "elo": 1337, "games": 0 } # this default elo value should be in-sync with the default value in gamerating.js
+    defaultRating = { "elo": 900, "games": 0 } # this default elo value should be in-sync with the default value in gamerating.js
     players = {}
     deactivated = {}
     for steamid in steamids:
