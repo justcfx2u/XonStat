@@ -24,8 +24,8 @@ Server Information
 %if server:
 <script>
 function loadLivePlayers() {
-  var url = "${request.registry.settings.get('qlstat.feeder_webapi_url', '')}" || "http://" + location.hostname + ":8081";
-  url = url.replace(/\/$/, "") + "/api/server/${server.ip_addr}:${server.port}/players";
+  var url = "${request.registry.settings.get('qlstat.feeder_webapi_url', '')}" || "http://" + location.hostname + ":8081/api";
+  url = url.replace(/\/$/, "") + "/server/${server.ip_addr}:${server.port}/players";
 
   $.getJSON(url, function(data) {
     if (!data.ok)
