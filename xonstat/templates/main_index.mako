@@ -134,8 +134,8 @@
       fillTable();
     else {
       matchCache[region] = null;
-      var api = "${request.registry.settings.get('qlstat.feeder_webapi_url')}" || "http://" + location.hostname + ":8081/";
-      $.getJSON(api + "api/nowplaying", { gametype: gameType, region: region, limit: 10 }, function(data) {
+      var api = "${request.registry.settings.get('qlstat.feeder_webapi_url')}" || "http://" + location.hostname + ":8081/api";
+      $.getJSON(api + "/nowplaying", { gametype: gameType, region: region, limit: 10 }, function(data) {
         matchCache[region] = data;
         fillTable();
       })
