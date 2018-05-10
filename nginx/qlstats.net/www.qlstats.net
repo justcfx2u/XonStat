@@ -1,0 +1,12 @@
+	server {
+		listen 80;
+		listen 443 ssl;
+		server_name www.qlstats.net;
+		
+		ssl_certificate      /etc/letsencrypt/live/qlstats.net/fullchain.pem;
+		ssl_certificate_key  /etc/letsencrypt/live/qlstats.net/privkey.pem;
+
+		location / {
+			return 301 https://qlstats.net$request_uri;
+		}		
+	}

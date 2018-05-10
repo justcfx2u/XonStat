@@ -285,3 +285,6 @@ def top_maps_by_times_played(request):
 
 def news_index(request):
     return {}
+
+def account_index(request):
+    return {}

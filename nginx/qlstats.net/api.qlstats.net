@@ -1,0 +1,26 @@
+server {
+        listen       80;
+        server_name  api.qlstats.net api3.qlstats.net;
+
+        listen 443 ssl;
+        ssl_certificate      /etc/letsencrypt/live/qlstats.net/fullchain.pem;
+        ssl_certificate_key  /etc/letsencrypt/live/qlstats.net/privkey.pem;
+
+        location / {
+			rewrite "(.*)" /api$1 last;
+        }
+
+        location /api {
+			# deny 54.93.143.176;
+			proxy_pass http://127.0.0.1:8088;
+			proxy_set_header Host $host;
+			proxy_set_header X-Real-IP $remote_addr;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header X-Forwarded-Proto $scheme;
+        }
+		
+		location /.well-known/ {
+			root /home/xonstat/nginx_docs;
+		}
+}
+

@@ -49,19 +49,16 @@
           ><a href="${request.route_path('map_index')}" title="Map Index">Maps</a></li>
 
         %if request.registry.settings.get('qlstat.feeder_login_url'):
-        <li>
-          <a href="${request.registry.settings.get('qlstat.feeder_login_url')}">Account</a>
-        </li>
+        <li 
+          % if active=="account":
+          class="active"
+          % endif
+          ><a href="/account/login" title="Login/Register" id="navAccount" style="display:none">Login/Register</a></li>
+
+        <li><a href="/account/logout" title="Logout" id="navLogout" style="display:none">Logout</a></li>
         %endif
       </ul>
 
-
-      ##### Login/logout button goes here only if needed #####
-      % if login_logout:
-      <ul class="nav pull-left">
-        <li>${request.persona_button}</li>
-      </ul>
-      % endif
 
       <form class="navbar-form navbar-right" role="search" action="${request.route_path('search')}" method="get">
         <input type="hidden" name="fs" />
@@ -73,9 +70,26 @@
         </select>
         [<a href="${request.route_path('search')}" title="Advanced search">+</a>]
       </form>
-
     </div>
   </div>     
-</nav>
 
+  <script>
+  (function() {
+    var oldOnLoad=window.onload;
+    window.onload=function() {
+      if (oldOnLoad)
+        oldOnLoad();
+      $.getJSON("/account/user", function (user) {
+        if (user.id) {
+          $("#navAccount").text(user.displayName).attr("href", "/my");
+          $("#navLogout").css("display", "block");
+        }
+        $("#navAccount").css("display", "block");
+      });
+    };
+  })();
+  </script>
+
+</nav>
 </%def>
+

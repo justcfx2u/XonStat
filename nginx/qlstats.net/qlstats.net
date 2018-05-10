@@ -1,0 +1,120 @@
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# http://wiki.nginx.org/Pitfalls
+# http://wiki.nginx.org/QuickStart
+# http://wiki.nginx.org/Configuration
+#
+# Generally, you will want to move this file somewhere, and start with a clean
+# file but keep this around for reference. Or just disable in sites-enabled.
+#
+# Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+##
+
+# Default server configuration
+#
+
+upstream paster {
+	server 127.0.0.1:8080;
+}
+
+limit_req_zone $binary_remote_addr zone=paster:10m rate=3r/s;
+
+server {
+	listen		80;
+	server_name qlstats.net;
+	
+	location / {
+		# by default, redirect all HTTP requests to HTTPS
+		return 302 https://$host$request_uri;
+	}
+	location ~ ^(/elo/.*|/elo_b/.*|.*\.json)$ {
+		# allow certain API urls in the paster (python) process to be accessible through HTTP for backward compatibility
+		proxy_pass http://127.0.0.1:8080;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;			
+	}
+	location /api/ {
+		# allow certain API urls in the feeder (nodejs) process to be accessible through HTTP for backward compatibility
+		proxy_pass http://127.0.0.1:8088;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;	
+	}
+}
+
+server {	
+	listen		443 ssl;
+	server_name qlstats.net;
+
+	ssl_certificate      /etc/letsencrypt/live/qlstats.net/fullchain.pem;
+	ssl_certificate_key  /etc/letsencrypt/live/qlstats.net/privkey.pem;
+
+	location / {
+		limit_req zone=paster burst=10;	
+		proxy_pass http://127.0.0.1:8080;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;			
+	}
+	location /panel1/ {
+		proxy_pass http://127.0.0.1:8081;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;	
+	}
+	location /panel2/ {
+		proxy_pass http://127.0.0.1:8082;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;	
+	}
+	location /panel3/ {
+		proxy_pass http://127.0.0.1:8083;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;	
+	}
+	location /panel4/ {
+		proxy_pass http://127.0.0.1:8084;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;	
+	}
+	location /account/ {
+		proxy_pass http://127.0.0.1:8081;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;	
+	}
+	location /api/ {
+		proxy_pass http://127.0.0.1:8088;
+		proxy_redirect off;
+		proxy_set_header Host $host;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header X-Forwarded-Protocol $scheme;	
+	}
+	location /.well-known/ {
+	  root /home/xonstat/nginx_docs;
+	}		
+}
+
+

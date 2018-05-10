@@ -274,3 +274,18 @@ update games g
 -- 2016-08-13
 
 alter table players add privacy_match_hist smallint not null default 0;
+
+
+-- 2018-05-11
+
+# insert players -1 to -64 which will be used as placeholders for deleted players
+do
+$$
+declare
+  i integer;
+begin
+  for i in 1 .. 64 loop
+    insert into xonstat.players (player_id, nick, stripped_nick) values (-i, 'Untracked Player ' || i, 'Untracked Player ' || i);
+  end loop;
+end;
+$$ language plpgsql;
