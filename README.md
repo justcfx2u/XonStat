@@ -8,7 +8,7 @@ qlstats is a set of several components:
 - nginx: public facing HTTP server, used to dispatch incoming URLs to "xonstat" and "feeder" processes, also taking care of SSL encryption and throttling
 - xonstat: The process hosting the main web site, inherited from the xonstat project, written in python
 - feeder: nodejs server process(es), which fulfill several tasks, based on the(ir) config:
-  - connect to QL server ZQM stats port to receive stats data
+  - connect to QL server ZMQ stats port to receive stats data
   - convert the stats data from QL JSON format to the xonstat submission format and upload it to the xonstat submission.py
   - "gamerating" module to calculate glicko rating updates for the players in the matches
   - "webadmin" module with the game server self-administration panel
