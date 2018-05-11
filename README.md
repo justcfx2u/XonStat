@@ -5,11 +5,11 @@ System overview
 ===
 qlstats is a set of several components:
 - postgresql: The database system storing all the data (except some configuration), running on version 9.4
-- nginx: public facing HTTP server, used to dispatch incoming URLs to "xonstat" and "feeder" processes, also taking care of SSL encryption and throttling
-- xonstat: The process hosting the main web site, inherited from the xonstat project, written in python
+- nginx: public facing HTTP server, used to dispatch incoming URLs to backend "paster" and "feeder" processes, also taking care of SSL encryption and throttling
+- paster: The process hosting the main web site, inherited from the xonstat project, written in python
 - feeder: nodejs server process(es), which fulfill several tasks, based on the(ir) config:
-  - connect to QL server ZMQ stats port to receive stats data
-  - convert the stats data from QL JSON format to the xonstat submission format and upload it to the xonstat submission.py
+  - connect to QL game server ZMQ stats port to receive stats data
+  - convert the stats data from QL JSON format to the xonstat submission format and upload it to the paster's submission.py
   - "gamerating" module to calculate glicko rating updates for the players in the matches
   - "webadmin" module with the game server self-administration panel
   - "webapi" module with public and internal APIs, like enriched server browser information, player localization, ...
@@ -20,7 +20,7 @@ qlstats is a set of several components:
   - assign regions to players based on the servers they played on
 
 nginx is the only publicly accessible server process. All other processes are bound to IP 127.0.0.1.
-In this repository you can find nginx, xonstat and feeder config files for "qlstats.net" (production) and "qlstats.local" (development).
+In this repository you can find nginx, paster and feeder config files for "qlstats.net" (production) and "qlstats.local" (development).
 
 The production setup runs 5 feeder processes with different modules enabled, while in a local setup one feeder runs all modules.
 The nodejs "zmq" library has a limitation that it can only handle up to 342 zmq connection per process, so qlstats runs 4 feeder processes to handle more QL servers.
@@ -41,9 +41,9 @@ Incoming requests are forwarded to xonstat and feeder processes based on URL pre
 /panel4: feeder 4 running webadmin
 /api: feeder 5 running webapi
 api.qlstats.net/*: redirected to /api/*. This legacy subdomain only exists for backward compatibility
-all other URLs: xonstat
+all other URLs: paster
 
-xonstat (aka paster)
+paster (aka xonstat)
 ---
 This process is started automatically by a crontab entry to launch cronjobs/paster.sh.
 The web server listens on 127.0.0.1:8080
@@ -63,7 +63,7 @@ To use the local setup, you need to add an entry to your /etc/hosts (or %windir%
 Use the nginx/qlstats.local/nginx.conf file to configure your local nginx server. It will handle requests for "http(s)://qlstats.local/" URLs and
 forward them to the local backend processes.
 
-To start the "xonstat" main web server, use "paster serve local.ini" from within the xonstat directory.
+To start the "paster" main web server, use "paster serve local.ini" from within the xonstat directory.
 
 To start the "feeder", use "node feeder.node.js -c local.json"
 

@@ -237,6 +237,8 @@ def page_url(page):
 
 def pretty_date(time=False):
     '''Returns a human-readable relative date.'''
+    if time is None:
+        return ""
     now = datetime.utcnow()
     if type(time) is int:
         diff = now - datetime.fromtimestamp(time)
@@ -363,3 +365,8 @@ def verify_request(request):
         raise pyramid.httpexceptions.HTTPUnauthorized("Unverified request")
 
     return (idfp, status)
+
+def strftime(date, fmt):
+    if date is None:
+        return ""
+    return date.strftime(fmt)

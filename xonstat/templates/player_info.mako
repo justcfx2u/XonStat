@@ -1,7 +1,8 @@
 <%inherit file="base.mako"/>
 <%namespace name="nav" file="nav.mako" />
 <%
-import json 
+import json
+from xonstat.util import strftime
 %>
 
 <%block name="navigation">
@@ -194,7 +195,7 @@ Player Information
       <br>Player ID: ${player.player_id}
       <br>Steam ID: <a href="http://steamcommunity.com/profiles/${hashkey}/" target="_blank">${hashkey}</a>
 %if player.privacy_match_hist != 1:
-      <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${player.create_dt.strftime('%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
+      <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${strftime(player.create_dt, '%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
 %endif
       <br>Status: ${ "active" if player.active_ind else "<span class='warntext'>deactivated</span>" | n}
       % if cake_day:
@@ -295,7 +296,7 @@ Player Information
         <div class="col-sm-4">
           Last Played: 
           % if g.game_type_cd in overall_stats:
-          <small><span class="abstime" data-epoch="${overall_stats[g.game_type_cd].last_played_epoch}" title="${overall_stats[g.game_type_cd].last_played.strftime('%a, %d %b %Y %H:%M:%S UTC')}"> ${overall_stats[g.game_type_cd].last_played_fuzzy}</span></small>
+          <small><span class="abstime" data-epoch="${overall_stats[g.game_type_cd].last_played_epoch}" title="${strftime(overall_stats[g.game_type_cd].last_played, '%a, %d %b %Y %H:%M:%S UTC')}"> ${overall_stats[g.game_type_cd].last_played_fuzzy}</span></small>
           % else:
           <small>-</small>
           % endif
