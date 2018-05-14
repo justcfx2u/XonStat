@@ -155,8 +155,9 @@ def recent_games_q(server_id=None, map_id=None, player_id=None,
         recent_games_q = recent_games_q.filter(Game.map_id==map_id)
 
     if player_id is not None:
-        sub = DBSession.query(PlayerGameStat.game_id).filter(PlayerGameStat.player_id==player_id).order_by(expr.desc(PlayerGameStat.create_dt))
-        recent_games_q = recent_games_q.filter(Game.game_id.in_(sub))
+        recent_games_q = recent_games_q.filter(Game.players.contains([player_id]))
+        #sub = DBSession.query(PlayerGameStat.game_id).filter(PlayerGameStat.player_id==player_id).order_by(expr.desc(PlayerGameStat.create_dt))
+        #recent_games_q = recent_games_q.filter(Game.game_id.in_(sub))
 
     if game_type_cd is not None and game_type_cd != '':
         recent_games_q = recent_games_q.filter(Game.game_type_cd==game_type_cd.lower())
