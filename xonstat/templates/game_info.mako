@@ -36,7 +36,7 @@ Game Information
   <div class="col-sm-12 game-detail">
     <h2>Game Detail
     %if "json" in request.params:
-      <span class="note"> <a href="${request.registry.settings.get('qlstat.feeder_webapi_url','')}api/jsons/${game.start_dt.strftime('%Y-%m-%d')}/${game.match_id}.json">${game.match_id}</a></span>
+      <span class="note"> <a href="${request.registry.settings.get('qlstat.feeder_webapi_url','')}/jsons/${game.start_dt.strftime('%Y-%m-%d')}/${game.match_id}.json">${game.match_id}</a></span>
     %else:
       <span class="note"> ${game.match_id}</span>
     %endif
@@ -55,7 +55,7 @@ Game Information
     statusMsg={
       0: "Not rated yet", 1: "Rated", 2: "match aborted", 3: "unsupported round/time/fraglimit", 4: "bots present", 
       5: "uneven playtime in teams", 6: "not enough qualifying players", 7: "missing data", 8: "B-rated (custom settings/factory)",
-      9: "unsupported game type", 10: "server is excluded from ratings", 11: "game was voted unranked"
+      9: "unsupported game type", 10: "server is excluded from ratings", 11: "game was voted unranked", 12: "untracked players present"
       }
     msg= statusMsg[game.g2_status] if game.g2_status in (1,8) else "Not rated (" + statusMsg[game.g2_status] + ")"
     %>

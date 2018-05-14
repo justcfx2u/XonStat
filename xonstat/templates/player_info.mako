@@ -157,7 +157,7 @@ function dateStr(unixtimestamp) {
 ///////////////////////////////
 
 function locatePlayer() {
-  $.getJSON("${request.registry.settings.get('qlstat.feeder_webapi_url','')}api/player/${hashkey}/locate", function(data) {
+  $.getJSON("${request.registry.settings.get('qlstat.feeder_webapi_url','')}/player/${hashkey}/locate", function(data) {
     if (data.ok && data.server) {
       $("#btnNowPlaying").css("display", "inline").attr("href", "/server/" + data.server);
     }
