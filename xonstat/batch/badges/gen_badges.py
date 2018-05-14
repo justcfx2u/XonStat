@@ -145,7 +145,7 @@ for arg in sys.argv[1:]:
             elif arg == "minimal":
                 skins.append(skin_minimal)
             elif arg == "archer":
-		        skins.append(skin_archer)
+                skins.append(skin_archer)
 
 if len(skins) == 0:
     skins = [ skin_classic, skin_minimal, skin_archer ]

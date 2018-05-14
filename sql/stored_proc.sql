@@ -55,16 +55,7 @@ begin
       end if;
       return id;
     end if;
-    return 0;
-    --begin
-      --select nextval('xonstat.players_player_id_seq'::regclass) into id;
-      --insert into xonstat.players (player_id,nick,stripped_nick) values (id, rawNick, strippedNick);
-      --insert into xonstat.hashkeys (player_id, hashkey) values (id, steamid);
-      --insert into xonstat.player_nicks (player_id, nick, stripped_nick) values (id, rawNick, strippedNick);
-      --return id;
-    --exception when unique_violation then
-      -- try again
-    --end;
+    return null;
   end loop;
 end;
 $$ language plpgsql;

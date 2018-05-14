@@ -10,10 +10,9 @@ ${nav.nav('account')}
 ${parent.css()}
 <style>
   #pageFooter { display:none }
-  #title { display:none; }
-  body { background-color:#ccc;}
-  html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
-  iframe { position: absolute; top: 60px; left: 0; overflow: hidden; width: 100%; height: 90%; }
+  #xonborder { border-radius: 0; padding-top: 0 }
+  html, body { height: 100%; width: 100%; margin: 0; padding: 0; background-color:#444; }
+  iframe { position: absolute; top: 38px; left: 0; overflow: hidden; width: 100%; height: 90%; }
 </style>
 </%block>
 
@@ -44,7 +43,7 @@ ${parent.js()}
   function onResize() { 
     if (oldOnResize)
       oldOnResize();
-    $("#accountIframe").css("height", (window.innerHeight - 85) + "px"); 
+    $("#accountIframe").css("height", (window.innerHeight - 73) + "px"); 
   }
 })();
 </script>

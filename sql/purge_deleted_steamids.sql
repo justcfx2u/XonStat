@@ -1,0 +1,1 @@
+-- delete from hashkeys where active_ind=false and now() - delete_dt >= 60;

@@ -53,7 +53,7 @@
           % if active=="account":
           class="active"
           % endif
-          ><a href="/account/login" title="Login/Register" id="navAccount" style="display:none">Login/Register</a></li>
+          ><a href="/account/login" title="Login/Sign-up" id="navAccount" style="display:none">Login/Sign-up</a></li>
 
         <li><a href="/account/logout" title="Logout" id="navLogout" style="display:none">Logout</a></li>
         %endif
@@ -81,7 +81,7 @@
         oldOnLoad();
       $.getJSON("/account/user", function (user) {
         if (user.id) {
-          $("#navAccount").text(user.displayName).attr("href", "/my");
+          $("#navAccount").text(user.strippedNick).attr("href", "/my");
           $("#navLogout").css("display", "block");
         }
         $("#navAccount").css("display", "block");
