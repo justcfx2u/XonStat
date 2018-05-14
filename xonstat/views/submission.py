@@ -461,7 +461,7 @@ def create_game(session, start_dt, game_type_cd, server_id, map_id,
     return game
 
 
-def get_or_create_player(session=None, hashkey=None, nick=None):
+def get_or_create_player(session=None, hashkey=None, untrackedPlayerCount=0):
     """
     Finds a player by hashkey or creates a new one (along with a
     corresponding hashkey entry. Parameters:
@@ -470,44 +470,22 @@ def get_or_create_player(session=None, hashkey=None, nick=None):
     hashkey - hashkey of the player to be found or created
     nick - nick of the player (in case of a first time create)
     """
-    # if we have a bot
-    if re.search('^bot#\d+$', hashkey) or re.search('^bot#\d+#', hashkey):
-        player = session.query(Player).filter_by(player_id=1).one()
-    # if we have an untracked player
-    elif re.search('^player#\d+$', hashkey):
-        player = session.query(Player).filter_by(player_id=2).one()
-    # else it is a tracked player
-    else:
-        # see if the player is already in the database
-        # if not, create one and the hashkey along with it
-        try:
-            hk = session.query(Hashkey).filter_by(
-                    hashkey=hashkey).one()
-            player = session.query(Player).filter_by(
-                    player_id=hk.player_id).one()
+
+    # see if the player is already in the database
+    # if not, create one and the hashkey along with it
+    try:
+        hk = session.query(Hashkey).filter_by(
+                hashkey=hashkey).one()
+        player = session.query(Player).filter_by(
+                player_id=hk.player_id).one()
+        if player.privacy_match_hist != 3: # allow tracking
             log.debug("Found existing player {0} with hashkey {1}".format(
                 player.player_id, hashkey))
-        except:
-            player = Player()
-            player.create_dt = datetime.datetime.utcnow()
-            session.add(player)
-            session.flush()
+            return (player, untrackedPlayerCount)
+    except:
+        pass
 
-            # if nick is given to us, use it. If not, use "Anonymous Player"
-            # with a suffix added for uniqueness.
-            if nick:
-                player.nick = nick[:128]
-                player.stripped_nick = strip_colors(qfont_decode(nick[:128]))
-            else:
-                player.nick = "Anonymous Player #{0}".format(player.player_id)
-                player.stripped_nick = player.nick
-
-            hk = Hashkey(player_id=player.player_id, hashkey=hashkey)
-            session.add(hk)
-            log.debug("Created player {0} ({2}) with hashkey {1}".format(
-                player.player_id, hashkey, player.nick.encode('utf-8')))
-
-    return player
+    player = Player()    untrackedPlayerCount = untrackedPlayerCount + 1    player.player_id = -untrackedPlayerCount;    player.nick = "Untracked Player {0}".format(untrackedPlayerCount)    player.stripped_nick = player.nick    log.debug("Found untracked player {0} with steam-id {1}".format(untrackedPlayerCount, hashkey))    return (player, untrackedPlayerCount)
 
 
 def create_default_game_stat(session, game_type_cd):
@@ -578,8 +556,8 @@ def create_game_stat(session, game_meta, game, server, gmap, player, events):
     pgstat.game_id       = game.game_id
     pgstat.create_dt     = datetime.datetime.utcnow()
     pgstat.player_id     = player.player_id
-    pgstat.nick          = events.get('n', 'Anonymous Player')[:128]
-    pgstat.stripped_nick = strip_colors(qfont_decode(pgstat.nick))
+    pgstat.nick          = events.get('n', 'Anonymous Player')[:128] if player.player_id >= 0 else player.nick
+    pgstat.stripped_nick = strip_colors(qfont_decode(pgstat.nick)) if player.player_id >= 0 else player.stripped_nick
     pgstat.score         = int(round(float(events.get('scoreboard-score', 0))))
     pgstat.alivetime     = datetime.timedelta(seconds=int(round(float(events.get('alivetime', 0.0)))))
     pgstat.rank          = int(events.get('rank', None))
@@ -885,16 +863,16 @@ def _submit_stats(request):
 
         # keep track of the players we've seen
         player_ids = []
+        untrackedPlayerCount = 0
         for events in raw_players:
-            player = get_or_create_player(
+            (player, untrackedPlayerCount) = get_or_create_player(
                 session = session,
                 hashkey = events['P'],
-                nick    = events.get('n', None))
+                untrackedPlayerCount = untrackedPlayerCount)
 
             pgstat = create_game_stat(session, game_meta, game, server, gmap, player, events)
 
             if player.player_id > 1:
-                anticheats = create_anticheats(session, pgstat, game, player, events)
                 player_ids.append(player.player_id)
 
 
@@ -903,7 +881,7 @@ def _submit_stats(request):
             if events["P"] == player2_steamid:
                 game.player_id2 = player.player_id
 
-            if should_do_weapon_stats(game_type_cd) and player.player_id > 1:
+            if should_do_weapon_stats(game_type_cd) and player.player_id != 0:
                 pwstats = create_weapon_stats(session, game_meta, game, player, pgstat, events)
 
         # store them on games for easy access
@@ -914,9 +892,6 @@ def _submit_stats(request):
                 teamstat = create_team_stat(session, game, events)
             except Exception as e:
                 raise
-
-        if should_do_elos(game_type_cd):
-            create_elos(session, game)
 
         session.commit()
         log.debug('Success! Stats recorded.')

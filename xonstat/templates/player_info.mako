@@ -155,7 +155,9 @@ function dateStr(unixtimestamp) {
 }
 
 ///////////////////////////////
+%endif
 
+%if player and player.privacy_nowplaying == 1:
 function locatePlayer() {
   $.getJSON("${request.registry.settings.get('qlstat.feeder_webapi_url','')}/player/${hashkey}/locate", function(data) {
     if (data.ok && data.server) {
@@ -166,9 +168,10 @@ function locatePlayer() {
 
 locatePlayer();
 
+%endif
+
 </script>
 
-%endif
 
 </%block>
 
@@ -202,7 +205,7 @@ Player Information
       <img src="/static/images/icons/24x24/cake.png" title="Happy cake day!" />
       % endif     
     </p>
-%if player.privacy_match_hist != 1:
+%if player.privacy_nowplaying == 1:
     <a id="btnNowPlaying" class="btn btn-primary btn-small" href="" style="display:none">Now Playing</a>
 %endif
   </div>

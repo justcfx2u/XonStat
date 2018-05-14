@@ -278,7 +278,7 @@ alter table players add privacy_match_hist smallint not null default 0;
 
 -- 2018-05-11
 
-# insert players -1 to -64 which will be used as placeholders for deleted players
+-- insert players -1 to -64 which will be used as placeholders for deleted players
 do
 $$
 declare
@@ -289,3 +289,7 @@ begin
   end loop;
 end;
 $$ language plpgsql;
+
+-- 2018-05-14
+alter table players add privacy_nowplaying boolean not null default false;
+alter table hashkeys add delete_dt timestamp without time zone;
