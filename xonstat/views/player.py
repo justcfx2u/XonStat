@@ -1167,7 +1167,7 @@ def players_elo(request, b_rating = False):
             players[steamid][gt] = defaultRating
 
     for row in q:
-        if row.Player.privacy_match_hist in (1,2):
+        if row.Hashkey.active_ind:
               untracked.discard(row.Hashkey.hashkey)
 
         if not row.Player.active_ind:
