@@ -1168,7 +1168,7 @@ def players_elo(request, b_rating = False):
 
     for row in q:
         if row.Player.privacy_match_hist in (1,2):
-              untracked.remove(row.Hashkey.hashkey)
+              untracked.discard(row.Hashkey.hashkey)
 
         if not row.Player.active_ind:
               deactivated[row.Hashkey.hashkey] = True
