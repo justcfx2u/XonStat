@@ -61,7 +61,7 @@ begin
         update xonstat.players set nick=rawNick, stripped_nick=strippedNick where player_id=id;
         update xonstat.player_nicks set last_used_dt=now() where player_id=id and stripped_nick=strippedNick;
         get diagnostics rowcount = row_count;
-        if row = 0 then
+        if rowcount = 0 then
           insert into xonstat.player_nicks(player_id, stripped_nick, nick) values (id, strippedNick, rawNick);
         end if;
       end if;
