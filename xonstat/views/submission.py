@@ -461,7 +461,7 @@ def create_game(session, start_dt, game_type_cd, server_id, map_id,
     return game
 
 
-def get_or_create_player(session=None, hashkey=None, nick=None, untrackedPlayerCount=0):
+def get_or_create_player(session, hashkey, nick, untrackedPlayerDict):
     """
     Finds a player by hashkey or creates a new one (along with a
     corresponding hashkey entry. Parameters:
@@ -485,17 +485,20 @@ def get_or_create_player(session=None, hashkey=None, nick=None, untrackedPlayerC
         player = session.query(Player).filter_by(player_id=pid).one()
         if player.privacy_match_hist != 3: # allow storing match history
             log.debug("Found existing player {0} with hashkey {1}".format(player.player_id, hashkey))
-            return (player, untrackedPlayerCount)
+            return player
         defaultNick = "Anonymous Player {0}"
 
     # map untracked or anonymous player to the next available placeholder Player 
+    if hashkey in untrackedPlayerDict:
+        return untrackedPlayerDict[hashkey];
     player = Player()
-    untrackedPlayerCount = untrackedPlayerCount + 1
+    untrackedPlayerCount = len(untrackedPlayerDict) + 1
     player.player_id = -untrackedPlayerCount;
     player.nick = defaultNick.format(untrackedPlayerCount)
     player.stripped_nick = player.nick
+    untrackedPlayerDict[hashkey] = player
     log.debug(("Found " + defaultNick + " with steam-id {1}").format(untrackedPlayerCount, hashkey))
-    return (player, untrackedPlayerCount)
+    return player
 
 
 
@@ -874,13 +877,9 @@ def _submit_stats(request):
 
         # keep track of the players we've seen
         player_ids = []
-        untrackedPlayerCount = 0
+        untrackedPlayerDict = {}
         for events in raw_players:
-            (player, untrackedPlayerCount) = get_or_create_player(
-                session = session,
-                hashkey = events['P'],
-                nick = events['n'],
-                untrackedPlayerCount = untrackedPlayerCount)
+            player = get_or_create_player(session, events['P'], events['n'], untrackedPlayerDict)
 
             pgstat = create_game_stat(session, game_meta, game, server, gmap, player, events)
 
