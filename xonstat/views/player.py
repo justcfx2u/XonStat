@@ -1160,15 +1160,15 @@ def players_elo(request, b_rating = False):
     defaultRating = { "elo": 900, "games": 0 } # this default elo value should be in-sync with the default value in gamerating.js
     players = {}
     deactivated = {}
-    untracked = set(steamids)
+    untracked = set()
     for steamid in steamids:
         players[steamid] = {"steamid": steamid }
         for gt in ['ffa','ca','tdm','ctf','ft']:
             players[steamid][gt] = defaultRating
 
     for row in q:
-        if row.Hashkey.active_ind:
-              untracked.discard(row.Hashkey.hashkey)
+        if not row.Hashkey.active_ind:
+              untracked.add(row.Hashkey.hashkey)
 
         if not row.Player.active_ind:
               deactivated[row.Hashkey.hashkey] = True
