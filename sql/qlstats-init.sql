@@ -293,3 +293,9 @@ $$ language plpgsql;
 -- 2018-05-14
 alter table players add privacy_nowplaying boolean not null default false;
 alter table hashkeys add delete_dt timestamp without time zone;
+
+-- 2018-05-16
+alter table player_nicks add last_used_dt timestamp without time zone default timezone('UTC',now());
+drop function if exists getOrUpdatePlayer(steamid varchar(30), rawNick varchar(64), strippedNick varchar(64));
+-- stored_proc.sql was updated with a getOrCreatePlayer function
+

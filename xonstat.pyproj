@@ -786,6 +786,7 @@
     <Content Include="README.md" />
     <Content Include="sql\clear.sql" />
     <Content Include="sql\purge_deleted_steamids.sql" />
+    <Content Include="sql\purge_old_aliases.sql" />
     <Content Include="sql\qlstats-init.sql" />
     <Content Include="sql\stored_proc.sql" />
     <Content Include="sql\update_player_region.sql" />

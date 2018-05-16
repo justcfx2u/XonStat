@@ -461,7 +461,7 @@ def create_game(session, start_dt, game_type_cd, server_id, map_id,
     return game
 
 
-def get_or_create_player(session=None, hashkey=None, untrackedPlayerCount=0):
+def get_or_create_player(session=None, hashkey=None, nick=None, untrackedPlayerCount=0):
     """
     Finds a player by hashkey or creates a new one (along with a
     corresponding hashkey entry. Parameters:
@@ -469,23 +469,34 @@ def get_or_create_player(session=None, hashkey=None, untrackedPlayerCount=0):
     session - SQLAlchemy database session factory
     hashkey - hashkey of the player to be found or created
     nick - nick of the player (in case of a first time create)
+    untrackedPlayerCount - current counter of untracked/anonymous players in the match.
+
+    returns: (player data record, updated untrackedPlayerCount)
     """
 
-    # see if the player is already in the database
-    # if not, create one and the hashkey along with it
-    try:
-        hk = session.query(Hashkey).filter_by(
-                hashkey=hashkey).one()
-        player = session.query(Player).filter_by(
-                player_id=hk.player_id).one()
-        if player.privacy_match_hist != 3: # allow tracking
-            log.debug("Found existing player {0} with hashkey {1}".format(
-                player.player_id, hashkey))
+    # the getOrCreatePlayer stored procedure looks at the privacy_match_hist setting and
+    # returns null if a player deleted himself and wants to stay untracked.
+    # For tracked players it may update the nick and aliases, unless the player is anonymous
+    # and it returns the player_id
+    stripped_nick = strip_colors(qfont_decode(nick[:128]))
+    pid = session.execute(expr.func.getOrCreatePlayer(hashkey, nick, stripped_nick)).scalar()
+    defaultNick = "Untracked Player {0}"
+    if pid is not None:
+        player = session.query(Player).filter_by(player_id=pid).one()
+        if player.privacy_match_hist != 3: # allow storing match history
+            log.debug("Found existing player {0} with hashkey {1}".format(player.player_id, hashkey))
             return (player, untrackedPlayerCount)
-    except:
-        pass
+        defaultNick = "Anonymous Player {0}"
 
-    player = Player()    untrackedPlayerCount = untrackedPlayerCount + 1    player.player_id = -untrackedPlayerCount;    player.nick = "Untracked Player {0}".format(untrackedPlayerCount)    player.stripped_nick = player.nick    log.debug("Found untracked player {0} with steam-id {1}".format(untrackedPlayerCount, hashkey))    return (player, untrackedPlayerCount)
+    # map untracked or anonymous player to the next available placeholder Player 
+    player = Player()
+    untrackedPlayerCount = untrackedPlayerCount + 1
+    player.player_id = -untrackedPlayerCount;
+    player.nick = defaultNick.format(untrackedPlayerCount)
+    player.stripped_nick = player.nick
+    log.debug(("Found " + defaultNick + " with steam-id {1}").format(untrackedPlayerCount, hashkey))
+    return (player, untrackedPlayerCount)
+
 
 
 def create_default_game_stat(session, game_type_cd):
@@ -868,6 +879,7 @@ def _submit_stats(request):
             (player, untrackedPlayerCount) = get_or_create_player(
                 session = session,
                 hashkey = events['P'],
+                nick = events['n'],
                 untrackedPlayerCount = untrackedPlayerCount)
 
             pgstat = create_game_stat(session, game_meta, game, server, gmap, player, events)
