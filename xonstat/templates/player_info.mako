@@ -155,9 +155,11 @@ function dateStr(unixtimestamp) {
 }
 
 ///////////////////////////////
+</script>
 %endif
 
 %if player and player.privacy_nowplaying == 1:
+<script>
 function locatePlayer() {
   $.getJSON("${request.registry.settings.get('qlstat.feeder_webapi_url','')}/player/${hashkey}/locate", function(data) {
     if (data.ok && data.server) {
@@ -167,10 +169,9 @@ function locatePlayer() {
 }
 
 locatePlayer();
-
+</script>
 %endif
 
-</script>
 
 
 </%block>
