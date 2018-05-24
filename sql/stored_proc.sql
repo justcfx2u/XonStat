@@ -64,15 +64,16 @@ begin
         if rowcount = 0 then
           insert into xonstat.player_nicks(player_id, stripped_nick, nick) values (id, strippedNick, rawNick);
         end if;
+        return id;
       end if;
-      return id;
+      return -id; -- negative value to indicate privacy = anonymous 
     end if;
 
     begin
       select nextval('xonstat.players_player_id_seq'::regclass) into id;
-      insert into xonstat.players (player_id,privacy_match_hist,nick,stripped_nick) values (id, 3, 'Anonymous Player', 'Anonymous Player');
+      insert into xonstat.players (player_id,privacy_match_hist,nick,stripped_nick) values (id, 3, 'Anonymous', 'Anonymous');
       insert into xonstat.hashkeys (player_id, hashkey) values (id, steamid);
-      return id;
+      return -id; -- negative value to indicate privacy = anonymous 
     exception when unique_violation then
       -- try again
     end;

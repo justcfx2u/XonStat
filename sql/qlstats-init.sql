@@ -285,7 +285,7 @@ declare
   i integer;
 begin
   for i in 1 .. 64 loop
-    insert into xonstat.players (player_id, nick, stripped_nick) values (-i, 'Untracked Player ' || i, 'Untracked Player ' || i);
+    insert into xonstat.players (player_id, nick, stripped_nick) values (-i, 'Unnamed ' || i, 'Unnamed ' || i);
   end loop;
 end;
 $$ language plpgsql;
@@ -299,3 +299,5 @@ alter table player_nicks add last_used_dt timestamp without time zone default ti
 drop function if exists getOrUpdatePlayer(steamid varchar(30), rawNick varchar(64), strippedNick varchar(64));
 -- stored_proc.sql was updated with a getOrCreatePlayer function
 
+-- 2018-05-24
+-- stored_proc.sql was updated with a new getOrCreatePlayer function

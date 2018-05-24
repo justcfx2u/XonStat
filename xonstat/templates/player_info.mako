@@ -25,7 +25,7 @@ ${parent.css()}
 <%block name="js">
 ${parent.js()}
 
-%if player and player.privacy_match_hist != 1:
+%if player and player.privacy_match_hist == 2:
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/weaponCharts.min.js"></script>
 
@@ -192,18 +192,15 @@ Player Information
       regions = [ "not set", "Europe", "Africa", "Asia", "Australia", "North America", "South America"]
       region = "unknown" if player.region is None or player.region > len(regions) else regions[player.region]
       %>
-%if player.privacy_match_hist != 1:
+%if player.privacy_match_hist == 2:
       Region: ${region}
 %endif
       <br>Player ID: ${player.player_id}
       <br>Steam ID: <a href="http://steamcommunity.com/profiles/${hashkey}/" target="_blank">${hashkey}</a>
-%if player.privacy_match_hist != 1:
+%if player.privacy_match_hist == 2:
       <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${strftime(player.create_dt, '%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
 %endif
       <br>Status: ${ "active" if player.active_ind else "<span class='warntext'>deactivated</span>" | n}
-      % if cake_day:
-      <img src="/static/images/icons/24x24/cake.png" title="Happy cake day!" />
-      % endif     
     </p>
 %if player.privacy_nowplaying == 1:
     <a id="btnNowPlaying" class="btn btn-primary btn-small" href="" style="display:none">Now Playing</a>

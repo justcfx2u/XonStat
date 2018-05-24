@@ -106,7 +106,7 @@ function initSteamAuthPages(express, app) {
     // API function used by paster web pages to get access to the steam user information
     function (req, res) {
       if (req.user)
-        req.user.strippedNick = strippedNick(req.user.displayName);
+        req.user.strippedNick = utils.strippedNick(req.user.displayName);
       res.json(req.user || {});
     });
 
@@ -154,12 +154,14 @@ function saveUserSettings(req, res) {
           if (req.body.action === "delete")
             return deletePlayer(req, res, cli);
 
+          var privacyMode = (["1", "2", "3"].indexOf(req.body.matchHistory) >= 0 ? req.body.matchHistory : 1);
           var set = "";
-          set += ",privacy_match_hist=" + (["1", "2", "3"].indexOf(req.body.matchHistory) >= 0 ? req.body.matchHistory : 1);
+          set += ",privacy_match_hist=" + privacyMode;
           set += ",privacy_nowplaying=" + (req.body.locate === "1");
+          set += ",nick=$2,stripped_nick=$3";
           set = set.substring(1);
-
-          var data = [req.user.id];
+          var nick = privacyMode == 1 || privacyMode == 2 ? req.user.displayName : "Anonymous";
+          var data = [req.user.id, nick, utils.strippedNick(nick)];
           return Q.ninvoke(cli, "query", "update players set " + set + " where player_id=(select player_id from hashkeys where hashkey=$1 and player_id>2)", data)
             .then(function (status) { return "Your settings have been saved"; });
         })
@@ -188,9 +190,8 @@ function registerPlayer(req, res, cli) {
       }
 
       return chain
-        .then(function () { return Q.ninvoke(cli, "query", "insert into players (nick,stripped_nick) values ($1, $2) returning player_id", [req.user.displayName, strippedNick(req.user.displayName)]) })
-        .then(function (result) { return Q.ninvoke(cli, "query", "insert into hashkeys (hashkey, player_id) values ($1, $2)", [req.user.id, result.rows[0].player_id]); })
-        .then(function () { return ""; });
+        .then(function () { return Q.ninvoke(cli, "query", "select getOrCreatePlayer($1, $2, $3)", [req.user.id, req.user.displayName, utils.strippedNick(req.user.displayName)]) })
+        .then(function (result) { return result.rows[0][0]; });
       });
 }
 
@@ -208,21 +209,6 @@ function anonymizePlayer(req, res, cli) {
     .then(function () { return "Your existing data has been anonymized"; });
 }
 
-/**
- * Remove color coding from nicknames (^1Nic^7k => Nick)
- * @param {string} nick
- */
-function strippedNick(nick) {
-  var stripped = "";
-  var i, c;
-  for (i = 0; i < nick.length; i++) {
-    if (nick[i] === "^")
-      i++;
-    else
-      stripped += nick[i];
-  }
-  return stripped;
-}
 
 /**
  * Delete or anonymize the player with the given internal id, including his aliases and ranks. Ratings are kept when anonymizing.

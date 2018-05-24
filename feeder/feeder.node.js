@@ -225,7 +225,8 @@ function upgradeConfigVersion() {
  */
 function processFilesFromCommandLine(files) {
   return processJsonFiles(files)
-    .catch(function(err) { _logger.error(err); })
+    .catch(function (err) { _logger.error(err); })
+    .then(() => utils.dbClose())
     .done();
 }
 
@@ -854,13 +855,7 @@ function processGameData(game) {
     }
   }
 
-  var report = createXonstatMatchReport(gt, game);
-  if (!report) {
-    _logger.error(addr + ": no match report generated for " + game.matchStats.MATCH_GUID);
-    return false;
-  }
-
-  return postMatchReportToXonstat(addr, game, report)
+  return saveMatchInDatabase(gt, game)
     .then(function(result) {
       if (!_config.feeder.calculateGlicko)
         return true;
@@ -929,164 +924,199 @@ function isTeamGame(gt) {
   return ",ca,tdm,ctf,ft,ad,a&d,dom,1fctf,harvester,".indexOf("," + gt + ",") >= 0;
 }
 
-/**
- * Convert the internal game data to the XonStat match report text file format used as HTTP POST body for submission.py
- * @param {string} gt - game type (ffa, ca, duel, ctf, tdm, ft, ...)
- * @param {Object} game - game data object from onZmqMessageCallback or from a .json.gz
- * @returns {string} - match report text
- */
-function createXonstatMatchReport(gt, game) {
-  var report = [];
-  exportMatchInformation(gt, game, report);
-  
-  var allWeapons = { gt: "GAUNTLET", mg: "MACHINEGUN", sg: "SHOTGUN", gl: "GRENADE", rl: "ROCKET", lg: "LIGHTNING", rg: "RAILGUN", pg: "PLASMA", bfg: "BFG", hmg: "HMG", cg: "CHAINGUN", ng: "NAILGUN", pm: "PROXMINE", gh: "OTHER_WEAPON" };
-  game.steamIdSubmissionOrder = [];
-    
-  if (isTeamGame(gt)) {
-    var redWon = parseInt(game.matchStats.TSCORE0) > parseInt(game.matchStats.TSCORE1);
-    var blueWon = parseInt(game.matchStats.TSCORE0) < parseInt(game.matchStats.TSCORE1);
-    exportTeamSummary(gt, game, 1, report);
-    exportScoreboard(gt, game, 1, redWon, allWeapons, report);
-    exportTeamSummary(gt, game, 2, report);
-    exportScoreboard(gt, game, 2, blueWon, allWeapons, report);
-  }
-  else
-    exportScoreboard(gt, game, 0, true, allWeapons, report);
-  return report.join("\n");
-  
-  function exportMatchInformation(gt, game, report) {
-    report.push("0 " + game.serverIp); // not XonStat standard
-    report.push("1 " + game.gameEndTimestamp); // not XonStat standard
-    if (game.roundCount)
-      report.push("2 " + game.roundCount.total);
-    report.push("S " + game.matchStats.SERVER_TITLE);
-    report.push("I " + game.matchStats.MATCH_GUID);
-    report.push("G " + gt);
-    report.push("M " + game.matchStats.MAP);
-    report.push("O " + game.matchStats.FACTORY);
-    report.push("V 7"); // CA must be >= 6 
-    report.push("R .1");
-    report.push("U " + game.serverPort);
-    report.push("D " + game.matchStats.GAME_LENGTH);
-  }
-  
-  function exportScoreboard(gt, game, team, isWinnerTeam, weapons, report) {
-    var playerMapping = { SCORE: "score", KILLS: "kills", DEATHS: "deaths" };
-    var damageMapping = { DEALT: "pushes", TAKEN: "destroyed" };
-    var medalMapping = { CAPTURES: "captured", ASSISTS: "returns", DEFENDS: "drops" };
-    var scoreboard = game.playerStats;
-        
-    if (gt == "ft")
-      medalMapping.ASSISTS = "revivals";
-    
-    for (var i = 0; i < scoreboard.length; i++) {
-      var p = scoreboard[i];
-      // check if player's TEAM equals to team in function parameter
-      // redrover is not team-based gametype, but for some reason player is assigned to a team in match report
-      if (gt != "rr" && (team || p.TEAM) && p.TEAM != team)
-        continue;
-      game.steamIdSubmissionOrder.push(p.STEAM_ID);
-      report.push("P " + p.STEAM_ID);
-      report.push("n " + p.NAME);
-      if (team)
-        report.push("t " + team);
-      report.push("e playermodel " + p.MODEL);
-      report.push("e matches 1");
-      report.push("e scoreboardvalid 1");
-      report.push("e alivetime " + Math.min(p.PLAY_TIME, game.matchStats.GAME_LENGTH));
-      report.push("e rank " + p.RANK);
-      if ((team == 0 && p.RANK == "1") || isWinnerTeam)
-        report.push("e wins 1");
-      report.push("e scoreboardpos " + p.RANK);
-      if (game.roundCount) {
-        var rounds = game.roundCount.players[p.STEAM_ID];
-        if (rounds)
-          report.push("e scoreboard-lives " + (p.TEAM == 1 ? rounds.r : rounds.b));
+
+function saveMatchInDatabase(gt, game) {
+  var state = {
+    cli: undefined, mapId: undefined, serverId: undefined, summary: {}, gameId: undefined
+  }; // helper object to transfer results between various "then" blocks
+
+  return utils.dbConnect(_config.webapi.database)
+    .then(cli => { state.cli = cli; })
+    .then(() => Q.ninvoke(state.cli, "query", "select game_id from games where match_id=$1", [game.matchStats.MATCH_GUID]))
+    .then(result => {
+      if (result.rowCount > 0) {
+        _logger.warn("Match with GUID " + game.matchStats.MATCH_GUID + " already exists with id=" + result.rows[0][0]);
+        return Q({ok: false});
       }
-        
-      
-      mapFields(p, playerMapping, report);
-      mapFields(p.DAMAGE, damageMapping, report);
-      mapFields(p.MEDALS, medalMapping, report);
-      
-      for (var w in weapons) {
-        if (!weapons.hasOwnProperty(w)) continue;
-        var lname = weapons[w];
-        var wstats = p.WEAPONS[lname];
-        var kills = wstats && wstats.K;
-        if (kills === undefined)
-          continue;
-        report.push("e acc-" + w + "-cnt-fired " + wstats.S);
-        report.push("e acc-" + w + "-cnt-hit " + wstats.H);
-        report.push("e acc-" + w + "-frags " + wstats.K);
-        report.push("e acc-" + w + "-fired " + wstats.DG);
-        report.push("e acc-" + w + "-hit " + wstats.DR);
-      }
-      
-      Object.keys(p.MEDALS).forEach( function(medal_name) {
-        var medal_count = p.MEDALS[medal_name].toString();
-        report.push("e medal-" + medal_name.toLowerCase() + " " + medal_count);
-      });
-    }
-  }
-  
-  function exportTeamSummary(gt, game, team, data) {
-    var mapping = { CAPTURES: "caps", SCORE: "score", ROUNDS_WON: "rounds" };
-    var matchstats = game.matchStats;
-    var score = matchstats["TSCORE" + (team - 1)];
-    var info = {};
-    if (gt == "ctf")
-      info.CAPTURES = score;
-    else if (gt == "ca" || gt == "ft")
-      info.ROUNDS_WON = score;
-    else //if (gt == "tdm")
-      info.SCORE = score;
-    
-    data.push("Q team#" + team);
-    mapFields(info, mapping, data);
-  }
-  
-  function mapFields(info, mapping, data) {
-    for (var field in mapping) {
-      if (!mapping.hasOwnProperty(field)) continue;
-      if (field in info)
-        data.push("e scoreboard-" + mapping[field] + " " + info[field]);
-    }
-  }
+      return Q()
+        .then(() => Q.ninvoke(state.cli, "query", "select getOrCreateMap($1) as map_id", [game.matchStats.MAP]))
+        .then(result => state.mapId = result.rows[0].map_id)
+        .then(() => Q.ninvoke(state.cli, "query", "select getOrCreateServer($1, $2) as server_id", [game.serverIp + ":" + game.serverPort, game.matchStats.SERVER_TITLE]))
+        .then(result => state.serverId = result.rows[0].server_id)
+        .then(() => {
+          game.steamIdMappingReal = {}; // added to "game" so that gamerating can reuse this information
+          game.steamIdMappingAnon = {};
+          game.steamIdTracked = {};
+          var anonymousCount = 0;
+          return game.playerStats.reduce((chain, p) => {
+            return chain
+              .then(() => Q.ninvoke(state.cli, "query", "select getOrCreatePlayer($1, $2, $3) as player_id", [p.STEAM_ID, p.NAME, utils.strippedNick(p.NAME)]))
+              .then(result => {
+                result.rows.map(row => {
+                  game.steamIdMappingReal[p.STEAM_ID] = Math.abs(row.player_id);
+                  game.steamIdMappingAnon[p.STEAM_ID] = row.player_id > 0 ? row.player_id : -(++anonymousCount);
+                  game.steamIdTracked[p.STEAM_ID] = row.player_id != null;
+                });
+              });
+          }, Q());
+        })
+        .then(() => { state.summary = extractMatchSummary(gt, game) })  
+        .then(() => Q.ninvoke(state.cli, "query",
+          // I'd love to use "returning match_id" or a second query within the same statement to get the ID without 2 round-trips, but neither is working with pg 6.2
+          "insert into games (start_dt, game_type_cd, server_id, map_id, duration, match_id, mod, rounds, players, winner, score1, score2, player_id1, player_id2) " 
+          + "values ($1::int4::abstime::timestamp, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)", [
+            game.gameEndTimestamp,
+            gt,
+            state.serverId,
+            state.mapId,
+            game.matchStats.GAME_LENGTH,
+            game.matchStats.MATCH_GUID,
+            game.matchStats.FACTORY,
+            game.roundCount ? game.roundCount.total : null,
+            state.summary.playerIds,
+            state.summary.winningTeam,
+            state.summary.score1,
+            state.summary.score2,
+            state.summary.player1,
+            state.summary.player2
+          ]))
+        .then(() => Q.ninvoke(state.cli, "query", "select game_id from games where match_id=$1", [ game.matchStats.MATCH_GUID]))
+        .then(function (result) { state.gameId = result.rows[0].game_id })
+        .then(() => {
+          // save player_game_stats and player_weapon_stats
+          var chain = Q();
+          var teams = [0];
+          if (isTeamGame(gt)) {
+            chain = saveTeamSummary(gt, game, 1, state, chain);
+            chain = saveTeamSummary(gt, game, 2, state, chain);
+            teams = [1, 2];
+          }
+          teams.forEach(team => {
+            chain = saveScoreboard(gt, game, team, state, chain);
+          });
+          return chain;
+        })
+        .then(() => {
+          return { ok: true, game_id: state.gameId };
+        });
+    })
+    .finally(() => { if (state.cli) state.cli.release(); });
 }
 
-/**
- * Send the xonstat match report to submission.py with a HTTP POST
- * @param {string} addr - Server address as ip:port
- * @param {Object} game - Game data which in case of an error will be saved as .json.gz in the "errors" folder for later reprocessing
- * @param {string} report - The xonstat match report
- * @returns {Promise<Object>} - JSON object returned by submission.py
- */
-function postMatchReportToXonstat(addr, game, report) {
-  var defer = Q.defer();
-  request({
-      uri: _config.feeder.xonstatSubmissionUrl,
-      timeout: 10000,
-      method: "POST",
-      headers: { "X-D0-Blind-Id-Detached-Signature": "dummy", "Content-Type": "text/plain" },
-      body: report
-    },
-    function(err, response, body) {
-      if (err)
-        defer.reject(new Error("upload failed: " + game.matchStats.MATCH_GUID + ": " + err));
-      else if (response.statusCode != 200)
-        defer.reject(new Error("upload failed: " + game.matchStats.MATCH_GUID + ": HTTP " + response.statusCode + " - " + response.statusMessage + "): "));
-      else {
-        _logger.info("match uploaded successfully: " + game.matchStats.MATCH_GUID);
-        defer.resolve(JSON.parse(body));
+function extractMatchSummary(gt, game) {
+  var summary = { steamIds: [], playerIds: [], winningTeam: 0, score1: -999, score2: -999, player1: null, player2: null }
+  var r1 = 999;
+  var r2 = 999;
+  if (isTeamGame(gt)) {
+    var s1 = parseInt(game.matchStats.TSCORE0);
+    var s2 = parseInt(game.matchStats.TSCORE1);
+    summary.winningTeam = s1 > s2 ? 1 : s2 > s1 ? 2 : 0;
+    summary.score1 = s1;
+    summary.score2 = s2;
+    game.playerStats.forEach(p => {
+      var pid = game.steamIdMappingAnon[p.STEAM_ID];
+      if (summary.playerIds.indexOf(pid) < 0)
+        summary.playerIds.push(pid);
+      if (p.TEAM == 1 && p.RANK >= 0 && p.RANK < r1) {
+        r1 = p.RANK;
+        summary.player1 = pid;
+      }
+      else if (p.TEAM == 2 && p.RANK >= 0 && p.RANK < r2) {
+        r2 = p.RANK;
+        summary.player2 = pid;
       }
     });
-  return defer.promise;
+  }
+  else if (gt == "ffa" || gt == "duel" || gt == "rr") {
+    game.playerStats.forEach(p => {
+      var pid = game.steamIdMappingAnon[p.STEAM_ID];
+      if (summary.playerIds.indexOf(pid) < 0)
+        summary.playerIds.push(pid);
+      if (p.RANK >= 0 && p.RANK < r1) {
+        r2 = r1;
+        summary.player2 = summary.player1;
+        r1 = p.RANK;
+        summary.player1 = pid;
+      }
+      else if (p.RANK >= 0 && p.RANK < r2) {
+        r2 = p.RANK;
+        summary.player2 = summary.player1;
+      }
+    });
+  }
+  return summary;
 }
 
-function saveMatchReportInDatabase(report) {
-
+function saveTeamSummary(gt, game, team, state, chain) {
+  var score = game.matchStats["TSCORE" + (team - 1)];
+  if (gt == "ctf")
+    return chain.then(() => Q.ninvoke(state.cli, "query", "insert into team_game_stats (game_id, team, caps) values ($1,$2,$3)", [state.gameId, team, score ]));
+  if (gt == "ca" || gt == "ft")
+    return chain.then(() => Q.ninvoke(state.cli, "query", "insert into team_game_stats (game_id, team, rounds) values ($1,$2,$3)", [state.gameId, team, score]));
+  else
+    return chain.then(() => Q.ninvoke(state.cli, "query", "insert into team_game_stats (game_id, team, score) values ($1,$2,$3)", [state.gameId, team, score]));
 }
+
+function saveScoreboard(gt, game, team, state, chain) {
+  game.playerStats.forEach(p => {
+    // check if player's TEAM equals to team in function parameter
+    // redrover is not team-based gametype, but for some reason player is assigned to a team in match report
+    if (gt != "rr" && (team || p.TEAM) && p.TEAM != team)
+      return;
+
+    var rounds;
+    if (game.roundCount) {
+      rounds = game.roundCount.players[p.STEAM_ID];
+      if (rounds)
+        rounds = p.TEAM == 1 ? rounds.r : rounds.b;
+    }
+
+    var playerId = game.steamIdMappingAnon[p.STEAM_ID];
+    var noname = (game.steamIdTracked[p.STEAM_ID] ? "Anonymous " : "Untracked ") + (-playerId);
+    chain = chain.then(() => Q.ninvoke(state.cli, "query",
+      "insert into player_game_stats (player_id, game_id, nick, stripped_nick, team, rank, kills, deaths, score, alivetime, lives, pushes, destroys, captures, returns, drops, revivals) " +
+      "values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)",
+      [
+        playerId,
+        state.gameId,
+        playerId > 0 ? p.NAME : noname,
+        playerId >  0 ? utils.strippedNick(p.NAME) : noname,
+        team,
+        p.RANK,
+        p.KILLS,
+        p.DEATHS,
+        p.SCORE,
+        Math.min(p.PLAY_TIME, game.matchStats.GAME_LENGTH),
+        rounds,
+        p.DAMAGE.DEALT,
+        p.DAMAGE.TAKEN,
+        p.MEDALS.CAPTURES,
+        gt != "ft" ? p.MEDALS.ASSISTS : null,
+        p.MEDALS.DEFENDS,
+        gt == "ft" ? p.MEDALS.ASSISTS : null
+      ]))
+      .then(() => Q.ninvoke(state.cli, "query", "select player_game_stat_id from player_game_stats where player_id=$1 and game_id=$2", [playerId, state.gameId]))
+      .then(result => {
+        var pgsId = result.rows[0].player_game_stat_id;
+        var allWeapons = { gt: "GAUNTLET", mg: "MACHINEGUN", sg: "SHOTGUN", gl: "GRENADE", rl: "ROCKET", lg: "LIGHTNING", rg: "RAILGUN", pg: "PLASMA", bfg: "BFG", hmg: "HMG", cg: "CHAINGUN", ng: "NAILGUN", pm: "PROXMINE", gh: "OTHER_WEAPON" };
+        var chain2 = Q();
+        Object.keys(allWeapons).forEach(w => {
+          if (!allWeapons.hasOwnProperty(w)) return;
+          var wstats = p.WEAPONS[allWeapons[w]];
+          // only insert a row if there is any shots/hits/damage/kill data
+          if (wstats.S || wstats.H || wstats.DG || wstats.DR || wstats.K) {
+            chain2.then(() => Q.ninvoke(state.cli,
+              "query",
+              "insert into player_weapon_stats (player_id, game_id, player_game_stat_id, weapon_cd, fired, hit, max, actual, frags) values ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+              [ game.steamIdMappingAnon[p.STEAM_ID], state.gameId, pgsId, w, wstats.S, wstats.H, wstats.DG, wstats.DR, wstats.K ]));
+          }
+        });
+        return chain2;
+      });
+  });
+  return chain;
+}
+
 
 main();
 //process.exit(0);

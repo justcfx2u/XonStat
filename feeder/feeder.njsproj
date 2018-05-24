@@ -20,6 +20,7 @@
     <StartWebBrowser>True</StartWebBrowser>
     <ScriptArguments>-c mycfg.json</ScriptArguments>
     <Environment>ql-match-jsons\a6558e8a-b1d4-4c69-acac-5cf3cf13c588.json.gz
+ql-match-jsons/anon-vs-untracked.json.gz
 -f -u tdm
 sample-data\combined_stats_duel.json
  -g 19498 sample-data\combined_stats_ca.json</Environment>
@@ -38,6 +39,7 @@ sample-data\combined_stats_duel.json
     <Content Include="cfg2.json" />
     <Content Include="cfg_api.json" />
     <Content Include="package.json" />
+    <Content Include="ql-match-jsons\anon-vs-untracked.json.gz" />
     <Content Include="README.md" />
     <Compile Include="backfill-factory.node.js" />
     <Compile Include="feeder.node.js" />
