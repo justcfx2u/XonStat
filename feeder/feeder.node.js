@@ -1042,7 +1042,7 @@ function extractMatchSummary(gt, game) {
       }
       else if (p.RANK >= 0 && p.RANK < r2) {
         r2 = p.RANK;
-        summary.player2 = summary.player1;
+        summary.player2 = pid;
         summary.score2 = p.SCORE;
       }
     });
