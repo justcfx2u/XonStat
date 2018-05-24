@@ -60,7 +60,7 @@ i=0;
   % for weapon_cd in weapons:
     % if weaponFired.has_key(weapon_cd) or weapon_cd not in ["bfg","cg","ng","pm","gh"]:
       <%
-      weapon_stat = data[player_id]["weapons"][weapon_cd]
+      weapon_stat = data[player_id]["weapons"][weapon_cd] if data[player_id]["weapons"].has_key(weapon_cd) else [0,0,0,0]
       if weapon_stat[1] > 0: 
           damage_pct = int(round(float(weapon_stat[0])/weapon_stat[1]*100, 0))
       else:
