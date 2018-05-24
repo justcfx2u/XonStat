@@ -56,7 +56,7 @@ begin
         -- player requested to be erased and forgotten
         return null;
       end if;
-      if privacyMode<>3 then 
+      if privacyMode=1 or privacyMode=2 then 
         -- update nick and aliases in all modes except "anonymous"
         update xonstat.players set nick=rawNick, stripped_nick=strippedNick where player_id=id;
         update xonstat.player_nicks set last_used_dt=now() where player_id=id and stripped_nick=strippedNick;

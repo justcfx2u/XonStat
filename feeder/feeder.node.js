@@ -965,7 +965,7 @@ function saveMatchInDatabase(gt, game) {
           // I'd love to use "returning match_id" or a second query within the same statement to get the ID without 2 round-trips, but neither is working with pg 6.2
           "insert into games (start_dt, game_type_cd, server_id, map_id, duration, match_id, mod, rounds, players, winner, score1, score2, player_id1, player_id2) " 
           + "values ($1::int4::abstime::timestamp, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)", [
-            game.gameEndTimestamp,
+            game.gameEndTimestamp + new Date(game.gameEndTimestamp * 1000).getTimezoneOffset()*60, // adjust local feeder time to UTC
             gt,
             state.serverId,
             state.mapId,
