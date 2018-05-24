@@ -1084,7 +1084,7 @@ function saveScoreboard(gt, game, team, state, chain) {
         state.gameId,
         playerId > 0 ? p.NAME : noname,
         playerId >  0 ? utils.strippedNick(p.NAME) : noname,
-        team,
+        team ? team : null,
         p.RANK,
         p.KILLS,
         p.DEATHS,
