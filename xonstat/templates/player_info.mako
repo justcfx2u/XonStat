@@ -207,7 +207,7 @@ Player Information
 %endif
   </div>
 
-%if player.privacy_match_hist == 1:
+%if player.privacy_match_hist != 2:
   <div class="col-xs-6 xol-sm-8 col-md-9" style="padding: 50pt 0 0 60pt; font-size: 16pt">
     This profile is private
   </div>
