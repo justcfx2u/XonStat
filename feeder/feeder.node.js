@@ -1035,12 +1035,15 @@ function extractMatchSummary(gt, game) {
       if (p.RANK >= 0 && p.RANK < r1) {
         r2 = r1;
         summary.player2 = summary.player1;
+        summary.score2 = summary.score1;
         r1 = p.RANK;
         summary.player1 = pid;
+        summary.score1 = p.SCORE;
       }
       else if (p.RANK >= 0 && p.RANK < r2) {
         r2 = p.RANK;
         summary.player2 = summary.player1;
+        summary.score2 = p.SCORE;
       }
     });
   }
