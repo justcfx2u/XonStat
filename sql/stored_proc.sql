@@ -17,10 +17,15 @@ begin
 end;
 $$ language plpgsql;
 
+
 create or replace function xonstat.getOrCreateServer(addr varchar(30), servername varchar(64)) returns integer as $$
 declare 
+  ip varchar;
+  port integer;
   id integer;
 begin
+  select into ip substring(addr from '(.*):');
+  select into port substring(addr from ':(.*)')::int;
   loop
     update xonstat.servers set name=servername where hashkey=addr;
     if found then
@@ -28,7 +33,7 @@ begin
       return id;
     end if;
     begin   
-      insert into xonstat.servers (hashkey,name) values (addr,servername);
+      insert into xonstat.servers (hashkey,ip_addr,port,name) values (addr,ip,port,servername);
     exception when unique_violation then
       -- try again
     end;
