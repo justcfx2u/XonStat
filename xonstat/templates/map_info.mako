@@ -188,10 +188,9 @@ ${parent.title()}
             ${html_colors(rg.pg1_nick)|n}
             % endif
 
-            % if rg.pg2_player_id > 2:
-
             &nbsp; vs &nbsp;
 
+            % if rg.pg2_player_id > 2:
             <a href="${request.route_path('player_info', id=rg.pg2_player_id)}" title="Go to the player info page for this player">${html_colors(rg.pg2_nick)|n}</a>
             % else:
             ${html_colors(rg.pg2_nick)|n}
