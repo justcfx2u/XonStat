@@ -14,7 +14,7 @@ from xonstat.util import qfont_decode, strip_colors, html_colors, pretty_date
 
 log = logging.getLogger(__name__)
 
-DBSession = scoped_session(sessionmaker())
+DBSession = scoped_session(sessionmaker(autocommit=True))
 Base = declarative_base()
 
 # define objects for all tables

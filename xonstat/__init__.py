@@ -16,7 +16,7 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     # setup the database engine
-    engine = engine_from_config(settings, 'sqlalchemy.', pool_size=5)
+    engine = engine_from_config(settings, 'sqlalchemy.')
     sqlahelper.add_engine(engine)
 
     # initialize database structures
