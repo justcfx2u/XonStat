@@ -1175,9 +1175,9 @@ def players_elo(request, b_rating = False):
               untracked.add(row.Hashkey.hashkey)
               playerinfo[row.Hashkey.hashkey]["privacy"] = "untracked"
               playerinfo[row.Hashkey.hashkey]["allowRating"] = False
-        elif row.privacy_match_hist == 1:
+        elif row.Player.privacy_match_hist == 1:
               playerinfo[row.Hashkey.hashkey]["privacy"] = "private"
-        elif row.privacy_match_hist == 2:
+        elif row.Player.privacy_match_hist == 2:
               playerinfo[row.Hashkey.hashkey]["privacy"] = "public"
 
 
