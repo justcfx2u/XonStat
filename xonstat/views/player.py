@@ -1161,17 +1161,29 @@ def players_elo(request, b_rating = False):
     players = {}
     deactivated = {}
     untracked = set()
+    playerinfo = {}
+    gametypes = ['ffa','ca','tdm','ctf','ft']
     for steamid in steamids:
         players[steamid] = {"steamid": steamid }
-        for gt in ['ffa','ca','tdm','ctf','ft']:
+        # default privacy for unknown players, players with privacy_match_hist=0 (not set) and =3 (anonymous) is "anonymous"
+        playerinfo[steamid] = { "privacy": "anonymous", "allowRating": True, "deactivated": False, "ratings": {} } 
+        for gt in gametypes:
             players[steamid][gt] = defaultRating
 
     for row in q:
         if not row.Hashkey.active_ind:
               untracked.add(row.Hashkey.hashkey)
+              playerinfo[row.Hashkey.hashkey]["privacy"] = "untracked"
+              playerinfo[row.Hashkey.hashkey]["allowRating"] = False
+        elif row.privacy_match_hist == 1:
+              playerinfo[row.Hashkey.hashkey]["privacy"] = "private"
+        elif row.privacy_match_hist == 2:
+              playerinfo[row.Hashkey.hashkey]["privacy"] = "public"
+
 
         if not row.Player.active_ind:
               deactivated[row.Hashkey.hashkey] = True
+              playerinfo[row.Hashkey.hashkey]["deactivated"] = True
 
         if row.PlayerElo is None or row.PlayerElo.player_id is None:
               continue;
@@ -1185,7 +1197,11 @@ def players_elo(request, b_rating = False):
         if data is not None:
           players[row.Hashkey.hashkey][row.PlayerElo.game_type_cd] = data
 
-    return { "players": players.values(), "deactivated": deactivated.keys(), "untracked": list(untracked) }
+    for p in players:
+        for gt in gametypes:
+            playerinfo[players[p]["steamid"]]["ratings"][gt] = players[p][gt]
+
+    return { "players": players.values(), "deactivated": deactivated.keys(), "untracked": list(untracked), "playerinfo": playerinfo }
 
 
 def players_elo_b(request):
