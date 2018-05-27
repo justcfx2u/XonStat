@@ -27,13 +27,13 @@ begin
   select into ip substring(addr from '(.*):');
   select into port substring(addr from ':(.*)')::int;
   loop
-    update xonstat.servers set name=servername where hashkey=addr;
+    update xonstat.servers set name=servername where hashkey=addr and active_ind=true;
     if found then
-      select server_id into id from xonstat.servers where hashkey=addr;
+      select server_id into id from xonstat.servers where hashkey=addr and active_ind=true;
       return id;
     end if;
     begin   
-      insert into xonstat.servers (hashkey,ip_addr,port,name) values (addr,ip,port,servername);
+      insert into xonstat.servers (hashkey,ip_addr,port,name,active_ind) values (addr,ip,port,servername,true);
     exception when unique_violation then
       -- try again
     end;

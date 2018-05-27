@@ -301,3 +301,21 @@ drop function if exists getOrUpdatePlayer(steamid varchar(30), rawNick varchar(6
 
 -- 2018-05-24
 -- stored_proc.sql was updated with a new getOrCreatePlayer function
+
+-- 2018-05-26
+-- before this index could be generated, duplicates had to be eliminated
+create unique index games_2018q1_match_id on games_2018q1(match_id);
+create unique index games_2018q2_match_id on games_2018q2(match_id);
+create unique index games_2018q3_match_id on games_2018q3(match_id);
+create unique index games_2018q4_match_id on games_2018q4(match_id);
+create unique index games_2019q1_match_id on games_2019q1(match_id);
+create unique index games_2019q2_match_id on games_2019q2(match_id);
+create unique index games_2019q3_match_id on games_2019q3(match_id);
+create unique index games_2019q4_match_id on games_2019q4(match_id);
+create unique index games_2020q1_match_id on games_2020q1(match_id);
+create unique index games_2020q2_match_id on games_2020q2(match_id);
+create unique index games_2020q3_match_id on games_2020q3(match_id);
+create unique index games_2020q4_match_id on games_2020q4(match_id);
+-- before this index could be generated, duplicates had to be eliminated
+create unique index maps_name on maps(name);
+-- stored_proc.sql getOrCreateServer() updated
