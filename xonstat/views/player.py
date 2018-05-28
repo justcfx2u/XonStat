@@ -517,14 +517,18 @@ def player_info_data(request):
         if row is None:
                 return {'player':None, 'hashkey':None, 'games_played':0,'overall_stats':None, 'fav_maps':[], 'elos':[], 'ranks':[], 'recent_games':[],'cake_day':None }
 
+        sessioncookie = unquote(request.cookies.get("SteamAuthSession"))
+        may_see_stats = row.Player.privacy_match_hist == 2 or \
+          row.Player.privacy_match_hist == 1 and row.Hashkey.sessionkey == sessioncookie
+
         player_id = row.Player.player_id     
-        games_played   = get_games_played(player_id)
-        overall_stats  = get_overall_stats(player_id)
-        fav_maps       = get_fav_maps(player_id)
+        games_played   = get_games_played(player_id) if may_see_stats else []
+        overall_stats  = get_overall_stats(player_id) if may_see_stats else {}
+        fav_maps       = get_fav_maps(player_id) if may_see_stats else {}
         elos           = get_elos(player_id)
         ranks          = get_ranks(player_id)
-        recent_games   = get_recent_games(player_id, game_type_cd=game_type_cd)
-        cake_day       = is_cake_day(row.Player.create_dt)
+        recent_games   = get_recent_games(player_id, game_type_cd=game_type_cd) if may_see_stats else []
+        cake_day       = is_cake_day(row.Player.create_dt) if may_see_stats else False
 
     except Exception as e:
         #raise pyramid.httpexceptions.HTTPNotFound
@@ -533,7 +537,7 @@ def player_info_data(request):
          raise e
 
     return {'player':row.Player,
-          'hashkey':row.Hashkey.hashkey,
+            'hashkey':row.Hashkey.hashkey,
             'games_played':games_played,
             'overall_stats':overall_stats,
             'fav_maps':fav_maps,
@@ -541,6 +545,7 @@ def player_info_data(request):
             'ranks':ranks,
             'recent_games':recent_games,
             'cake_day':cake_day,
+            'may_view':may_see_stats
             }
 
 

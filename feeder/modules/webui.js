@@ -1,17 +1,17 @@
 var
-  bodyParser = require("body-parser"),
-  fs = require("graceful-fs"),
   log4js = require("log4js"),
   passport = require("passport"),
   SteamStrategy = require("passport-steam").Strategy,
+  express = require("express"),
   session = require("express-session"),
-  pg = require("pg"),
+  cookieParser = require("cookie-parser"),
   Q = require("q"),
   utils = require("./utils");
 
 exports.init = init;
 exports.deletePlayerBySteamId = deletePlayerBySteamId;
 
+const SessionCookieName = "SteamAuthSession";
 var _logger = log4js.getLogger("webui");
 var _config;
 
@@ -31,7 +31,7 @@ function init(config, app, feeder) {
     return;
   }
 
-  var express = require("express");
+  app.use(cookieParser());
   initSteamAuthPages(express, app);
 }
 
@@ -56,7 +56,7 @@ function initSteamAuthPages(express, app) {
   app.set("view engine", "ejs");
   app.use(session({
     secret: _config.webui.sessionSecret,
-    name: "Steam login session",
+    name: SessionCookieName,
     resave: true,
     saveUninitialized: true
   }));
@@ -78,6 +78,11 @@ function initSteamAuthPages(express, app) {
     passport.authenticate("steam", { failureRedirect: prefix + "/login" }),
     function (req, res) {
       // "/my" is a paster web page that shows the "webui" web pages in an iframe, if the user is logged in.
+      utils.dbConnect()
+        .then(cli => {
+          saveSessionCookie(cli, req)
+            .finally(() => cli.release());
+        });
       res.redirect("/my");
     });
 
@@ -97,8 +102,15 @@ function initSteamAuthPages(express, app) {
 
   app.get(prefix + "/logout", function (req, res) {
     // log out, close the iframe and send the user back to the site's start page
-    if (req.user) 
+    if (req.user) {
+      var userId = req.user.id;
       req.logout();
+      utils.dbConnect()
+        .then(cli => {
+          Q.ninvoke(cli, "query", "update hashkeys set sessionkey=null where hashkey=$1; ", [userId])
+            .finally(() => cli.release());
+        });
+    }
     res.send("<html><head><script>window.parent.location.replace('/');</script></head></html>");
   });
 
@@ -116,6 +128,15 @@ function initSteamAuthPages(express, app) {
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
   res.redirect(_config.webui.urlprefix + '/login');
+}
+
+function saveSessionCookie(cli, req) {
+  // the session cookie is saved to the database so that the python/paster web server can identify the logged in user
+  return Q.ninvoke(cli, "query", "update hashkeys set sessionkey=$2 where hashkey=$1; ", [req.user.id, req.cookies[SessionCookieName]])
+    .catch(err => {
+      _logger.error(err);
+      return Q();
+    });
 }
 
 function renderAccountPage(req, res, msg) {
@@ -191,7 +212,10 @@ function registerPlayer(req, res, cli) {
 
       return chain
         .then(function () { return Q.ninvoke(cli, "query", "select getOrCreatePlayer($1, $2, $3)", [req.user.id, req.user.displayName, utils.strippedNick(req.user.displayName)]) })
-        .then(function (result) { return result.rows[0][0]; });
+        .then(function (result) {
+          // if the user didn't have a hashkeys record yet, his session key wasn't stored during the login, so we do it now
+          return saveSessionCookie(cli, req).then(() => result.rows[0][0]);
+        });
       });
 }
 

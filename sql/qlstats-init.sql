@@ -319,3 +319,7 @@ create unique index games_2020q4_match_id on games_2020q4(match_id);
 -- before this index could be generated, duplicates had to be eliminated
 create unique index maps_name on maps(name);
 -- stored_proc.sql getOrCreateServer() updated
+
+--2018-05-28
+alter table hashkeys add sessionkey varchar(80); -- steam auth session cookie
+create unique index hashkeys_sessionkey on hashkeys(sessionkey);

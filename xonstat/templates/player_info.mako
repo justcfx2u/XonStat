@@ -25,7 +25,7 @@ ${parent.css()}
 <%block name="js">
 ${parent.js()}
 
-%if player and player.privacy_match_hist == 2:
+%if may_view:
 <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
 <script src="/static/js/weaponCharts.min.js"></script>
 
@@ -193,12 +193,12 @@ Player Information
       regions = [ "not set", "Europe", "Africa", "Asia", "Australia", "North America", "South America"]
       region = "unknown" if player.region is None or player.region > len(regions) else regions[player.region]
       %>
-%if player.privacy_match_hist == 2:
+%if may_view:
       Region: ${region}
 %endif
       <br>Player ID: ${player.player_id}
       <br>Steam ID: <a href="http://steamcommunity.com/profiles/${hashkey}/" target="_blank">${hashkey}</a>
-%if player.privacy_match_hist == 2:
+%if may_view:
       <br>Joined: <span class="abstime" data-epoch="${player.epoch()}" title="${strftime(player.create_dt, '%a, %d %b %Y %H:%M:%S UTC')}">Joined ${player.joined_pretty_date()}</span>
 %endif
       <br>Status: ${ "active" if player.active_ind else "<span class='warntext'>deactivated</span>" | n}
@@ -208,9 +208,9 @@ Player Information
 %endif
   </div>
 
-%if player.privacy_match_hist != 2:
+%if not may_view:
   <div class="col-xs-6 xol-sm-8 col-md-9" style="padding: 50pt 0 0 60pt; font-size: 16pt">
-    This profile is private
+    This profile is private 
   </div>
 %else:
 

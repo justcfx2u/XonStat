@@ -234,15 +234,16 @@ class PlayerWeaponStat(object):
 
 
 class Hashkey(object):
-    def __init__(self, player_id=None, hashkey=None):
+    def __init__(self, player_id=None, hashkey=None, sessionkey=None):
         self.player_id = player_id
         self.hashkey = hashkey
+        self.sessionkey = sessionkey
 
     def __repr__(self):
         return "<Hashkey(%s, %s)>" % (self.player_id, self.hashkey)
 
     def to_dict(self):
-        return {'player_id':self.player_id, 'hashkey':self.hashkey}
+        return {'player_id':self.player_id, 'hashkey':self.hashkey, 'sessionkey':self.sessionkey}
 
 
 class PlayerNick(object):
