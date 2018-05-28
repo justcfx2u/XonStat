@@ -517,7 +517,7 @@ def player_info_data(request):
         if row is None:
                 return {'player':None, 'hashkey':None, 'games_played':0,'overall_stats':None, 'fav_maps':[], 'elos':[], 'ranks':[], 'recent_games':[],'cake_day':None }
 
-        sessioncookie = unquote(request.cookies.get("SteamAuthSession"))
+        sessioncookie = unquote(request.cookies.get("SteamAuthSession"), "")
         may_see_stats = row.Player.privacy_match_hist == 2 or \
           row.Player.privacy_match_hist == 1 and row.Hashkey.sessionkey == sessioncookie
 
