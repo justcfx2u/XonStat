@@ -39,7 +39,9 @@ function initSteamAuthPages(express, app) {
   // setup Steam OpenID 2.0 authenticator
   passport.serializeUser(function (user, done) { done(null, user); });
   passport.deserializeUser(function (obj, done) { done(null, obj); });
-  passport.use(new SteamStrategy(_config.webui.steamAuth,
+  // clone the steam auth config, because it will get modified internally and when saving the config back to file, it will be broken
+  var cfg = JSON.parse(JSON.stringify(_config.webui.steamAuth)); 
+  passport.use(new SteamStrategy(cfg,
     function (identifier, profile, done) {
       process.nextTick(function () {
         profile.identifier = identifier;
