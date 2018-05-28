@@ -530,11 +530,11 @@ def player_info_data(request):
         recent_games   = get_recent_games(player_id, game_type_cd=game_type_cd) if may_see_stats else []
         cake_day       = is_cake_day(row.Player.create_dt) if may_see_stats else False
 
-    except Exception as e:
+    #except Exception as e:
         #raise pyramid.httpexceptions.HTTPNotFound
 
         ## do not raise application exceptions here (only for debugging)
-         raise e
+    #     raise e
 
     return {'player':row.Player,
             'hashkey':row.Hashkey.hashkey,
