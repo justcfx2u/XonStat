@@ -1078,7 +1078,7 @@ function saveScoreboard(gt, game, team, state, chain) {
     var noname = (game.steamIdTracked[p.STEAM_ID] ? "Anonymous " : "Untracked ") + (-playerId);
     chain = chain.then(() => Q.ninvoke(state.cli, "query",
       "insert into player_game_stats (player_id, game_id, nick, stripped_nick, team, rank, scoreboardpos, kills, deaths, score, alivetime, lives, pushes, destroys, captures, returns, drops, revivals) " +
-      "values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)",
+      "values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)",
       [
         playerId,
         state.gameId,
