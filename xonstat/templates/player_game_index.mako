@@ -109,7 +109,7 @@ Recent Games
         % else:
             <td><a href="/player/${rg.pg1_player_id}">${html_colors(rg.pg1_nick)|n}</a></td>
             <td>
-                % if rg.pg2_old_r:
+                % if rg.pg1_old_r:
                     ${int(round(rg.pg1_old_r))} &plusmn; ${int(round(rg.pg1_old_rd))}
                 % endif
             </td>
