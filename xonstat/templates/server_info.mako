@@ -173,7 +173,7 @@ loadLivePlayers();
         <tr>
           <th style="width:40px;">#</th>
           <th>Map</th>
-          <th style="width:120px;"># Games</th>
+          <th style="width:120px;">Score</th>
         </tr>
       </thead>
       <tbody>
