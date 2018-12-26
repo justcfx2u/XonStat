@@ -67,7 +67,7 @@ def _server_info_data(request):
                 return { 'server': None, 'recent_games': [], 'top_players': [], 'top_maps': [] }
 
         # top players by score
-        top_scorers = DBSession.query(Player.player_id, Player.nick, func.sum(PlayerGameStat.score)).\
+        top_scorers = DBSession.query(Player, func.sum(PlayerGameStat.score)).\
                 join(PlayerGameStat, PlayerGameStat.player_id == Player.player_id).\
                 join(Game, Game.game_id == PlayerGameStat.game_id).\
                 filter(Game.server_id == server.server_id).\
@@ -79,8 +79,8 @@ def _server_info_data(request):
                 limit(leaderboard_count).all()
 #                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
 
-        top_scorers = [(player_id, nick, html_colors(nick), score) \
-                for (player_id, nick, score) in top_scorers]
+        top_scorers = [(player.player_id, player.nick, player.nick_html_colors(), score) \
+                for (player, score) in top_scorers]
 
         # top players by playing time
         top_players = get_top_players_by_time(server_id)
