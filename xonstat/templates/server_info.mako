@@ -182,7 +182,7 @@ loadLivePlayers();
         <tr>
           <td>${i}</td>
           % if player_id > 2:
-          <td><a href="${request.route_path('player_info', id=player_id)}" title="Go to the player info page for ${nick}">${nick}</a></td>
+          <td><a href="${request.route_path('player_info', id=player_id)}" title="Go to the player info page for ${nick}">${htmlnick}</a></td>
           % else:
           <td>${htmlnick}</td>
           % endif
