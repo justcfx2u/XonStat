@@ -137,6 +137,7 @@ loadLivePlayers();
     </div>
   </div> <!-- /span4 -->
 
+  <!--
   <div class="col-sm-4">
     <h3>Most Active Players</h3>
     <table class="table table-hover table-condensed">
@@ -165,6 +166,39 @@ loadLivePlayers();
     </table>
   </div> <!-- /span4 -->
 
+  <div class="col-sm-4">
+    <h3>Top Scorers</h3>
+    <table class="table table-hover table-condensed">
+      <thead>
+        <tr>
+          <th style="width:40px;">#</th>
+          <th>Map</th>
+          <th style="width:120px;"># Games</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% i = 1 %>
+        % for (player_id, nick, htmlnick, score) in top_scorers:
+        <tr>
+          <td>${i}</td>
+          % if player_id > 2:
+          <td><a href="${request.route_path('player_info', id=player_id)}" title="Go to the player info page for ${nick}">${nick}</a></td>
+          % else:
+          <td>${htmlnick}</td>
+          % endif
+          <td>${score}</td>
+        </tr>
+        <% i = i+1 %>
+        % endfor
+        % while (i <= 10):
+          <tr><td>${i}</td></tr>
+          <% i = i+1 %>
+        % endwhile %>
+      </tbody>
+    </table>
+  </div> <!-- /span4 -->
+
+  
   <div class="col-sm-4">
     <h3>Most Active Maps</h3>
     <table class="table table-hover table-condensed">

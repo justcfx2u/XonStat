@@ -67,21 +67,20 @@ def _server_info_data(request):
                 return { 'server': None, 'recent_games': [], 'top_players': [], 'top_maps': [] }
 
         # top players by score
-        #top_scorers = DBSession.query(Player.player_id, Player.nick,
-                #func.sum(PlayerGameStat.score)).\
-                #filter(Player.player_id == PlayerGameStat.player_id).\
-                #filter(Game.game_id == PlayerGameStat.game_id).\
-                #filter(Game.server_id == server.server_id).\
-                #filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
-                #filter(PlayerGameStat.player_id > 2).\
-                #order_by(expr.desc(func.sum(PlayerGameStat.score))).\
-                #group_by(Player.player_id).\
-                #group_by(Player.nick).\
-                #limit(leaderboard_count).all()
+        top_scorers = DBSession.query(Player.player_id, Player.nick, func.sum(PlayerGameStat.score)).\
+                join(PlayerGameStat, PlayerGameStat.player_id == Player.player_id).\
+                join(Game, Game.game_id == PlayerGameStat.game_id).\
+                filter(Game.server_id == server.server_id).\
+                filter(Game.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
+                filter(PlayerGameStat.player_id > 2).\
+                group_by(Player.player_id).\
+                group_by(Player.nick).\
+                order_by(expr.desc(func.sum(PlayerGameStat.score))).\
+                limit(leaderboard_count).all()
 #                filter(PlayerGameStat.create_dt > (datetime.utcnow() - timedelta(days=leaderboard_lifetime))).\
 
-        #top_scorers = [(player_id, html_colors(nick), score) \
-        #        for (player_id, nick, score) in top_scorers]
+        top_scorers = [(player_id, nick, html_colors(nick), score) \
+                for (player_id, nick, score) in top_scorers]
 
         # top players by playing time
         top_players = get_top_players_by_time(server_id)
@@ -102,6 +101,7 @@ def _server_info_data(request):
             'recent_games':recent_games,
             'top_players': top_players,
             'top_maps': top_maps,
+            'top_scorers': top_scorers,
             }
 
 
