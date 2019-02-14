@@ -15,7 +15,7 @@
 
     return dbConnect()
       .then(function(cli) {
-        return geo.fillAllServers(cli)
+        return geo.fillAllServers(cli, _config.geoip)
           .finally(function() { cli.release(); });
       })
       .catch(function(err) {
