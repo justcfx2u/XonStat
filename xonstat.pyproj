@@ -22,6 +22,7 @@
     </CommandLineArguments>
     <PythonRunWebServerCommand>c:\python27\scripts\paster.exe</PythonRunWebServerCommand>
     <PythonRunWebServerCommandArguments>serve local.ini</PythonRunWebServerCommandArguments>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />

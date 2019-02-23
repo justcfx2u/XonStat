@@ -25,6 +25,7 @@ ql-match-jsons/anon-vs-untracked.json.gz
 sample-data\combined_stats_duel.json
  -g 19498 sample-data\combined_stats_ca.json</Environment>
     <LastActiveSolutionConfig>Debug|Any CPU</LastActiveSolutionConfig>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
