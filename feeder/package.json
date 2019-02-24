@@ -29,7 +29,7 @@
     "q": "1.2.0",
     "request": ">= 2.53.0",
     "semver": "^4.3.2",
-    "zeromq": "^5.1.0"
+    "zmq": ">=2.13.0"
   },
   "devDependencies": {
     "es6-promise": "^4.0.5"
