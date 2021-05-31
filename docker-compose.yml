@@ -5,6 +5,11 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.db
+        deploy:
+            resources:
+                limits:
+                    cpus: "1.0"
+                    memory: "256M"
         volumes:
             - db:/var/lib/postgres/data
         environment:
