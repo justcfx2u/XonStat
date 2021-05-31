@@ -1,58 +1,33 @@
--- drop tables first in reverse order
-drop table if exists player_groups cascade;
-drop table if exists player_game_anticheats cascade;
-drop table if exists team_game_stats cascade;
-drop table if exists summary_stats cascade;
-drop table if exists player_map_captimes cascade;
-drop table if exists player_ladder_ranks cascade;
-drop table if exists cd_ladder cascade;
-drop table if exists player_ranks_history cascade;
-drop table if exists player_ranks cascade;
-drop table if exists player_elos cascade;
-drop table if exists player_nicks cascade;
-drop table if exists db_version cascade;
-drop table if exists hashkeys cascade;
-drop table if exists player_weapon_stats cascade;
-drop table if exists achievements cascade;
-drop table if exists cd_achievement cascade;
---drop table if exists game_mutators cascade;
-drop table if exists player_game_stats cascade;
-drop table if exists games cascade;
---drop table if exists map_game_types cascade;
-drop table if exists maps cascade;
-drop table if exists servers cascade;
-drop table if exists cd_game_type cascade;
-drop table if exists cd_weapon cascade;
---drop table if exists cd_mutator cascade;
-drop table if exists players cascade;
+CREATE SCHEMA IF NOT EXISTS xonstat
+    AUTHORIZATION xonstat;
 
 -- table definitions
-\i tables/players.tab
---\i tables/cd_mutator.tab
-\i tables/cd_game_type.tab
-\i tables/cd_weapon.tab
-\i tables/servers.tab
-\i tables/maps.tab
---\i tables/map_game_types.tab
-\i tables/games.tab
-\i tables/player_game_stats.tab
---\i tables/game_mutators.tab
-\i tables/cd_achievement.tab
-\i tables/achievements.tab
-\i tables/player_weapon_stats.tab
-\i tables/hashkeys.tab
-\i tables/db_version.tab
-\i tables/player_nicks.tab
-\i tables/player_elos.tab
-\i tables/player_ranks.tab
-\i tables/player_ranks_history.tab
-\i tables/cd_ladder.tab
-\i tables/player_ladder_ranks.tab
-\i tables/player_map_captimes.tab
-\i tables/summary_stats.tab
-\i tables/team_game_stats.tab
-\i tables/player_game_anticheats.tab
-\i tables/player_groups.tab
+\i /docker-entrypoint-initdb.d/players.tab
+--\i /docker-entrypoint-initdb.d/cd_mutator.tab
+\i /docker-entrypoint-initdb.d/cd_game_type.tab
+\i /docker-entrypoint-initdb.d/cd_weapon.tab
+\i /docker-entrypoint-initdb.d/servers.tab
+\i /docker-entrypoint-initdb.d/maps.tab
+--\i /docker-entrypoint-initdb.d/map_game_types.tab
+\i /docker-entrypoint-initdb.d/games.tab
+\i /docker-entrypoint-initdb.d/player_game_stats.tab
+--\i /docker-entrypoint-initdb.d/game_mutators.tab
+\i /docker-entrypoint-initdb.d/cd_achievement.tab
+\i /docker-entrypoint-initdb.d/achievements.tab
+\i /docker-entrypoint-initdb.d/player_weapon_stats.tab
+\i /docker-entrypoint-initdb.d/hashkeys.tab
+\i /docker-entrypoint-initdb.d/db_version.tab
+\i /docker-entrypoint-initdb.d/player_nicks.tab
+\i /docker-entrypoint-initdb.d/player_elos.tab
+\i /docker-entrypoint-initdb.d/player_ranks.tab
+\i /docker-entrypoint-initdb.d/player_ranks_history.tab
+\i /docker-entrypoint-initdb.d/cd_ladder.tab
+\i /docker-entrypoint-initdb.d/player_ladder_ranks.tab
+\i /docker-entrypoint-initdb.d/player_map_captimes.tab
+\i /docker-entrypoint-initdb.d/summary_stats.tab
+\i /docker-entrypoint-initdb.d/team_game_stats.tab
+\i /docker-entrypoint-initdb.d/player_game_anticheats.tab
+\i /docker-entrypoint-initdb.d/player_groups.tab
 
 begin;
 

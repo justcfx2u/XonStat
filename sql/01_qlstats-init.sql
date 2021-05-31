@@ -217,7 +217,7 @@ ALTER TABLE games_2020q3 ADD PRIMARY KEY USING INDEX games_2020q3_pk;
 CREATE INDEX games_2020q4_ix001 on games_2020q4(create_dt);
 CREATE INDEX games_2020q4_ix002 on games_2020q4 using gin(players);
 CREATE UNIQUE INDEX games_2020q4_pk on games_2020q4(game_id);
-ALTER TABLE games_2020q4 ADD PRIMARY KEY USING INDEX games_2021q4_pk;
+ALTER TABLE games_2020q4 ADD PRIMARY KEY USING INDEX games_2020q4_pk;
 
 
 
