@@ -217,7 +217,7 @@ ALTER TABLE games_2020q3 ADD PRIMARY KEY USING INDEX games_2020q3_pk;
 CREATE INDEX games_2020q4_ix001 on games_2020q4(create_dt);
 CREATE INDEX games_2020q4_ix002 on games_2020q4 using gin(players);
 CREATE UNIQUE INDEX games_2020q4_pk on games_2020q4(game_id);
-ALTER TABLE games_2020q4 ADD PRIMARY KEY USING INDEX games_2020q4_pk;
+ALTER TABLE games_2020q4 ADD PRIMARY KEY USING INDEX games_2021q4_pk;
 
 
 
@@ -285,7 +285,7 @@ declare
   i integer;
 begin
   for i in 1 .. 64 loop
-    insert into xonstat.players (player_id, nick, stripped_nick) values (-i, 'Unnamed ' || i, 'Unnamed ' || i);
+    insert into players (player_id, nick, stripped_nick) values (-i, 'Unnamed ' || i, 'Unnamed ' || i);
   end loop;
 end;
 $$ language plpgsql;
@@ -323,3 +323,134 @@ create unique index maps_name on maps(name);
 --2018-05-28
 alter table hashkeys add sessionkey varchar(80); -- steam auth session cookie
 create unique index hashkeys_sessionkey on hashkeys(sessionkey);
+
+--2021-05-30
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q1 ( 
+	CHECK ( create_dt >= DATE '2021-01-01' AND create_dt < DATE '2021-04-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q2 ( 
+	CHECK ( create_dt >= DATE '2021-04-01' AND create_dt < DATE '2021-07-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q3 ( 
+	CHECK ( create_dt >= DATE '2021-07-01' AND create_dt < DATE '2021-10-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q4 ( 
+	CHECK ( create_dt >= DATE '2021-10-01' AND create_dt < DATE '2022-01-01' ) 
+) INHERITS (games);
+
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q1 ( 
+	CHECK ( create_dt >= DATE '2022-01-01' AND create_dt < DATE '2022-04-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q2 ( 
+	CHECK ( create_dt >= DATE '2022-04-01' AND create_dt < DATE '2022-07-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q3 ( 
+	CHECK ( create_dt >= DATE '2022-07-01' AND create_dt < DATE '2022-10-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q4 ( 
+	CHECK ( create_dt >= DATE '2022-10-01' AND create_dt < DATE '2023-01-01' ) 
+) INHERITS (games);
+
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q1 ( 
+	CHECK ( create_dt >= DATE '2023-01-01' AND create_dt < DATE '2023-04-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q2 ( 
+	CHECK ( create_dt >= DATE '2023-04-01' AND create_dt < DATE '2023-07-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q3 ( 
+	CHECK ( create_dt >= DATE '2023-07-01' AND create_dt < DATE '2023-10-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q4 ( 
+	CHECK ( create_dt >= DATE '2023-10-01' AND create_dt < DATE '2024-01-01' ) 
+) INHERITS (games);
+
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q1 ( 
+	CHECK ( create_dt >= DATE '2024-01-01' AND create_dt < DATE '2024-04-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q2 ( 
+	CHECK ( create_dt >= DATE '2024-04-01' AND create_dt < DATE '2024-07-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q3 ( 
+	CHECK ( create_dt >= DATE '2024-07-01' AND create_dt < DATE '2024-10-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q4 ( 
+	CHECK ( create_dt >= DATE '2024-10-01' AND create_dt < DATE '2025-01-01' ) 
+) INHERITS (games);
+
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q1 ( 
+	CHECK ( create_dt >= DATE '2025-01-01' AND create_dt < DATE '2025-04-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q2 ( 
+	CHECK ( create_dt >= DATE '2025-04-01' AND create_dt < DATE '2025-07-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q3 ( 
+	CHECK ( create_dt >= DATE '2025-07-01' AND create_dt < DATE '2025-10-01' ) 
+) INHERITS (games);
+
+CREATE TABLE IF NOT EXISTS xonstat.games_2020q4 ( 
+	CHECK ( create_dt >= DATE '2025-10-01' AND create_dt < DATE '2026-01-01' ) 
+) INHERITS (games);
+
+create unique index games_2021q1_match_id on games_2021q1(match_id);
+create unique index games_2021q2_match_id on games_2021q2(match_id);
+create unique index games_2021q3_match_id on games_2021q3(match_id);
+create unique index games_2021q4_match_id on games_2021q4(match_id);
+create unique index games_2022q1_match_id on games_2022q1(match_id);
+create unique index games_2022q2_match_id on games_2022q2(match_id);
+create unique index games_2022q3_match_id on games_2022q3(match_id);
+create unique index games_2022q4_match_id on games_2022q4(match_id);
+create unique index games_2023q1_match_id on games_2023q1(match_id);
+create unique index games_2023q2_match_id on games_2023q2(match_id);
+create unique index games_2023q3_match_id on games_2023q3(match_id);
+create unique index games_2023q4_match_id on games_2023q4(match_id);
+create unique index games_2024q1_match_id on games_2024q1(match_id);
+create unique index games_2024q2_match_id on games_2024q2(match_id);
+create unique index games_2024q3_match_id on games_2024q3(match_id);
+create unique index games_2024q4_match_id on games_2024q4(match_id);
+create unique index games_2025q1_match_id on games_2025q1(match_id);
+create unique index games_2025q2_match_id on games_2025q2(match_id);
+create unique index games_2025q3_match_id on games_2025q3(match_id);
+create unique index games_2025q4_match_id on games_2025q4(match_id);
+
+CREATE INDEX games_2021q4_ix001 on games_2021q4(create_dt);
+CREATE INDEX games_2021q4_ix002 on games_2021q4 using gin(players);
+CREATE UNIQUE INDEX games_2021q4_pk on games_2021q4(game_id);
+ALTER TABLE games_2021q4 ADD PRIMARY KEY USING INDEX games_2021q4_pk;
+
+CREATE INDEX games_2022q4_ix001 on games_2022q4(create_dt);
+CREATE INDEX games_2022q4_ix002 on games_2022q4 using gin(players);
+CREATE UNIQUE INDEX games_2022q4_pk on games_2022q4(game_id);
+ALTER TABLE games_2022q4 ADD PRIMARY KEY USING INDEX games_2022q4_pk;
+
+CREATE INDEX games_2023q4_ix001 on games_2023q4(create_dt);
+CREATE INDEX games_2023q4_ix002 on games_2023q4 using gin(players);
+CREATE UNIQUE INDEX games_2023q4_pk on games_2023q4(game_id);
+ALTER TABLE games_2023q4 ADD PRIMARY KEY USING INDEX games_2023q4_pk;
+
+CREATE INDEX games_2024q4_ix001 on games_2024q4(create_dt);
+CREATE INDEX games_2024q4_ix002 on games_2024q4 using gin(players);
+CREATE UNIQUE INDEX games_2024q4_pk on games_2024q4(game_id);
+ALTER TABLE games_2024q4 ADD PRIMARY KEY USING INDEX games_2024q4_pk;
+
+CREATE INDEX games_2025q4_ix001 on games_2025q4(create_dt);
+CREATE INDEX games_2025q4_ix002 on games_2025q4 using gin(players);
+CREATE UNIQUE INDEX games_2025q4_pk on games_2025q4(game_id);
+ALTER TABLE games_2025q4 ADD PRIMARY KEY USING INDEX games_2025q4_pk;
