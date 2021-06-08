@@ -1,0 +1,16 @@
+FROM node:lts-buster AS deps
+WORKDIR /app
+COPY ["feeder/package*", "./"]
+RUN ["npm", "install"]
+
+
+FROM node:lts-buster-slim
+WORKDIR /app
+COPY --from=deps ["/app/node_modules", "node_modules"]
+COPY ["feeder/htdocs", "htdocs"]
+COPY ["feeder/views", "views"]
+COPY ["feeder/modules", "modules"]
+COPY ["feeder/package*", "feeder/run-feeder.sh", "feeder/feeder.node.js", "./"]
+RUN mkdir /app/ql-match-jsons
+RUN cd /app
+ENTRYPOINT ["./run-feeder.sh"]
