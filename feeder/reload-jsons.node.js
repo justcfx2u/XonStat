@@ -5,11 +5,11 @@
   Q = require("q");
 
 var _config;
-
+var client = new pg.Client();
 
 function dbConnect() {
   var defConnect = Q.defer();
-  pg.connect(_config.webapi.database, function (err, cli, release) {
+  client.connect(_config.webapi.database, function (err, cli, release) {
     if (err)
       defConnect.reject(new Error(err));
     else {
@@ -104,7 +104,7 @@ function main() {
   .catch(function (err) { console.log(err); })
   .done();
 
-  pg.end();
+  client.end();
 }
 
 main();
