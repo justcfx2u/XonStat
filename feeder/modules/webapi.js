@@ -1,7 +1,7 @@
 ﻿var
   log4js = require("log4js"),
   request = require("request"),
-  gsq = require("game-server-query"),
+  gsq = require("gamedig"),
   Q = require("q"),
   dns = require("dns"),
   gr = require("./gamerating"),
